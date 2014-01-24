@@ -32,6 +32,8 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+
+" disable until you get practice with jkl;
 nnoremap <up> <nop>
 nnoremap <down> <nop>
 nnoremap <left> <nop>
@@ -89,6 +91,7 @@ set smarttab
 set expandtab
 
 nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
+nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 
 "Set title of window to file name
 set title

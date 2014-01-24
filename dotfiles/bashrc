@@ -38,6 +38,7 @@ alias gridtick='grid-proxy-init -debug -verify'
 alias vomstick='voms-proxy-init -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias e='echo'
+alias v='vim'
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
 
 
