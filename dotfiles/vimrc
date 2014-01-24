@@ -53,6 +53,11 @@ noremap k k
 noremap j h
 
 
+" map sss to save
+noremap sss <Esc>:w<CR>
+
+
+
 noremap <Leader>wn :call WhiteSpace()<CR>
 
 match MaybeExtraWhitespace /\s\+\%#\@<!$/
