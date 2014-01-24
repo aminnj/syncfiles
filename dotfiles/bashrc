@@ -6,13 +6,27 @@ if [ -f /etc/bashrc ]; then
 fi
 
 if [ "$TERM" != "dumb" ]; then
-    if [ "`hostname`" == "Io" ]; then
-        eval "`dircolors -b`"
-        alias ls='ls --color=auto'
-    else
-        alias ls='ls -G'
-    fi
+	dircolors -b 1>/dev/null
+	
+	if (( $? == 0 )); then
+		alias ls='ls --color=auto'
+	else
+		alias ls='ls -G'
+	fi
 fi
+
+#    if [ "`hostname`" == "Io" ]; then
+#        alias ls='ls -G'
+#        eval "`dircolors -b`"
+#        alias ls='ls --color=auto'
+#    else
+#    fi
+#fi
+
+
+
+
+
 
 # User specific aliases and functions
 alias ll='ls -l'
