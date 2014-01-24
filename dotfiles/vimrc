@@ -1,0 +1,140 @@
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=lightblue guibg=lightblue
+highlight link MaybeExtraWhitespace NONE
+let s:hilightws=0
+
+autocmd BufWritePost .vimrc source %
+
+"Formatting
+syntax on
+if &term=~'linux' 
+	set background=light
+	"colorscheme summerfruit256
+else
+    "if has("gui_running")
+	set background=light
+	"colorscheme desert256
+	"colorscheme summerfruit256
+	set gfn=Inconsolata-g\ 9
+    set t_Co=256
+endif
+set nu!
+
+" Color scheme
+" ! mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
+set t_Co=256
+color wombat256mod
+      
+" Type kj to get out of insert mode!
+inoremap kj <Esc>
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
+
+
+
+set cursorline          " highlight current line
+set incsearch           " search as characters are entered
+filetype indent on      " load filetype-specific indent files
+
+
+
+noremap ; l " shift hjkl over to jkl; and switch up and down
+noremap l j
+noremap k k
+noremap j h
+
+
+noremap <Leader>wn :call WhiteSpace()<CR>
+
+match MaybeExtraWhitespace /\s\+\%#\@<!$/
+au InsertEnter * match MaybeExtraWhitespace /\s\+\%#\@<!$/
+au InsertLeave * match MaybeExtraWhitespace /\s\+\%#\@<!$/
+
+function! WhiteSpace()
+	if s:hilightws
+		highlight link MaybeExtraWhitespace NONE
+		let s:hilightws = 0
+		echo "Whitespace Highlighting On"
+	else
+		highlight link MaybeExtraWhitespace ExtraWhitespace
+		let s:hilightws = 1
+		echo "Whitespace Highlighting Off"
+	endif
+endfunction
+
+
+""This autocmd changes the window-local current directory to be the same as the
+""directory of the current file. It fails silently to prevent error messages
+""when you edit files via ftp or new files. It works better in some cases
+""because the autocmd is not nested, and will therefore not fire when switching
+""buffers via another autocmd. It will also work in older versions of Vim or
+""versions compiled without the 'autochdir' option. Note, however, that there
+""is no easy way to test for this autocmd in a script like there is for the
+""'autochdir' option.
+autocmd BufEnter * silent! lcd %:p:h
+
+"escape to clear highlighting
+
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set smarttab
+set expandtab
+
+nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
+
+"Set title of window to file name
+set title
+
+if has("autocmd")
+	filetype plugin indent on
+else
+	set autoindent
+endif
+
+set showmatch
+set matchtime=3
+set incsearch
+set hlsearch
+"Ignores case for searches
+set ignorecase
+"case-sensitive if search contains an uppercase character
+set smartcase
+
+
+"Remember previous buffer session
+exec 'set viminfo=%,' . &viminfo
+
+"Auto-indent and tab width
+"set ai
+"set softtabstop=2
+"set shiftwidth=2
+
+"let python_highlight_all = 1
+
+"set grepprg=grep\ -nH\ $*
+
+"In insert mode, C-BS to delete previous word, and C-DEL to delete next
+imap <C-BS> <C-W>
+imap <C-DEL> <ESC>ldei
+
+"Cut and Paste to System Clipboard
+nmap <C-A-v> "+p
+imap <C-A-v> <C-R>+
+vmap <C-A-c> "+y
+
+"Sets F2 to enable and disable line numeration
+nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
+
+set backup
+set backupdir=~/.vim/
+
+:hi MatchParen cterm=none ctermbg=black ctermfg=white
+"set cryptmethod=blowfish

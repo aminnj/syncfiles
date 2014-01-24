@@ -1,0 +1,102 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+if [ "$TERM" != "dumb" ]; then
+    if [ "`hostname`" == "Io" ]; then
+        eval "`dircolors -b`"
+        alias ls='ls --color=auto'
+    else
+        alias ls='ls -G'
+    fi
+fi
+
+# User specific aliases and functions
+alias ll='ls -l'
+alias me11='ssh cscme11@emume11'
+alias me42='ssh cscme42@emu42fastprod01'
+alias sx5='ssh cscsx5@emusx501'
+alias me11nick='ssh emume11'
+alias afswork='cd /afs/cern.ch/work/n/namin/public/'
+alias me11env='cd /home/cscme11/'
+alias less='less -N'
+alias grep='grep -rn --color=auto'
+alias cls='clear'
+alias back='cd $OLDPWD'
+alias bk='cd $OLDPWD'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
+#alias root='root.exe -l'
+alias ,,='echo "$PWD -> $OLDPWD" && cd $OLDPWD'
+alias cd..='cd ..'
+alias bc='bc -l'
+alias gridtick='grid-proxy-init -debug -verify'
+alias vomstick='voms-proxy-init -voms cms'
+alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
+alias e='echo'
+alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
+
+
+alias femto='pico'
+alias milli='pico'
+alias centi='pico'
+alias micro='pico'
+
+
+function crabenv {
+    echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
+    source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
+    echo ">> cmsenv"
+    cmsenv
+    echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
+    source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
+
+}
+
+function ggg() {
+    name=$1
+    base=`echo $name | cut -d "." -f 1`
+    extension=`echo $name | cut -d "." -f 2`
+    cppexts=" cpp cc c++ "
+    cexts=" c "
+    compiler=""
+    [[ $cppexts =~ " ${extension} " ]] && compiler=g++
+    [[ $cexts =~ " ${extension} " ]] && compiler=gcc
+    echo "Since your extension was ${extension}, we'll use ${compiler} to compile"
+    echo "Issuing command: $compiler $name -o ${base}.exe && ./${base}.exe"
+    `$compiler $name -o ${base}.exe && ./${base}.exe`
+}
+export -f ggg
+
+Paths=()
+
+function p {
+
+    if [ -z "$1" ]; then
+        Paths=( "${Paths[@]}" $(readlink -f .) )
+        echo "Added ${#Paths[@]} => $(readlink -f .)"
+    fi
+
+    if [ -n "$1" ]; then
+
+        if [ "$1" == "list" ] || [ "$1" == "ls" ] || [ "$1" == "all" ]; then
+            aLen=${#Paths[@]}
+            for (( i=0; i<${aLen}; i++ ));
+            do
+                echo "$i => ${Paths[$i]}"
+            done
+
+        else
+
+            echo "cd: $1 => ${Paths[$1]}"
+            cd ${Paths[$1]} 
+        fi
+
+    fi
+
+}
+
