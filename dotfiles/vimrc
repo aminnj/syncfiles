@@ -54,6 +54,9 @@ set cursorline          " highlight current line
 set incsearch           " search as characters are entered
 filetype indent on      " load filetype-specific indent files
 
+" ENABLE USE OF MOUSE (SCROLL, SELECT, CURSOR PLACEMENT)
+set mouse=a
+
 noremap ; l " shift hjkl over to jkl; and switch up and down
 noremap l j
 noremap k k
