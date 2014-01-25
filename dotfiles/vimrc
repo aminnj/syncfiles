@@ -39,19 +39,32 @@ nnoremap <down> <nop>
 nnoremap <left> <nop>
 nnoremap <right> <nop>
 
+set scrolloff=5 " keep at least 5 lines visible on either side of cursor
 
+
+" Quickly set comma or semicolon at the end of the string
+inoremap , <End>,
+inoremap ; <End>;
+au FileType python inoremap :: <End>:
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw
 
 set cursorline          " highlight current line
 set incsearch           " search as characters are entered
 filetype indent on      " load filetype-specific indent files
-
-
 
 noremap ; l " shift hjkl over to jkl; and switch up and down
 noremap l j
 noremap k k
 noremap j h
 
+nnoremap l :m+<CR>==
+nnoremap k :m-2<CR>==
+inoremap l <Esc>:m+<CR>==gi
+inoremap k <Esc>:m-2<CR>==gi
+vnoremap l :m'>+<CR>gv=gv
+vnoremap k :m-2<CR>gv=gv
 
 " map sss to save
 noremap sss <Esc>:w<CR>
