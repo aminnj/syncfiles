@@ -56,7 +56,10 @@ noremap j h
 " map sss to save
 noremap sss <Esc>:w<CR>
 
-
+" F6 executes python, C, C++ code by compiling and running
+autocmd filetype python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
+autocmd filetype c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+autocmd filetype cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
 
 noremap <Leader>wn :call WhiteSpace()<CR>
 
