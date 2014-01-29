@@ -61,7 +61,7 @@ alias milli='pico'
 alias centi='pico'
 alias micro='pico'
 
-
+usingCrab=false
 function crabenv {
     echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
     source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
@@ -69,6 +69,8 @@ function crabenv {
     cmsenv
     echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
     source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
+    echo ">> usingCrab is true"
+    usingCrab=true
 
 }
 
@@ -114,4 +116,38 @@ function p {
     fi
 
 }
+
+function ccreate {
+    if $usingCrab; then
+        crab -create -cfg $1
+    else
+        echo "Do crabenv first!"
+    fi
+}
+
+function csub {
+    if $usingCrab; then
+        crab -submit -c $1
+    else
+        echo "Do crabenv first!"
+    fi
+}
+
+function cstat {
+    if $usingCrab; then
+        crab -status -c $1
+    else
+        echo "Do crabenv first!"
+    fi
+}
+
+function cget {
+    if $usingCrab; then
+        crab -getoutput -c $1
+    else
+        echo "Do crabenv first!"
+    fi
+}
+
+
 

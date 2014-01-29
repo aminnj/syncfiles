@@ -41,10 +41,11 @@ nnoremap <right> <nop>
 
 set scrolloff=5 " keep at least 5 lines visible on either side of cursor
 
+set noerrorbells visualbell t_vb=
 
 " Quickly set comma or semicolon at the end of the string
-inoremap , <End>,
-inoremap ; <End>;
+inoremap ,, <End>,
+inoremap ;; <End>;
 au FileType python inoremap :: <End>:
 
 " Don't redraw while executing macros (good performance config)
