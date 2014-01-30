@@ -150,4 +150,21 @@ function cget {
 }
 
 
+function screens {
+COUNTER=0
+for i in `screen -ls | grep -n Detached | awk '{print $2}' | cut -f1 -d '.'`; do
+    (( COUNTER++ ))
+    echo $COUNTER "=>" $i
+    #echo $1
 
+    if [ $# -gt 0 ]; then
+        #echo $#
+        if [ "$1" -eq "$COUNTER" ]; then
+            #echo this screen
+            screen -r $i
+        fi
+
+    fi
+
+done
+                                      }
