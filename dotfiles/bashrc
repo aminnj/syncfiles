@@ -23,7 +23,7 @@ fi
 #    fi
 #fi
 
-
+TERM=xterm-256color
 
 
 
@@ -61,18 +61,6 @@ alias milli='pico'
 alias centi='pico'
 alias micro='pico'
 
-usingCrab=false
-function crabenv {
-    echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
-    source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
-    echo ">> cmsenv"
-    cmsenv
-    echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
-    source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
-    echo ">> usingCrab is true"
-    usingCrab=true
-
-}
 
 function ggg() {
     name=$1
@@ -117,6 +105,19 @@ function p {
 
 }
 
+usingCrab=false
+function crabenv {
+    echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
+    source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
+    echo ">> cmsenv"
+    cmsenv
+    echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
+    source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
+    echo ">> usingCrab is true"
+    usingCrab=true
+
+}
+
 function ccreate {
     if $usingCrab; then
         crab -create -cfg $1
@@ -125,13 +126,41 @@ function ccreate {
     fi
 }
 
-function csub {
-    if $usingCrab; then
-        crab -submit -c $1
+function cands {
+
+    if $usingCrab; then 
+
+        cfg=$1
+        foldername=`cat ${cfg} | grep user_remote_dir | cut -d "=" -f 2 | tr -d " "`
+
+        crab -create -cfg ${cfg}
+        crab -submit -c ${foldername}
     else
         echo "Do crabenv first!"
     fi
+
+
 }
+
+
+function csub {
+
+    if $usingCrab; then 
+
+        foldername=$1
+        if [[ $1 =~ .*cfg ]]
+        then
+            foldername=`cat $1 | grep user_remote_dir | cut -d "=" -f 2 | tr -d " "`
+        fi
+
+        crab -submit -c ${foldername}
+    else
+        echo "Do crabenv first!"
+    fi
+
+
+}
+
 
 function cstat {
     if $usingCrab; then
@@ -151,20 +180,20 @@ function cget {
 
 
 function screens {
-COUNTER=0
-for i in `screen -ls | grep -n Detached | awk '{print $2}' | cut -f1 -d '.'`; do
-    (( COUNTER++ ))
-    echo $COUNTER "=>" $i
-    #echo $1
+    COUNTER=0
+    for i in `screen -ls | grep -n Detached | awk '{print $2}' | cut -f1 -d '.'`; do
+        (( COUNTER++ ))
+        echo $COUNTER "=>" $i
+        #echo $1
 
-    if [ $# -gt 0 ]; then
-        #echo $#
-        if [ "$1" -eq "$COUNTER" ]; then
-            #echo this screen
-            screen -r $i
+        if [ $# -gt 0 ]; then
+            #echo $#
+            if [ "$1" -eq "$COUNTER" ]; then
+                #echo this screen
+                screen -r $i
+            fi
+
         fi
 
-    fi
-
-done
-                                      }
+    done
+}
