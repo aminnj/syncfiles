@@ -27,10 +27,16 @@ color wombat256mod
 " Type kj to get out of insert mode!
 inoremap kj <Esc>
 
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
+"nnoremap <C-h> <C-w>h
+"nnoremap <C-j> <C-w>j
+"nnoremap <C-k> <C-w>k
+"nnoremap <C-l> <C-w>l
+
+"turn on wild menu for tab command completion
+set wildmenu
+
+" turn ruler on to show position
+set ruler
 
 
 " disable until you get practice with jkl;
@@ -48,21 +54,25 @@ inoremap ,, <End>,
 inoremap ;; <End>;
 au FileType python inoremap :: <End>:
 
+set ttyfast
+
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
 
 set cursorline          " highlight current line
 set incsearch           " search as characters are entered
-filetype indent on      " load filetype-specific indent files
+filetype indent on      " load FileType-specific indent files
 
 " ENABLE USE OF MOUSE (SCROLL, SELECT, CURSOR PLACEMENT)
 set mouse=a
 
-noremap ; l " shift hjkl over to jkl; and switch up and down
 noremap l j
 noremap k k
+noremap ; l " shift hjkl over to jkl; and switch up and down
 noremap j h
 
+
+" Alt+l,k to drag lines up and down through putty
 nnoremap l :m+<CR>==
 nnoremap k :m-2<CR>==
 inoremap l <Esc>:m+<CR>==gi
@@ -70,13 +80,39 @@ inoremap k <Esc>:m-2<CR>==gi
 vnoremap l :m'>+<CR>gv=gv
 vnoremap k :m-2<CR>gv=gv
 
-" map sss to save
-noremap sss <Esc>:w<CR>
+"remap VIM 0 to first non-blank character
+map 0 ^
 
-" F6 executes python, C, C++ code by compiling and running
-autocmd filetype python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
-autocmd filetype c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-autocmd filetype cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+" show the status line always
+set laststatus=2
+" format of statusline
+
+set statusline=
+set statusline=%t       "tail of the filename
+set statusline+=%h      "help file flag
+set statusline+=\ %#error# " START ERROR COLOR
+set statusline+=%m      "modified flaga
+set statusline+=%r      "read only flags
+set statusline+=%*      " END COLORR
+set statusline+=\ %y      "filetype
+set statusline+=\ \[%{strftime('%I:%M%p\ \%a\ %b\ %d,\ %Y')}\]
+set statusline+=\ %{getcwd()}
+set statusline+=%=      "left/right separator
+set statusline+=%c,     "cursor column
+set statusline+=%l/%L   "cursor line/total lines
+set statusline+=\ %P    "percent through file
+
+" spell
+map <F5> :setlocal spell! spelllang=en_us<CR>
+
+
+
+
+" F6 executes gnuplot, python, C, C++ code by compiling and running
+au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
+autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
+autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
 
 noremap <Leader>wn :call WhiteSpace()<CR>
 
@@ -105,7 +141,7 @@ endfunction
 ""versions compiled without the 'autochdir' option. Note, however, that there
 ""is no easy way to test for this autocmd in a script like there is for the
 ""'autochdir' option.
-autocmd BufEnter * silent! lcd %:p:h
+set autochdir
 
 "escape to clear highlighting
 
