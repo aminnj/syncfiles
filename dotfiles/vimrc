@@ -38,6 +38,14 @@ nnoremap <C-l> <C-w>l
 " imap <C-k> <C-o>k
 " imap <C-l> <C-o>l
 
+" get rid of Thanks for flying Vim title
+set title 
+set titleold="" 
+set titlestring=VIM:\ %F 
+
+" backspace compatibility
+set bs=2
+
 "turn on wild menu for tab command completion
 set wildmenu
 
