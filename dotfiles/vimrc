@@ -27,16 +27,41 @@ color wombat256mod
 " Type kj to get out of insert mode!
 inoremap kj <Esc>
 
-"nnoremap <C-h> <C-w>h
-"nnoremap <C-j> <C-w>j
-"nnoremap <C-k> <C-w>k
-"nnoremap <C-l> <C-w>l
+" control j,l will switch to left and right pane
+nnoremap <C-j> <C-w>h
+nnoremap <C-l> <C-w>l
+
+" NOTE THAT CONTROL + ; doesn't work (google it)
+" move cursor when insert mode
+" imap <C-;> <C-o>;
+" imap <C-j> <C-o>j
+" imap <C-k> <C-o>k
+" imap <C-l> <C-o>l
 
 "turn on wild menu for tab command completion
 set wildmenu
 
 " turn ruler on to show position
 set ruler
+
+
+
+" install pathogen: https://github.com/tpope/vim-pathogen
+" install NERDtree: https://github.com/scrooloose/nerdtree
+
+
+execute pathogen#infect()
+
+"NERDTREE stuff
+map <C-n> :NERDTreeToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " close vim if only nerdtree is left
+
+
+
+" abbreviations for misspellings
+abbr hte the
+abbr teh the
+
 
 
 " disable until you get practice with jkl;
@@ -71,6 +96,8 @@ noremap k k
 noremap ; l " shift hjkl over to jkl; and switch up and down
 noremap j h
 
+" map space to : to speed things up
+nnoremap <Space> :
 
 " Alt+l,k to drag lines up and down through putty
 nnoremap l :m+<CR>==
@@ -85,8 +112,9 @@ map 0 ^
 
 " show the status line always
 set laststatus=2
-" format of statusline
 
+
+" format of statusline
 set statusline=
 set statusline=%t       "tail of the filename
 set statusline+=%h      "help file flag
@@ -105,7 +133,7 @@ set statusline+=\ %P    "percent through file
 " spell
 map <F5> :setlocal spell! spelllang=en_us<CR>
 
-
+" nnoremap <Enter> o<Esc>
 
 
 " F6 executes gnuplot, python, C, C++ code by compiling and running
@@ -113,6 +141,8 @@ au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEn
 autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
 autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
 autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+" put printf template into code if using c++ and type PF in insert mode
+autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
 
 noremap <Leader>wn :call WhiteSpace()<CR>
 
