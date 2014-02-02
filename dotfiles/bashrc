@@ -25,7 +25,12 @@ fi
 
 TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
-export PS1="\[\033[01;34m\][\t]\[\e[0m\] \[\033[02;34m\][\u@\h]\[\e[0m\] \w > "
+PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[02;34m\][\u@\h]\[\e[0m\] \w"
+if [ -n "$WINDOW" ]; then
+    PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
+fi
+PS+=" > "
+export PS1=$PS
 
 export EDITOR=vim
 
