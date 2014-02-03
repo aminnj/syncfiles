@@ -147,7 +147,7 @@ function cands {
     if $usingCrab; then 
 
         cfg=$1
-        foldername=`cat ${cfg} | grep user_remote_dir | cut -d "=" -f 2 | tr -d " "`
+        foldername=`cat ${cfg} | grep ui_working_dir | cut -d "=" -f 2 | tr -d " "`
 
         crab -create -cfg ${cfg}
         crab -submit -c ${foldername}
@@ -166,7 +166,7 @@ function csub {
         foldername=$1
         if [[ $1 =~ .*cfg ]]
         then
-            foldername=`cat $1 | grep user_remote_dir | cut -d "=" -f 2 | tr -d " "`
+            foldername=`cat $1 | grep ui_working_dir | cut -d "=" -f 2 | tr -d " "`
         fi
 
         crab -submit -c ${foldername}
