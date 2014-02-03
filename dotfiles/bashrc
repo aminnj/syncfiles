@@ -34,6 +34,7 @@ export PS1=$PS
 
 export EDITOR=vim
 
+theOS=`uname -o`
 # User specific aliases and functions
 alias ll='ls -l'
 alias me11='ssh cscme11@emume11'
@@ -61,11 +62,20 @@ alias e='echo'
 alias v='vim'
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
 
+alias lxplus5='ssh namin@lxplus5.cern.ch'
+alias lxplus='ssh namin@lxplus.cern.ch'
+alias brazos='ssh amin.nj@hurr.tamu.edu'
+alias hurr='ssh amin.nj@hurr.tamu.edu'
 
 alias femto='pico'
 alias milli='pico'
 alias centi='pico'
 alias micro='pico'
+
+
+if [ "$a" = "cygwin" ]; then
+    alias python='/cygdrive/c/Python27/python.exe -i'
+fi
 
 
 function ggg() {
