@@ -29,8 +29,14 @@ PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[02;34m\][\u@\h]\[\e[0m\] \w"
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
 fi
-PS+=" > "
+# PS+=" > "
+good=" \[\033[01;32m\]> "
+bad=" \[\033[01;31m\]> "
+stat="if [ \$? = 0 ]; then echo \"${good}\"; else echo \"${bad}\"; fi"
+PS+="\`${stat}\`"
+PS+="\[\e[0m\]"
 export PS1=$PS
+
 
 export EDITOR=vim
 
@@ -66,6 +72,7 @@ alias lxplus5='ssh namin@lxplus5.cern.ch'
 alias lxplus='ssh namin@lxplus.cern.ch'
 alias brazos='ssh amin.nj@hurr.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
+alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 
 alias femto='pico'
 alias milli='pico'
@@ -75,6 +82,7 @@ alias micro='pico'
 
 if [ "$a" = "cygwin" ]; then
     alias python='/cygdrive/c/Python27/python.exe -i'
+    alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 fi
 
 
@@ -197,7 +205,7 @@ function cget {
 
 function screens {
     COUNTER=0
-    for i in `screen -ls | grep -n Detached | awk '{print $2}' | cut -f1 -d '.'`; do
+    for i in `screen -ls | egrep -n ".*Detached.*" | awk '{print $2}' | cut -f1 -d '.'`; do
         (( COUNTER++ ))
         echo $COUNTER "=>" $i
         #echo $1
