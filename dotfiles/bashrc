@@ -80,7 +80,7 @@ alias centi='pico'
 alias micro='pico'
 
 
-if [ "$a" = "cygwin" ]; then
+if [ "$(uname -o)" = "Cygwin" ]; then
     alias python='/cygdrive/c/Python27/python.exe -i'
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 fi
