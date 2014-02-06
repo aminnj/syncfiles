@@ -185,36 +185,13 @@ def fromListIfMatches(ls, checkCol, checkVal, column=None):
         print "detected %i malformed (non-list/tuple or len < column) elements" % (malformed)        
     return ols    
 
-def removeDuplicates(ls,index=None):
+def removeDuplicates(ls):
     """
-    removeDuplicates(list,index=None)
+    removeDuplicates(list)
     
     Returns list with no duplicates.
-    
-    If index specified, duplication checking will be
-    done by comparing the index'th value of each element
-    (i.e., uniquification is done using a specified column
-    of a 2D list, if specified)
     """
-    outls = []
-    checkls = []
-    if(index is None):
-        for elem in ls:
-            if(elem not in outls):
-                outls.append(elem)
-    else:
-        if(index < len(ls[0])):
-            for elem in ls:
-                try:
-                    if(elem[index] not in checkls):
-                        checkls.append(elem[index])
-                        outls.append(elem)
-                except IndexError: continue
-                else: pass
-        else:
-            print "index out of range. returning input."
-            return ls
-    return outls
+    return list(set(ls))
     
 def mathematicaFormat(ls,variable=""):
     """
@@ -417,12 +394,15 @@ def endTimer(id="_"):
     
     Ends timing between {start,end}Timer functions. Prints
     a message about run time and timer ID, if not default value.
+    Also returns the number of seconds.
     """
     global t0
     if(id not in t0):
         print "Timer ID of %s not found." % (id)
         return
-    print "Running of %s took %.3f seconds." % (id,time.time()-t0[id])
+    elapsedTime = time.time()-t0[id]
+    print "Running of %s took %.3f seconds." % (id,elapsedTime)
+    return elapsedTime
     
 def listToHistogram(ls):
     """
@@ -474,6 +454,6 @@ if __name__ == '__main__':
     primeSieve - returns list of primes up to integer n
     handleParams - returns list of piped and cmdline args
     startTimer - starts timer
-    endTimer - ends timer; prints time between start, end
+    endTimer - ends timer; prints, returns time between start, end
     listToHistogram - returns frequency dictionary of list
     """
