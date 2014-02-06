@@ -73,6 +73,8 @@ alias lxplus='ssh namin@lxplus.cern.ch'
 alias brazos='ssh amin.nj@hurr.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
+alias io='ssh amin.nj@io.physics.tamu.edu'
+
 
 alias femto='pico'
 alias milli='pico'
