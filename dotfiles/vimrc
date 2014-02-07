@@ -27,9 +27,13 @@ color wombat256mod
 " Type kj to get out of insert mode!
 inoremap kj <Esc>
 
-" control j,l will switch to left and right pane
+" control jikl (akin to wasd) will switch panes
 nnoremap <C-j> <C-w>h
 nnoremap <C-l> <C-w>l
+nnoremap <C-i> <C-w>k
+nnoremap <C-k> <C-w>j
+
+
 
 " NOTE THAT CONTROL + ; doesn't work (google it)
 " move cursor when insert mode
@@ -97,7 +101,7 @@ set incsearch           " search as characters are entered
 filetype indent on      " load FileType-specific indent files
 
 " ENABLE USE OF MOUSE (SCROLL, SELECT, CURSOR PLACEMENT)
-set mouse=a
+" set mouse=a
 
 noremap l j
 noremap k k
