@@ -34,6 +34,12 @@ nnoremap <C-i> <C-w>k
 nnoremap <C-k> <C-w>j
 
 
+let mapleader = ","
+map <Leader>vi :tabe ~/.vimrc<CR>
+
+
+
+
 
 " NOTE THAT CONTROL + ; doesn't work (google it)
 " move cursor when insert mode
