@@ -10,8 +10,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 if [ "$TERM" != "dumb" ]; then
-	dircolors -b 2>/dev/null
-    echo $?	
+	dircolors -b 1>/dev/null 2>/dev/null
 	if (( $? == 0 )); then
 		alias ls='ls --color=auto'
 	else
