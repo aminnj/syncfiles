@@ -18,13 +18,9 @@ if [ "$TERM" != "dumb" ]; then
 	fi
 fi
 
-#    if [ "`hostname`" == "Io" ]; then
-#        alias ls='ls -G'
-#        eval "`dircolors -b`"
-#        alias ls='ls --color=auto'
-#    else
-#    fi
-#fi
+
+# set window title to user@host:pwd
+echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 
 TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
