@@ -10,8 +10,8 @@ if [ -f /etc/bashrc ]; then
 fi
 
 if [ "$TERM" != "dumb" ]; then
-	dircolors -b 1>/dev/null
-	
+	dircolors -b 2>/dev/null
+    echo $?	
 	if (( $? == 0 )); then
 		alias ls='ls --color=auto'
 	else
@@ -44,7 +44,6 @@ export PS1=$PS
 
 export EDITOR=vim
 
-theOS=`uname -o`
 # User specific aliases and functions
 alias ll='ls -l'
 alias me11='ssh cscme11@emume11'
@@ -87,11 +86,10 @@ alias centi='pico'
 alias micro='pico'
 
 
-if [ "$(uname -o)" = "Cygwin" ]; then
+if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     alias python='/cygdrive/c/Python27/python.exe -i'
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 fi
-
 
 function ggg() {
     name=$1
@@ -104,7 +102,7 @@ function ggg() {
     [[ $cexts =~ " ${extension} " ]] && compiler=gcc
     echo "Since your extension was ${extension}, we'll use ${compiler} to compile"
     echo "Issuing command: $compiler $name -o ${base}.exe && ./${base}.exe"
-    `$compiler $name -o ${base}.exe && ./${base}.exe`
+    $compiler $name -o ${base}.exe && ./${base}.exe
 }
 export -f ggg
 
