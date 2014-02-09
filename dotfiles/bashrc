@@ -48,7 +48,7 @@ alias me11nick='ssh emume11'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'
 alias me11env='cd /home/cscme11/'
 #alias less='less -N'
-alias less='view -c "nnoremap q :q<CR>" '
+#alias less='view -c "nnoremap q :q<CR>" '
 alias grep='grep -rn --color=auto'
 alias cls='clear'
 alias back='cd $OLDPWD'
@@ -85,6 +85,8 @@ if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     alias python='/cygdrive/c/Python27/python.exe -i'
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 fi
+
+alias python0=`which python`
 
 function ggg() {
     name=$1
@@ -221,3 +223,7 @@ function screens {
 
     done
 }
+
+# run date practice utility
+python0 ~/syncfiles/pyfiles/dates.py
+
