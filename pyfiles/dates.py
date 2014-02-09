@@ -5,7 +5,6 @@ isCorrect = False
 
 while(not isCorrect):
     t1 = time.time()
-    os.system("cls")
     thisYear = random.randint(0, 2)
     # 33% chance that it'll be from this year (2014)
     if(thisYear == 2): randDay = random.randint(735234,735234+364) # 2014
@@ -66,4 +65,4 @@ while(not isCorrect):
         print "Wrong. Correct answer:", d.strftime("%A")
         time.sleep(1)
     print "\n"
-    
+
