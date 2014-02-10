@@ -225,5 +225,5 @@ function screens {
 }
 
 # run date practice utility
-python0 ~/syncfiles/pyfiles/dates.py
+python0 ~/syncfiles/pyfiles/major.py
 

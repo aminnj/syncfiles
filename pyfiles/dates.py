@@ -6,9 +6,11 @@ isCorrect = False
 while(not isCorrect):
     t1 = time.time()
     thisYear = random.randint(0, 2)
+    
+    onlyThisYear = False 
     # 33% chance that it'll be from this year (2014)
-    if(thisYear == 2): randDay = random.randint(735234,735234+364) # 2014
-    else: randDay = random.randint(694000,760000) # 1900-2081
+    if(thisYear == 2 or onlyThisYear): randDay = random.randint(735234,735234+364) # 2014
+    else: randDay = random.randint(694000,735234+364) # 1900-2014
     
 
     d = date.fromordinal(randDay)
