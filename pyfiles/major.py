@@ -20,8 +20,8 @@ def yellow(txt): return YELLOW + str(txt) + ENDC
 def blue(txt): return BLUE + str(txt) + ENDC
 def red(txt): return WHITEONRED + str(txt) + ENDC
 
-
-lines = [line.strip() for line in open("majorsystem2.txt","r").readlines()]
+filename = "%s/%s" % (os.getenv("HOME"), "syncfiles/pyfiles/majorsystem2.txt"
+lines = [line.strip() for line in open(filename,"r").readlines()]
 
 isCorrect = False
 
