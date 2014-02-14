@@ -84,6 +84,7 @@ alias micro='pico'
 if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     alias python='/cygdrive/c/Python27/python.exe -i'
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
+    function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 fi
 
 alias python0=`which python`
