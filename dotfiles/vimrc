@@ -153,6 +153,11 @@ map <F5> :setlocal spell! spelllang=en_us<CR>
 
 " nnoremap <Enter> o<Esc>
 
+"Sets F2 to enable and disable line numeration
+nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
+nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
+nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
+
 
 " F6 executes gnuplot, python, C, C++ code by compiling and running
 au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
@@ -181,14 +186,6 @@ function! WhiteSpace()
 endfunction
 
 
-""This autocmd changes the window-local current directory to be the same as the
-""directory of the current file. It fails silently to prevent error messages
-""when you edit files via ftp or new files. It works better in some cases
-""because the autocmd is not nested, and will therefore not fire when switching
-""buffers via another autocmd. It will also work in older versions of Vim or
-""versions compiled without the 'autochdir' option. Note, however, that there
-""is no easy way to test for this autocmd in a script like there is for the
-""'autochdir' option.
 set autochdir
 
 "escape to clear highlighting
@@ -198,9 +195,6 @@ set shiftwidth=4
 set softtabstop=4
 set smarttab
 set expandtab
-
-nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
-nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 
 "Set title of window to file name
 set title
@@ -242,8 +236,6 @@ nmap <C-A-v> "+p
 imap <C-A-v> <C-R>+
 vmap <C-A-c> "+y
 
-"Sets F2 to enable and disable line numeration
-nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 
 set backup
 set backupdir=~/.vim/
