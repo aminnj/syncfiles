@@ -36,10 +36,21 @@ nnoremap <C-k> <C-w>j
 
 let mapleader = ","
 map <Leader>vi :tabe ~/.vimrc<CR>
+map <leader>tn :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tk :tabclose<cr>
+" takes an argument that is the number of the tab you want to go to 
+" ex: ,tm3[ENTER] goes to tab 3. starts with tab 1
+map <leader>tm :tabnext 
+map <leader>w :w!<cr>
+
+set shortmess=atI
+set backspace=indent,eol,start
+set hidden
 
 
-
-
+" my preferred date format as an abbreviation
+iab xdate <c-r>=strftime("%I:%M%p\ \%a\ %b\ %d,\ %Y")<cr>
 
 " NOTE THAT CONTROL + ; doesn't work (google it)
 " move cursor when insert mode
@@ -167,7 +178,7 @@ autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '
 " put printf template into code if using c++ and type PF in insert mode
 autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
 
-noremap <Leader>wn :call WhiteSpace()<CR>
+" noremap <Leader>wn :call WhiteSpace()<CR>
 
 match MaybeExtraWhitespace /\s\+\%#\@<!$/
 au InsertEnter * match MaybeExtraWhitespace /\s\+\%#\@<!$/
@@ -237,8 +248,11 @@ imap <C-A-v> <C-R>+
 vmap <C-A-c> "+y
 
 
-set backup
-set backupdir=~/.vim/
+"set backup
+"set backupdir=~/.vim/
+
+set noswapfile
+
 
 :hi MatchParen cterm=none ctermbg=black ctermfg=white
 "set cryptmethod=blowfish
