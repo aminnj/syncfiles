@@ -120,9 +120,10 @@ filetype indent on      " load FileType-specific indent files
 " ENABLE USE OF MOUSE (SCROLL, SELECT, CURSOR PLACEMENT)
 " set mouse=a
 
+" shift hjkl over to jkl; and switch up and down
 noremap l j
 noremap k k
-noremap ; l " shift hjkl over to jkl; and switch up and down
+noremap ; l 
 noremap j h
 
 " map space to : to speed things up
