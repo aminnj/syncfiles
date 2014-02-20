@@ -33,6 +33,12 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-i> <C-w>k
 nnoremap <C-k> <C-w>j
 
+if exists("+relativenumber")
+    set rnu
+    autocmd InsertEnter * :set number
+    autocmd InsertLeave * :set relativenumber
+endif
+
 
 let mapleader = ","
 map <Leader>vi :tabe ~/.vimrc<CR>
