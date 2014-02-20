@@ -121,10 +121,10 @@ filetype indent on      " load FileType-specific indent files
 " set mouse=a
 
 " shift hjkl over to jkl; and switch up and down
-noremap l j
-noremap k k
-noremap ; l 
-noremap j h
+noremap l <down>
+noremap k <up>
+noremap ; <right>
+noremap j <left>
 
 " map space to : to speed things up
 nnoremap <Space> :
