@@ -5,7 +5,7 @@
 > rm ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
 > rm ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
 
-# pathogen (ttps://github.com/tpope/vim-pathogen)
+# pathogen (https://github.com/tpope/vim-pathogen)
 > mkdir -p ~/.vim/autoload ~/.vim/bundle
 > curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
 
