@@ -89,7 +89,7 @@ set ruler
 
 " install pathogen: https://github.com/tpope/vim-pathogen
 " install NERDtree: https://github.com/scrooloose/nerdtree
-
+" install syntastic: https://github.com/scrooloose/syntastic
 
 execute pathogen#infect()
 
@@ -185,6 +185,10 @@ map <F5> :setlocal spell! spelllang=en_us<CR>
 nnoremap <F2> :set nonumber!<CR>:set nornu<CR>:set foldcolumn=0<CR>
 nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
 nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
+
+" F12 toggles formatting so you can paste without
+" screwing up formatting of contents.
+set pastetoggle=<F12>
 
 au BufNewFile,BufRead *.p setlocal ft=gnuplot
 " F6 executes gnuplot, python, C, C++ code by compiling and running

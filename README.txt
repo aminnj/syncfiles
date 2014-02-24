@@ -13,6 +13,10 @@
 > cd ~/.vim/bundle
 > git clone https://github.com/scrooloose/nerdtree.git
 
+# syntastic (https://github.com/scrooloose/syntastic)
+> cd ~/.vim/bundle
+> git clone https://github.com/scrooloose/syntastic.git
+
 # Toggle plugin
 > mkdir -p ~/.vim/plugin
 > wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
@@ -27,6 +31,7 @@ mkdir -p ~/.vim/autoload ~/.vim/bundle \
 curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim \
 cd ~/.vim/bundle \
 git clone https://github.com/scrooloose/nerdtree.git \
+git clone https://github.com/scrooloose/syntastic.git \
 mkdir -p ~/.vim/plugin \
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim \
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
