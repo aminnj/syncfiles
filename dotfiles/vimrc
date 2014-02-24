@@ -23,7 +23,8 @@ set nu!
 " ! mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
 set t_Co=256
 color wombat256mod
-      
+
+
 " Type kj to get out of insert mode!
 inoremap kj <Esc>
 
@@ -45,10 +46,15 @@ map <Leader>vi :tabe ~/.vimrc<CR>
 map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tk :tabclose<cr>
-" takes an argument that is the number of the tab you want to go to 
-" ex: ,tm3[ENTER] goes to tab 3. starts with tab 1
-map <leader>tm :tabnext 
-map <leader>w :w!<cr>
+map <leader>tm :tabnext<cr>
+map <leader>ww :w!<cr>
+map <leader>qq :wq<cr>
+
+
+" o and O will put newlines below and above cursor
+nnoremap o m`o<esc>``
+nnoremap O m`O<esc>``
+
 
 set shortmess=atI
 set backspace=indent,eol,start
@@ -124,7 +130,8 @@ set incsearch           " search as characters are entered
 filetype indent on      " load FileType-specific indent files
 
 " ENABLE USE OF MOUSE (SCROLL, SELECT, CURSOR PLACEMENT)
-" set mouse=a
+" in visual mode only (=a for all)
+set mouse=v
 
 " shift hjkl over to jkl; and switch up and down
 noremap l <down>
@@ -162,9 +169,12 @@ set statusline+=\ %y      "filetype
 set statusline+=\ \[%{strftime('%I:%M%p\ \%a\ %b\ %d,\ %Y')}\]
 set statusline+=\ %{getcwd()}
 set statusline+=%=      "left/right separator
+" set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight
 set statusline+=%c,     "cursor column
 set statusline+=%l/%L   "cursor line/total lines
 set statusline+=\ %P    "percent through file
+" set statusline+=%=%-14.(%l,%c%V%)\ %p%%
+
 
 " spell
 map <F5> :setlocal spell! spelllang=en_us<CR>
@@ -172,11 +182,11 @@ map <F5> :setlocal spell! spelllang=en_us<CR>
 " nnoremap <Enter> o<Esc>
 
 "Sets F2 to enable and disable line numeration
-nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
+nnoremap <F2> :set nonumber!<CR>:set nornu<CR>:set foldcolumn=0<CR>
 nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
 nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 
-
+au BufNewFile,BufRead *.p setlocal ft=gnuplot
 " F6 executes gnuplot, python, C, C++ code by compiling and running
 au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
 autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>

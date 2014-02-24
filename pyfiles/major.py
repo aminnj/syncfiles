@@ -30,6 +30,21 @@ for line in lines:
     number, words = line.split("|")
     wordnums.append([int(number),words.split(",")]) 
 
+tips = """
+0 = S, Z, and soft c (as in city)
+1 = T, D, and th (as in the)
+2 = N
+3 = M
+4 = R
+5 = L
+6 = J, the sh, ch, dg, and soft g (as in age) sounds
+7 = K, Q, the hard c (as in can), the hard g (as in go) sounds
+8 = F and V
+9 = P and B
+"""
+
+print tips
+
 while(not isCorrect):
     t1 = time.time()
 
@@ -37,20 +52,7 @@ while(not isCorrect):
     num = pair[0]
     word = random.choice(pair[1])
 
-    tips = """
-    0 = S, Z, and soft c (as in city)
-    1 = T, D, and th (as in the)
-    2 = N
-    3 = M
-    4 = R
-    5 = L
-    6 = J, the sh, ch, dg, and soft g (as in age) sounds
-    7 = K, Q, the hard c (as in can), the hard g (as in go) sounds
-    8 = F and V
-    9 = P and B
-    """
 
-    print tips
     inputDay = raw_input("Enter number for '%s': " % (green(word)) )
     if(inputDay == str(num)):
         isCorrect = True
