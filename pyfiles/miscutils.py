@@ -217,6 +217,20 @@ def avg(ls):
     Returns the average of the input list.
     """
     return float(sum(ls))/len(ls)
+
+def sigma(ls):
+    """
+    sigma(list)
+    
+    Returns the standard deviation of the input list.
+    """
+    length = len(ls)
+    if(length <= 1):
+        print "Can't compute sigma with len(list) <= 1!"
+        return -1
+    mean = 1.0*sum(ls)/len(ls)
+    sigma = math.sqrt(1.0*sum([(mean-v)*(mean-v) for v in ls])/(length-1))
+    return sigma
     
 def sleep(t, verbose=False):
     """
@@ -441,6 +455,7 @@ if __name__ == '__main__':
     removeDuplicates - returns de-duplicated list
     mathematicaFormat - turns list into mathematica list
     avg - returns mean of list
+    sigma - returns unbiased standard deviation of list
     sleep - sleep for specified time in seconds
     sleepForMins - sleep with progress bar
     ascii - strips non-ascii characters from string
