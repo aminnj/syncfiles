@@ -1,5 +1,8 @@
 # [INSTALL]
 
+## get Wombat color scheme
+> mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
+
 ## soft link rc files to git files
 > rm ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
 > rm ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
@@ -23,7 +26,7 @@
 > cp toggle.vim ~/.vim/plugin && rm toggle.vim
 
 # [COPY&PASTE]
-
+mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400 \ 
 rm ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc \
 rm ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc \
 rm ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc \
