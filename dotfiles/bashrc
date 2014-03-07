@@ -27,10 +27,10 @@ if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
 fi
 # PS+=" > "
-good=" \[\033[01;32m\]> "
-bad=" \[\033[01;31m\]> "
-stat="if [ \$? = 0 ]; then echo \"${good}\"; else echo \"${bad}\"; fi"
-PS+="\`${stat}\`"
+PS+=" \[\033[01;32m\]> "
+# bad=" \[\033[01;31m\]> "
+# stat="if [ \$? = 0 ]; then echo \"${good}\"; else echo \"${bad}\"; fi"
+# PS+="\`${stat}\`"
 PS+="\[\e[0m\]"
 export PS1=$PS
 
@@ -87,7 +87,7 @@ if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 
     # run date practice utility
-    python0 ~/syncfiles/pyfiles/major.py
+    # python0 ~/syncfiles/pyfiles/major.py
 
 fi
 

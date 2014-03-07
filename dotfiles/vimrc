@@ -16,8 +16,9 @@ set t_Co=256
 color wombat256mod
 
 
-" Type kj to get out of insert mode!
+" Type kj to get out of insert or visual mode!
 inoremap kj <Esc>
+vnoremap kj <Esc>
 
 " control jikl (akin to wasd) will switch panes
 nnoremap <C-j> <C-w>h
@@ -47,6 +48,9 @@ nnoremap <leader>h# yyPVr#jyypVr#
 
 "format paragraph to 80 chars
 nnoremap <leader>pf gqap
+
+" leader " to quote word under cursor
+nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
 
 " o and O will put newlines below and above cursor
@@ -174,29 +178,35 @@ set pastetoggle=<F12>
 
 " this is why I made a group for autocommands:
 " http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
-augroup Group1
-    autocmd!
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " close vim if only nerdtree is left
 
-    au BufNewFile,BufRead *.{p,gp} setlocal ft=gnuplot
-    " F6 executes gnuplot, python, C, C++ code by compiling and running
-    au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
-    autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
-    autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-    autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-    " put printf template into code if using c++ and type PF in insert mode
-    autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
+if has("autocmd")
+    augroup Group1
+        autocmd!
+        filetype plugin indent on
+        autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " close vim if only nerdtree is left
 
-    autocmd BufWritePost .vimrc source %
+        au BufNewFile,BufRead *.{p,gp} setlocal ft=gnuplot
+        " F6 executes gnuplot, python, C, C++ code by compiling and running
+        au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
+        autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
+        autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+        autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+        " put printf template into code if using c++ and type PF in insert mode
+        autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
+
+        autocmd BufWritePost .vimrc source %
 
 
-    if exists("+relativenumber")
-        set rnu | set nu
-        au InsertEnter * :set nornu | set number
-        au InsertLeave * :set relativenumber
-    endif
+        if exists("+relativenumber")
+            set rnu | set nu
+            au InsertEnter * :set nornu | set number
+            au InsertLeave * :set relativenumber
+        endif
 
-augroup END
+    augroup END
+else
+    set autoindent
+endif
 
 set autochdir
 
@@ -211,11 +221,6 @@ set expandtab
 "Set title of window to file name
 set title
 
-if has("autocmd")
-    filetype plugin indent on
-else
-    set autoindent
-endif
 
 set showmatch
 set matchtime=3

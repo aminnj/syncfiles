@@ -4,9 +4,9 @@ import math, sys
 
 def statistics(ls):
     length = len(ls)
-    mean = 1.0*sum(ls)/length
+    totsum = sum(ls)
+    mean = 1.0*totsum/length
     sigma = math.sqrt(1.0*sum([(mean-v)*(mean-v) for v in ls])/(length-1))
-    totsum = mean*length
     maximum, minimum = max(ls), min(ls)
     return (length, mean, sigma, totsum, minimum, maximum)
 
