@@ -52,11 +52,15 @@ nnoremap <leader>pf gqap
 " leader " to quote word under cursor
 nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
+" (C, cpp debug) turns
+" 1 2 3 
+" into
+" std::cout << " 1 " << 1 << " 2 " << 2 << " 3 " << 3 << std::endl;
+nnoremap <leader>cd :s/\(\w\+\)/<< " \1: " << \1/g<cr> :s/^/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr>
 
 " o and O will put newlines below and above cursor
 nnoremap o m`o<esc>``
 nnoremap O m`O<esc>``
-
 
 set shortmess=atI
 set backspace=indent,eol,start
