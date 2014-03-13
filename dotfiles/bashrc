@@ -20,6 +20,10 @@ fi
 # set window title to user@host:pwd
 echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 
+# C0='\[\033[0m\]'  # Reset
+# C1='\[\033[30m\]' # Black
+
+
 TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
 PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[02;34m\][\u@\h]\[\e[0m\] \w"
@@ -27,12 +31,15 @@ if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
 fi
 # PS+=" > "
+# PS+=" \[\033[01;32m\]$C1▶$C0 "
 PS+=" \[\033[01;32m\]> "
 # bad=" \[\033[01;31m\]> "
 # stat="if [ \$? = 0 ]; then echo \"${good}\"; else echo \"${bad}\"; fi"
 # PS+="\`${stat}\`"
 PS+="\[\e[0m\]"
 export PS1=$PS
+
+
 
 
 export EDITOR=vim
@@ -75,17 +82,22 @@ alias femto='pico'
 alias milli='pico'
 alias centi='pico'
 alias micro='pico'
-alias python0=`which python`
 alias stats='~/syncfiles/pyfiles/stats.py'
 
 export HISTFILESIZE=500000
 export HISTSIZE=100000
+
+#PYTHONPATH="${PYTHONPATH}:`echo $HOME`/syncfiles/pydir"
+#export PYTHONPATH
+#PATH="${PATH}:`echo $HOME`/syncfiles/pydir"
+#export PATH
 
 if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     alias python='/cygdrive/c/Python27/python.exe -i'
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
     function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 
+    alias python0=`which python`
     # run date practice utility
     # python0 ~/syncfiles/pyfiles/major.py
 
@@ -106,33 +118,33 @@ function ggg() {
 }
 export -f ggg
 
-Paths=()
-
-function p {
-
-    if [ -z "$1" ]; then
-        Paths=( "${Paths[@]}" $(readlink -f .) )
-        echo "Added ${#Paths[@]} => $(readlink -f .)"
-    fi
-
-    if [ -n "$1" ]; then
-
-        if [ "$1" == "list" ] || [ "$1" == "ls" ] || [ "$1" == "all" ]; then
-            aLen=${#Paths[@]}
-            for (( i=0; i<${aLen}; i++ ));
-            do
-                echo "$i => ${Paths[$i]}"
-            done
-
-        else
-
-            echo "cd: $1 => ${Paths[$1]}"
-            cd ${Paths[$1]} 
-        fi
-
-    fi
-
-}
+# Paths=()
+# 
+# function p {
+# 
+#     if [ -z "$1" ]; then
+#         Paths=( "${Paths[@]}" $(readlink -f .) )
+#         echo "Added ${#Paths[@]} => $(readlink -f .)"
+#     fi
+# 
+#     if [ -n "$1" ]; then
+# 
+#         if [ "$1" == "list" ] || [ "$1" == "ls" ] || [ "$1" == "all" ]; then
+#             aLen=${#Paths[@]}
+#             for (( i=0; i<${aLen}; i++ ));
+#             do
+#                 echo "$i => ${Paths[$i]}"
+#             done
+# 
+#         else
+# 
+#             echo "cd: $1 => ${Paths[$1]}"
+#             cd ${Paths[$1]} 
+#         fi
+# 
+#     fi
+# 
+# }
 
 usingCrab=false
 function crabenv {

@@ -1,4 +1,3 @@
-
 "Formatting
 syntax on
 if &term=~'linux' 
@@ -26,7 +25,10 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-i> <C-w>k
 nnoremap <C-k> <C-w>j
 
+" Use Esc to hide search highlights
+nnoremap <Esc> :nohl<CR>
 
+" leader stuff {{{
 let mapleader = ","
 map <Leader>vi :tabe ~/.vimrc<CR>
 map <leader>tn :tabnew<cr>
@@ -52,15 +54,19 @@ nnoremap <leader>pf gqap
 " leader " to quote word under cursor
 nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
-" (C, cpp debug) turns
+" (C, cpp printout) turns
 " 1 2 3 
 " into
 " std::cout << " 1 " << 1 << " 2 " << 2 << " 3 " << 3 << std::endl;
-nnoremap <leader>cd :s/\(\w\+\)/<< " \1: " << \1/g<cr> :s/^/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr>
+nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr> ==
+
+nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
+
+" }}}
 
 " o and O will put newlines below and above cursor
-nnoremap o m`o<esc>``
-nnoremap O m`O<esc>``
+" nnoremap o m`o<esc>``
+" nnoremap O m`O<esc>``
 
 set shortmess=atI
 set backspace=indent,eol,start
@@ -129,6 +135,9 @@ noremap k <up>
 noremap ; <right>
 noremap j <left>
 
+" yank to end of line
+nnoremap Y y$
+
 " map space to : to speed things up
 nnoremap <Space> :
 
@@ -143,6 +152,7 @@ vnoremap k :m-2<CR>gv=gv
 "remap VIM 0 to first non-blank character
 map 0 ^
 
+" statusline {{{
 " show the status line always
 set laststatus=2
 
@@ -164,7 +174,7 @@ set statusline+=%c,     "cursor column
 set statusline+=%l/%L   "cursor line/total lines
 set statusline+=\ %P    "percent through file
 " set statusline+=%=%-14.(%l,%c%V%)\ %p%%
-
+" }}}
 
 " spell
 map <F5> :setlocal spell! spelllang=en_us<CR>
@@ -180,6 +190,7 @@ nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 " screwing up formatting of contents.
 set pastetoggle=<F12>
 
+" autocommands {{{
 " this is why I made a group for autocommands:
 " http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
 
@@ -211,6 +222,20 @@ if has("autocmd")
 else
     set autoindent
 endif
+
+" }}}
+
+
+function! g:ToggleColorColumn()
+  if &colorcolumn != ''
+    setlocal colorcolumn&
+  else
+    setlocal colorcolumn=80
+  endif
+endfunction
+ 
+
+
 
 set autochdir
 
