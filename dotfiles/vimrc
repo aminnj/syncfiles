@@ -68,6 +68,9 @@ nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
 " nnoremap o m`o<esc>``
 " nnoremap O m`O<esc>``
 
+" stop dumb window from opening from typo
+map q: :q
+
 set shortmess=atI
 set backspace=indent,eol,start
 set hidden

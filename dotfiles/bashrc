@@ -97,6 +97,9 @@ if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
     function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 
+    # start Xwin first
+    export DISPLAY=:0.0
+
     alias python0=`which python`
     # run date practice utility
     # python0 ~/syncfiles/pyfiles/major.py
