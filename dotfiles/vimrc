@@ -75,6 +75,11 @@ set shortmess=atI
 set backspace=indent,eol,start
 set hidden
 
+inoremap { {}<Left>
+inoremap {<CR> {<CR>}<Esc>==O
+inoremap {{ {
+inoremap {} {}
+
 
 " my preferred date format as an abbreviation
 iab xdate <c-r>=strftime("%I:%M%p\ \%a\ %b\ %d,\ %Y")<cr>
@@ -142,7 +147,7 @@ noremap j <left>
 nnoremap Y y$
 
 " map space to : to speed things up
-nnoremap <Space> :
+" nnoremap <Space> :
 
 " Alt+l,k to drag lines up and down through putty
 nnoremap l :m+<CR>==
@@ -192,6 +197,27 @@ nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 " F12 toggles formatting so you can paste without
 " screwing up formatting of contents.
 set pastetoggle=<F12>
+
+function ToggleFold()
+    if foldlevel('.') == 0
+        let l:x = line('.')
+        let l:c = virtcol('.')
+        normal k$
+        call search("{")
+        if l:x == line('.')
+            normal %
+            let l:y = line('.')
+            execute l:x . "," . l:y . " fold"
+        endif
+        execute l:x
+        execute "normal " . l:c . "|"
+    else
+        normal zd
+    endif
+endfunction
+ 
+set foldmethod=manual
+nmap <space> :call ToggleFold()<CR>
 
 " autocommands {{{
 " this is why I made a group for autocommands:
