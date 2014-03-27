@@ -15,15 +15,15 @@ set t_Co=256
 color wombat256mod
 
 
-" Type kj to get out of insert or visual mode!
 inoremap kj <Esc>
+" Type kj to get out of insert or visual mode!
 vnoremap kj <Esc>
 
 " control jikl (akin to wasd) will switch panes
 nnoremap <C-j> <C-w>h
+nnoremap <C-k> <C-w>j
 nnoremap <C-l> <C-w>l
 nnoremap <C-i> <C-w>k
-nnoremap <C-k> <C-w>j
 
 " Use Esc to hide search highlights
 nnoremap <Esc> :nohl<CR>
@@ -39,7 +39,9 @@ map <leader>ww :w!<cr>
 map <leader>qq :wq<cr>
 
 " indent file
-map <Leader>i mmgg=G`m
+" map <Leader>i mmgg=G`m
+map <Leader>i mkHmlgg=G`lzt`k
+" map <Leader>i let win = winsaveview()<cr>mmgg=G`m :call winrestview(win)
 
 " ==========================================
 " sets off header with =, /, or #, like this
@@ -143,6 +145,10 @@ noremap k <up>
 noremap ; <right>
 noremap j <left>
 
+noremap K 5<up>
+noremap L 5<down>
+
+
 " yank to end of line
 nnoremap Y y$
 
@@ -198,26 +204,26 @@ nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 " screwing up formatting of contents.
 set pastetoggle=<F12>
 
-function ToggleFold()
-    if foldlevel('.') == 0
-        let l:x = line('.')
-        let l:c = virtcol('.')
-        normal k$
-        call search("{")
-        if l:x == line('.')
-            normal %
-            let l:y = line('.')
-            execute l:x . "," . l:y . " fold"
-        endif
-        execute l:x
-        execute "normal " . l:c . "|"
-    else
-        normal zd
-    endif
-endfunction
- 
-set foldmethod=manual
-nmap <space> :call ToggleFold()<CR>
+" function ToggleFold()
+"     if foldlevel('.') == 0
+"         let l:x = line('.')
+"         let l:c = virtcol('.')
+"         normal k$
+"         call search("{")
+"         if l:x == line('.')
+"             normal %
+"             let l:y = line('.')
+"             execute l:x . "," . l:y . " fold"
+"         endif
+"         execute l:x
+"         execute "normal " . l:c . "|"
+"     else
+"         normal zd
+"     endif
+" endfunction
+
+" set foldmethod=manual
+" nmap <space> :call ToggleFold()<CR>
 
 " autocommands {{{
 " this is why I made a group for autocommands:
@@ -256,13 +262,13 @@ endif
 
 
 function! g:ToggleColorColumn()
-  if &colorcolumn != ''
-    setlocal colorcolumn&
-  else
-    setlocal colorcolumn=80
-  endif
+    if &colorcolumn != ''
+        setlocal colorcolumn&
+    else
+        setlocal colorcolumn=80
+    endif
 endfunction
- 
+
 
 
 
