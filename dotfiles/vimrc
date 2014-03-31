@@ -57,6 +57,7 @@ nnoremap <leader>pf gqap
 " leader " to quote word under cursor
 nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
+
 " (C, cpp printout) turns
 " 1 2 3 
 " into
@@ -64,7 +65,7 @@ nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr> ==
 
 nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
-
+nnoremap <leader><space> :noh<cr>
 " }}}
 
 " o and O will put newlines below and above cursor
@@ -73,6 +74,8 @@ nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
 
 " stop dumb window from opening from typo
 map q: :q
+
+nnoremap <space> %
 
 set shortmess=atI
 set backspace=indent,eol,start
