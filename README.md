@@ -38,4 +38,5 @@ git clone https://github.com/scrooloose/syntastic.git
 mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
+xrdb -merge ~/syncfiles/dotfiles/.Xresources
 

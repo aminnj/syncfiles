@@ -5,16 +5,16 @@
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+    . /etc/bashrc
 fi
 
 if [ "$TERM" != "dumb" ]; then
-	dircolors -b 1>/dev/null 2>/dev/null
-	if (( $? == 0 )); then
-		alias ls='ls --color=auto'
-	else
-		alias ls='ls -G'
-	fi
+    dircolors -b 1>/dev/null 2>/dev/null
+    if (( $? == 0 )); then
+        alias ls='ls --color=auto'
+    else
+        alias ls='ls -G'
+    fi
 fi
 
 # set window title to user@host:pwd
@@ -24,22 +24,24 @@ echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 # C1='\[\033[30m\]' # Black
 
 
-TERM=xterm-256color
+# TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
-PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[02;34m\][\u@\h]\[\e[0m\] \w"
+PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\] \w"
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
 fi
 # PS+=" > "
 # PS+=" \[\033[01;32m\]$C1▶$C0 "
-PS+=" \[\033[01;32m\]> "
+PS+=" \[\033[00;32m\]> "
 # bad=" \[\033[01;31m\]> "
 # stat="if [ \$? = 0 ]; then echo \"${good}\"; else echo \"${bad}\"; fi"
 # PS+="\`${stat}\`"
 PS+="\[\e[0m\]"
 export PS1=$PS
 
-
+if [ "$TERM" == "xterm-color" ]; then
+    export PS1="\[\033[01;34m\][\t]\[\e[0m\] \[\033[01;35m\][\u@\h]\[\e[0m\] \w \[\033[01;32m\]> \[\e[0m\]"
+fi
 
 
 export EDITOR=vim
@@ -78,6 +80,7 @@ alias brazos='ssh amin.nj@hurr.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
+alias eos='ssh namin@eos.tamu.edu'
 alias tree='tree -C'
 alias femto='pico'
 alias milli='pico'
@@ -108,17 +111,17 @@ if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
 fi
 
 function ggg() {
-    name=$1
-    base=`echo $name | cut -d "." -f 1`
-    extension=`echo $name | cut -d "." -f 2`
-    cppexts=" cpp cc c++ "
-    cexts=" c "
-    compiler=""
-    [[ $cppexts =~ " ${extension} " ]] && compiler=g++
-    [[ $cexts =~ " ${extension} " ]] && compiler=gcc
-    echo "Since your extension was ${extension}, we'll use ${compiler} to compile"
-    echo "Issuing command: $compiler $name -o ${base}.exe && ./${base}.exe"
-    $compiler $name -o ${base}.exe && ./${base}.exe
+name=$1
+base=`echo $name | cut -d "." -f 1`
+extension=`echo $name | cut -d "." -f 2`
+cppexts=" cpp cc c++ "
+cexts=" c "
+compiler=""
+[[ $cppexts =~ " ${extension} " ]] && compiler=g++
+[[ $cexts =~ " ${extension} " ]] && compiler=gcc
+echo "Since your extension was ${extension}, we'll use ${compiler} to compile"
+echo "Issuing command: $compiler $name -o ${base}.exe && ./${base}.exe"
+$compiler $name -o ${base}.exe && ./${base}.exe
 }
 export -f ggg
 
@@ -150,39 +153,45 @@ export -f ggg
 # 
 # }
 
+function xterms {
+xterm -geometry 92x19+15+40 &
+xterm -geometry 92x27+15+475 &
+xterm -geometry 111x49+880+40 &
+}
+
 usingCrab=false
 function crabenv {
-    echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
-    source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
-    echo ">> cmsenv"
-    cmsenv
-    echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
-    source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
-    echo ">> usingCrab is true"
-    usingCrab=true
+echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
+source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
+echo ">> cmsenv"
+cmsenv
+echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
+source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
+echo ">> usingCrab is true"
+usingCrab=true
 
 }
 
 function ccreate {
-    if $usingCrab; then
-        crab -create -cfg $1
-    else
-        echo "Do crabenv first!"
-    fi
+if $usingCrab; then
+    crab -create -cfg $1
+else
+    echo "Do crabenv first!"
+fi
 }
 
 function cands {
 
-    if $usingCrab; then 
+if $usingCrab; then 
 
-        cfg=$1
-        foldername=`cat ${cfg} | grep ui_working_dir | cut -d "=" -f 2 | tr -d " "`
+    cfg=$1
+    foldername=`cat ${cfg} | grep ui_working_dir | cut -d "=" -f 2 | tr -d " "`
 
-        crab -create -cfg ${cfg}
-        crab -submit -c ${foldername}
-    else
-        echo "Do crabenv first!"
-    fi
+    crab -create -cfg ${cfg}
+    crab -submit -c ${foldername}
+else
+    echo "Do crabenv first!"
+fi
 
 
 }
@@ -190,56 +199,56 @@ function cands {
 
 function csub {
 
-    if $usingCrab; then 
+if $usingCrab; then 
 
-        foldername=$1
-        if [[ $1 =~ .*cfg ]]
-        then
-            foldername=`cat $1 | grep ui_working_dir | cut -d "=" -f 2 | tr -d " "`
-        fi
-
-        crab -submit -c ${foldername}
-    else
-        echo "Do crabenv first!"
+    foldername=$1
+    if [[ $1 =~ .*cfg ]]
+    then
+        foldername=`cat $1 | grep ui_working_dir | cut -d "=" -f 2 | tr -d " "`
     fi
+
+    crab -submit -c ${foldername}
+else
+    echo "Do crabenv first!"
+fi
 
 
 }
 
 
 function cstat {
-    if $usingCrab; then
-        crab -status -c $1
-    else
-        echo "Do crabenv first!"
-    fi
+if $usingCrab; then
+    crab -status -c $1
+else
+    echo "Do crabenv first!"
+fi
 }
 
 function cget {
-    if $usingCrab; then
-        crab -getoutput -c $1
-    else
-        echo "Do crabenv first!"
-    fi
+if $usingCrab; then
+    crab -getoutput -c $1
+else
+    echo "Do crabenv first!"
+fi
 }
 
 
 function screens {
-    COUNTER=0
-    for i in `screen -ls | egrep -n ".*Detached.*" | awk '{print $2}' | cut -f1 -d '.'`; do
-        (( COUNTER++ ))
-        echo $COUNTER "=>" $i
-        #echo $1
+COUNTER=0
+for i in `screen -ls | egrep -n ".*Detached.*" | awk '{print $2}' | cut -f1 -d '.'`; do
+    (( COUNTER++ ))
+    echo $COUNTER "=>" $i
+    #echo $1
 
-        if [ $# -gt 0 ]; then
-            #echo $#
-            if [ "$1" -eq "$COUNTER" ]; then
-                #echo this screen
-                screen -r $i
-            fi
-
+    if [ $# -gt 0 ]; then
+        #echo $#
+        if [ "$1" -eq "$COUNTER" ]; then
+            #echo this screen
+            screen -r $i
         fi
 
-    done
+    fi
+
+done
 }
 

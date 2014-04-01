@@ -187,7 +187,7 @@ set statusline+=\ %y      "filetype
 set statusline+=\ \[%{strftime('%I:%M%p\ \%a\ %b\ %d,\ %Y')}\]
 set statusline+=\ %{getcwd()}
 set statusline+=%=      "left/right separator
-" set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight
+set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight
 set statusline+=%c,     "cursor column
 set statusline+=%l/%L   "cursor line/total lines
 set statusline+=\ %P    "percent through file
@@ -245,6 +245,7 @@ if has("autocmd")
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+        autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>
         " put printf template into code if using c++ and type PF in insert mode
         autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
 
@@ -306,7 +307,9 @@ exec 'set viminfo=%,' . &viminfo
 
 set noswapfile
 
-
-:hi MatchParen cterm=none ctermbg=black ctermfg=white
+" ([])
+hi MatchParen cterm=none ctermbg=none ctermfg=yellow
+hi Statement cterm=bold
+" hi Type cterm=bold
 
 
