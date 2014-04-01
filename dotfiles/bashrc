@@ -23,6 +23,7 @@ echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 # C0='\[\033[0m\]'  # Reset
 # C1='\[\033[30m\]' # Black
 
+xrdb -merge ~/.Xresources
 
 # TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
