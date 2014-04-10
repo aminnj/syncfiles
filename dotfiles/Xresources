@@ -9,7 +9,6 @@ xterm*toolBar: false
 xterm*rightScrollBar: false
 xterm*ScrollBar: false
 
-
 ! Every shell is a login shell by default (for inclusion of all necessary environment variables)
 xterm*loginshell: true
 
@@ -21,6 +20,7 @@ xterm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
 
 ! XTerm*Background: linen
 ! XTerm*Foreground: black
+
 
 gnuplot*background:  white
 gnuplot*textColor:   black

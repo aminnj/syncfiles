@@ -23,7 +23,6 @@ echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 # C0='\[\033[0m\]'  # Reset
 # C1='\[\033[30m\]' # Black
 
-xrdb -merge ~/.Xresources
 
 # TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
@@ -57,7 +56,7 @@ alias afswork='cd /afs/cern.ch/work/n/namin/public/'
 alias me11env='cd /home/cscme11/'
 #alias less='less -N'
 #alias less='view -c "nnoremap q :q<CR>" '
-alias grep='grep -rn --color=auto'
+alias grep='grep --color=auto'
 alias cls='clear'
 alias back='cd $OLDPWD'
 alias bk='cd $OLDPWD'
@@ -103,7 +102,8 @@ if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 
     # start Xwin first
-    export DISPLAY=:0.0
+    # export DISPLAY=:0.0
+    # xrdb -merge ~/.Xresources
 
     alias python0=`which python`
     # run date practice utility
@@ -155,6 +155,9 @@ export -f ggg
 # }
 
 function xterms {
+export DISPLAY=:0.0
+xrdb -merge ~/.Xresources
+
 xterm -geometry 92x19+15+40 &
 xterm -geometry 92x27+15+475 &
 xterm -geometry 111x49+880+40 &

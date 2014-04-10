@@ -1,13 +1,7 @@
 "Formatting
 syntax on
-if &term=~'linux' 
-    set background=light
-else
-    "if has("gui_running")
-    set background=light
-    set t_Co=256
-endif
-set nu!
+set background=light
+set t_Co=256
 
 " Color scheme
 " ! mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
@@ -81,11 +75,10 @@ set shortmess=atI
 set backspace=indent,eol,start
 set hidden
 
-inoremap { {}<Left>
+" inoremap { {}<Left>
 inoremap {<CR> {<CR>}<Esc>==O
 inoremap {{ {
-inoremap {} {}
-
+" inoremap {} {}
 
 " my preferred date format as an abbreviation
 iab xdate <c-r>=strftime("%I:%M%p\ \%a\ %b\ %d,\ %Y")<cr>
@@ -127,8 +120,8 @@ set scrolloff=5 " keep at least 5 lines visible on either side of cursor
 set noerrorbells visualbell t_vb=
 
 " Quickly set comma or semicolon at the end of the string
-inoremap ,, <End>,
-inoremap ;; <End>;
+" inoremap ,, <End>,
+" inoremap ;; <End>;
 
 set ttyfast
 
