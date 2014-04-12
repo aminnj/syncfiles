@@ -20,7 +20,7 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-i> <C-w>k
 
 " Use Esc to hide search highlights
-nnoremap <Esc> :nohl<CR>
+" nnoremap <Esc> :nohl<CR>
 
 " leader stuff {{{
 let mapleader = ","
@@ -234,8 +234,9 @@ if has("autocmd")
 
         au BufNewFile,BufRead *.{p,gp} setlocal ft=gnuplot
         " F6 executes gnuplot, python, C, C++ code by compiling and running
-        au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
+        " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
+        autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>

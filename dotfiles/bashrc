@@ -87,6 +87,7 @@ alias milli='pico'
 alias centi='pico'
 alias micro='pico'
 alias stats='~/syncfiles/pyfiles/stats.py'
+alias histo='~/syncfiles/pyfiles/histo.py'
 
 export HISTFILESIZE=500000
 export HISTSIZE=100000
