@@ -12,27 +12,23 @@ def statistics(ls):
 
 if __name__ == "__main__":
     nums = []
-    # if(len(sys.argv) > 2):
-    #     if(sys.argv[-2].strip() == "-h"):
-    #         binwidth=sys.argv[-1]
-    #         #os.system("gnuplot -p -e 'set term dumb; plot \"-\"'")
-    #         os.system("gnuplot -p -e 'set term dumb; binwidth=%s; bin(x,width)=width*floor(x/width); plot \"-\" using (bin($1,binwidth)):(1.0) smooth freq with boxes'" % (binwidth))
+    column = -1
+    if(len(sys.argv) > 1): column = int(sys.argv[-1])
     for num in sys.stdin:
         try:
-            nums.append(float(num.strip()))
-        except:
-            pass
-        else:
-            pass
+            if(column == -1): nums.append(float(num.strip()))
+            else: nums.append(float(num.strip().split()[column-1]))
+        except: pass
+        else: pass
 
     if(len(nums) <= 1):
         print "Can't calculate stuff with %i element!" % len(nums)
     else: 
         print """
         length: {0}
-        mean: {1}
-        sigma: {2}
-        sum: {3}
-        min: {4}
-        max: {5}
+        mean:   {1}
+        sigma:  {2}
+        sum:    {3}
+        min:    {4}
+        max:    {5}
         """.format(*statistics(nums))

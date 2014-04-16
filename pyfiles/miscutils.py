@@ -231,6 +231,24 @@ def sigma(ls):
     mean = 1.0*sum(ls)/len(ls)
     sigma = math.sqrt(1.0*sum([(mean-v)*(mean-v) for v in ls])/(length-1))
     return sigma
+
+def jackknife(ls):
+    """
+    jackknife(list)
+
+    Returns the mean and error for a quantity via the
+    jackknife method.
+    """
+    N = len(ls)
+    if(N <= 1):
+        print "Can't compute quantities with len(list) <= 1!"
+    totsum = sum(ls)
+    avgs = []
+    for e in ls:
+        avgs.append( (totsum-e)/(N-1) )
+    mu = avg(avgs)
+    sig = math.sqrt(1.0*N*sum([(mu-v)**2 for v in ls])/(N-1))
+    return mu, sig
     
 def sleep(t, verbose=False):
     """
