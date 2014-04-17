@@ -26,7 +26,7 @@
 > cp toggle.vim ~/.vim/plugin && rm toggle.vim
 
 # [COPY&PASTE]
-```
+``` bash
 mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
 xrdb -merge ~/.Xresources
 mkdir -p ~/.vim/autoload ~/.vim/bundle
@@ -47,22 +47,52 @@ rm ~/.Xresources && ln -s ~/syncfiles/dotfiles/Xresources ~/.Xresources
 # [PYFILES]
 ## miscutils.py
 Contains various functions that would find common use in python. My hack for allowing importing of miscutils would be:
-
-```
+``` python
 import sys
 sys.path.append('~/syncfiles/pyfiles')
 ```
 
 ## stats.py
 Takes piped input and prints out length, mean, sigma, sum, min, max. It can ignore non-numerical lines, but it only handles 1 column. If specified, the first argument of stats.py provides the column of piped input to use
-```
+``` bash
 seq 1 1 10 | stats
 ```
-
+produces
+```
+        length: 10
+        mean:   5.5
+        sigma:  3.0276503541
+        sum:    55.0
+        min:    1.0
+        max:    10.0
+```
 
 ## histo.py
 Uses the dumb terminal setting in gnuplot to display a text histogram of the piped data. Currently does not allow column specification, so that must be provided before piping. This requires a single argument of the binwidth
-```
+``` bash
 seq 1 5 100 | histo 10
 ```
-
+produces
+```
+    2 **********************************************************************
+      *   *   +   *  +   *   +   "-" using (bin($1,binwidth)):(1.0)+****** *
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *       *      *       *       *      *       *       *      *   *
+  1.8 *+  *       *      *       *       *      *       *       *      *  +*
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *       *      *       *       *      *       *       *      *   *
+  1.6 *+  *       *      *       *       *      *       *       *      *  +*
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *       *      *       *       *      *       *       *      *   *
+  1.4 *+  *       *      *       *       *      *       *       *      *  +*
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *       *      *       *       *      *       *       *      *   *
+  1.2 *+  *       *      *       *       *      *       *       *      *  +*
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *       *      *       *       *      *       *       *      *   *
+      *   *   +   *  +   *   +   *   +   *  +   *   +   *   +   *  +   *   *
+    1 **********************************************************************
+      0       10     20      30      40     50      60      70     80      90
+```
