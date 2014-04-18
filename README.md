@@ -66,6 +66,22 @@ produces
         min:    1.0
         max:    10.0
 ```
+Additionally, if no numbers are detected, but a few text objects are found, it will output a frequency histogram of the text (column specification also works for this).
+``` bash
+ls -l | stats 6
+```
+produces
+```
+Found 36 words, so histo will be made!
+Apr | ********* (9)
+Mar | ******** (8)
+Feb | ***** (5)
+Aug | **** (4)
+May | **** (4)
+Jun | ** (2)
+Jul | ** (2)
+Dec | ** (2)
+```
 
 ## histo.py
 Uses the dumb terminal setting in gnuplot to display a text histogram of the piped data. Currently does not allow column specification, so that must be provided before piping. This requires a single argument of the binwidth
