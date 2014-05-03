@@ -159,9 +159,9 @@ function xterms {
 export DISPLAY=:0.0
 xrdb -merge ~/.Xresources
 
-xterm -geometry 92x19+15+40 &
-xterm -geometry 92x27+15+475 &
-xterm -geometry 111x49+880+40 &
+# xterm -geometry 92x19+15+40 &
+# xterm -geometry 92x27+15+475 &
+# xterm -geometry 111x49+880+40 &
 }
 
 usingCrab=false
@@ -257,3 +257,6 @@ for i in `screen -ls | egrep -n ".*Detached.*" | awk '{print $2}' | cut -f1 -d '
 done
 }
 
+function pdftopng {
+     convert -verbose -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
+}
