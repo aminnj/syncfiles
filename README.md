@@ -87,8 +87,8 @@ Dec | ** (2)
 Uses the dumb terminal setting in gnuplot to display a text histogram of the piped data. Currently does not allow column specification, so that must be provided before piping. This requires a single argument of the binwidth
 
 ``` bash
-# sampling a uniform random number 4 times and summing gives something 
-# close to a gaussian by the central limit theorem!
+# independently sampling a uniform random number 4 times and summing gives something 
+# close to a gaussian by the (beautiful) central limit theorem!
 for i in {1..10000}; do echo $(( (RANDOM+RANDOM+RANDOM+RANDOM)/4 )); done | histo 2000
 ```
 produces
@@ -115,3 +115,11 @@ produces
      0 ++*******************************************************************
        0         5000       10000      15000      20000       25000      30000
 ```
+
+# [TIPS&TRICKS]
+You can pipe into vim with "vim -" which reads from STDIN.
+```
+seq 1 100 | vim -
+```
+
+Cut and paste current command with `<Ctrl-U>` and `<Ctrl-Y>`, respectively. So if you type `ls some/long/dir/path/`, but want to `ls` the current directory, you can do `<Ctrl-U>` to yank `ls some/long/dir/path/`, do `ls`, and then `<Ctrl-Y>` to bring back `ls some/long/dir/path/`.
