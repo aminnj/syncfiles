@@ -38,10 +38,10 @@ mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
 
-rm ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
-rm ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
-rm ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
-rm ~/.Xresources && ln -s ~/syncfiles/dotfiles/Xresources ~/.Xresources
+rm -f ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
+rm -f ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
+rm -f ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
+rm -f ~/.Xresources && ln -s ~/syncfiles/dotfiles/Xresources ~/.Xresources
 ```
 
 # [PYFILES]
@@ -51,11 +51,7 @@ Contains various functions that would find common use in python. My hack for all
 import sys, os
 sys.path.append(os.getenv("HOME") + '~/syncfiles/pyfiles')
 ```
-or we can make an alias to start python with this included
-``` bash
-alias python=$'python -i -c "import sys; sys.path.append(\'$HOME/syncfiles/pyfiles\')"'
-```
-TODO: just append this to path
+or we can modify the pythonpath variable for this (included in bashrc)
 
 ## stats.py
 Takes piped input and prints out length, mean, sigma, sum, min, max. It can ignore non-numerical lines, but it only handles 1 column. If specified, the first argument of stats.py provides the column of piped input to use

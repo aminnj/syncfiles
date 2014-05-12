@@ -86,7 +86,6 @@ alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias eos='ssh namin@eos.tamu.edu'
 alias tree='tree -C'
-#alias femto='pico'
 #alias milli='pico'
 #alias centi='pico'
 #alias micro='pico'
@@ -96,51 +95,21 @@ alias histo='~/syncfiles/pyfiles/histo.py'
 export HISTFILESIZE=500000
 export HISTSIZE=100000
 
-#PYTHONPATH="${PYTHONPATH}:`echo $HOME`/syncfiles/pydir"
-#export PYTHONPATH
-#PATH="${PATH}:`echo $HOME`/syncfiles/pydir"
-#export PATH
+PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
+export PYTHONPATH
 
 if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
-    #alias python='/cygdrive/c/Python27/python.exe -i'
-    alias python=$'python -i -c "import sys; sys.path.append(\'$HOME/syncfiles/pyfiles\')"'
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
     function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
-
-    # start Xwin first
-    # export DISPLAY=:0.0
-    # xrdb -merge ~/.Xresources
-
-    #alias python0=`which python`
-    # run date practice utility
-    # python0 ~/syncfiles/pyfiles/major.py
-
 fi
 
-# function ggg() {
-# name=$1
-# base=`echo $name | cut -d "." -f 1`
-# extension=`echo $name | cut -d "." -f 2`
-# cppexts=" cpp cc c++ "
-# cexts=" c "
-# compiler=""
-# [[ $cppexts =~ " ${extension} " ]] && compiler=g++
-# [[ $cexts =~ " ${extension} " ]] && compiler=gcc
-# echo "Since your extension was ${extension}, we'll use ${compiler} to compile"
-# echo "Issuing command: $compiler $name -o ${base}.exe && ./${base}.exe"
-# $compiler $name -o ${base}.exe && ./${base}.exe
-# }
-# export -f ggg
-
 function xterms {
-# ./cygdrive/c/ProgramData/Microsoft/Windows/Start\ Menu/Programs/Cygwin-X/XWin\ Server.lnk
-# ./cygdrive/d/cygwin/bin/run.exe /usr/bin/bash.exe -l -c
 export DISPLAY=:0.0
 xrdb -merge ~/.Xresources
 
-# xterm -geometry 92x19+15+40 &
-# xterm -geometry 92x27+15+475 &
-# xterm -geometry 111x49+880+40 &
+xterm -geometry 92x19+15+40 &
+xterm -geometry 92x27+15+475 &
+xterm -geometry 111x49+880+40 &
 }
 
 usingCrab=false
