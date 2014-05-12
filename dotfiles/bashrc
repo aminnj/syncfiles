@@ -20,27 +20,16 @@ fi
 # set window title to user@host:pwd
 echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 
-# C0='\[\033[0m\]'  # Reset
-# C1='\[\033[30m\]' # Black
-
-
-# TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
 
 #TODO reinstate below line when puttycyg works
 #PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\] \w"
 PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;33m\][\u@\h]\[\e[0m\] \w"
 
-
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
 fi
-# PS+=" > "
-# PS+=" \[\033[01;32m\]$C1▶$C0 "
 PS+=" \[\033[00;32m\]> "
-# bad=" \[\033[01;31m\]> "
-# stat="if [ \$? = 0 ]; then echo \"${good}\"; else echo \"${bad}\"; fi"
-# PS+="\`${stat}\`"
 PS+="\[\e[0m\]"
 export PS1=$PS
 
@@ -48,34 +37,19 @@ if [ "$TERM" == "xterm-color" ]; then
     export PS1="\[\033[01;34m\][\t]\[\e[0m\] \[\033[01;35m\][\u@\h]\[\e[0m\] \w \[\033[01;32m\]> \[\e[0m\]"
 fi
 
-
 export EDITOR=vim
 
-# User specific aliases and functions
 alias ll='ls -l'
-#alias me11='ssh cscme11@emume11'
-#alias me42='ssh cscme42@emu42fastprod01'
-#alias sx5='ssh cscsx5@emusx501'
-#alias me11nick='ssh emume11'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'
-#alias me11env='cd /home/cscme11/'
-#alias less='less -N'
-#alias less='view -c "nnoremap q :q<CR>" '
 alias grep='grep --color=auto'
-#alias cls='clear'
-#alias back='cd $OLDPWD'
-#alias bk='cd $OLDPWD'
 alias ..='cd ..'
-#alias ...='cd ../..'
 alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
-#alias root='root.exe -l'
 alias ,,='echo "$PWD -> $OLDPWD" && cd $OLDPWD'
 alias cd..='cd ..'
 alias bc='bc -l'
 alias gridtick='grid-proxy-init -debug -verify'
 alias vomstick='voms-proxy-init -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
-#alias e='echo'
 alias vrc='vim ~/.vimrc'
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
 alias lxplus5='ssh namin@lxplus5.cern.ch'
@@ -86,30 +60,20 @@ alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias eos='ssh namin@eos.tamu.edu'
 alias tree='tree -C'
-#alias milli='pico'
-#alias centi='pico'
-#alias micro='pico'
 alias stats='~/syncfiles/pyfiles/stats.py'
 alias histo='~/syncfiles/pyfiles/histo.py'
 
 export HISTFILESIZE=500000
 export HISTSIZE=100000
+export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
 
-PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
-export PYTHONPATH
-
-if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
-    alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
-    function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
-fi
+# if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
+alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
+#fi
 
 function xterms {
 export DISPLAY=:0.0
 xrdb -merge ~/.Xresources
-
-xterm -geometry 92x19+15+40 &
-xterm -geometry 92x27+15+475 &
-xterm -geometry 111x49+880+40 &
 }
 
 usingCrab=false

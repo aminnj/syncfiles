@@ -1,10 +1,7 @@
 "Formatting
 syntax on
 set background=light
-set t_Co=256
 
-" Color scheme
-" ! mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
 set t_Co=256
 color wombat256mod
 
@@ -20,8 +17,6 @@ nnoremap <C-k> <C-w>j
 nnoremap <C-l> <C-w>l
 nnoremap <C-i> <C-w>k
 
-" Use Esc to hide search highlights
-" nnoremap <Esc> :nohl<CR>
 
 " leader stuff {{{
 let mapleader = ","
@@ -34,10 +29,7 @@ map <leader>ww :w!<cr>
 map <leader>qq :wq<cr>
 
 " indent file
-" map <Leader>i mmgg=G`m
 map <Leader>i mkHmlgg=G`lzt`k
-" map <Leader>i let win = winsaveview()<cr>mmgg=G`m :call winrestview(win)
-"
 
 " ==========================================
 " sets off header with =, /, or #, like this
@@ -52,7 +44,6 @@ nnoremap <leader>pf gqap
 " leader " to quote word under cursor
 nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
-
 " (C, cpp printout) turns
 " 1 2 3 
 " into
@@ -64,8 +55,8 @@ nnoremap <leader><space> :noh<cr>
 " }}}
 
 " o and O will put newlines below and above cursor
-" nnoremap o m`o<esc>``
-" nnoremap O m`O<esc>``
+nnoremap o m`o<esc>``
+nnoremap O m`O<esc>``
 
 " stop dumb window from opening from typo
 map q: :q
@@ -84,7 +75,6 @@ inoremap {{ {
 " my preferred date format as an abbreviation
 iab xdate <c-r>=strftime("%I:%M%p\ \%a\ %b\ %d,\ %Y")<cr>
 
-
 " get rid of stupid Thanks for flying Vim title
 set title 
 set titleold="" 
@@ -98,12 +88,6 @@ set wildmenu
 
 " turn ruler on to show position
 set ruler
-
-
-
-" install pathogen: https://github.com/tpope/vim-pathogen
-" install NERDtree: https://github.com/scrooloose/nerdtree
-" install syntastic: https://github.com/scrooloose/syntastic
 
 execute pathogen#infect()
 
@@ -119,12 +103,8 @@ abbr teh the
 set scrolloff=5 " keep at least 5 lines visible on either side of cursor
 
 set noerrorbells visualbell t_vb=
-
-" Quickly set comma or semicolon at the end of the string
-" inoremap ,, <End>,
-" inoremap ;; <End>;
-
 set ttyfast
+
 
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
@@ -201,29 +181,8 @@ nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 " F12 toggles formatting so you can paste without
 " screwing up formatting of contents.
 set pastetoggle=<F12>
-
-" function ToggleFold()
-"     if foldlevel('.') == 0
-"         let l:x = line('.')
-"         let l:c = virtcol('.')
-"         normal k$
-"         call search("{")
-"         if l:x == line('.')
-"             normal %
-"             let l:y = line('.')
-"             execute l:x . "," . l:y . " fold"
-"         endif
-"         execute l:x
-"         execute "normal " . l:c . "|"
-"     else
-"         normal zd
-"     endif
-" endfunction
-
-" set foldmethod=manual
-" nmap <space> :call ToggleFold()<CR>
-
 " autocommands {{{
+"
 " this is why I made a group for autocommands:
 " http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
 
@@ -276,8 +235,6 @@ endfunction
 
 set autochdir
 
-"escape to clear highlighting
-
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -307,6 +264,4 @@ set noswapfile
 " ([])
 hi MatchParen cterm=none ctermbg=none ctermfg=yellow
 hi Statement cterm=bold
-" hi Type cterm=bold
-
 
