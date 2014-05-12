@@ -26,7 +26,12 @@ echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 
 # TERM=xterm-256color
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
-PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\] \w"
+
+#TODO reinstate below line when puttycyg works
+#PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\] \w"
+PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;33m\][\u@\h]\[\e[0m\] \w"
+
+
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
 fi
@@ -97,7 +102,8 @@ export HISTSIZE=100000
 #export PATH
 
 if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
-    alias python='/cygdrive/c/Python27/python.exe -i'
+    #alias python='/cygdrive/c/Python27/python.exe -i'
+    alias python=$'python -i -c "import sys; sys.path.append(\'$HOME/syncfiles/pyfiles\')"'
     alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
     function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 
@@ -105,7 +111,7 @@ if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
     # export DISPLAY=:0.0
     # xrdb -merge ~/.Xresources
 
-    alias python0=`which python`
+    #alias python0=`which python`
     # run date practice utility
     # python0 ~/syncfiles/pyfiles/major.py
 
@@ -127,6 +133,8 @@ fi
 # export -f ggg
 
 function xterms {
+# ./cygdrive/c/ProgramData/Microsoft/Windows/Start\ Menu/Programs/Cygwin-X/XWin\ Server.lnk
+# ./cygdrive/d/cygwin/bin/run.exe /usr/bin/bash.exe -l -c
 export DISPLAY=:0.0
 xrdb -merge ~/.Xresources
 
@@ -230,4 +238,15 @@ done
 
 function pdftopng {
      convert -verbose -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
+}
+
+function alarm {
+if [ $# -lt 2 ]; then
+    echo "usage: alarm <seconds> <msg>"
+    return 1
+fi
+local wait=$1
+shift
+(sleep $wait 2>/dev/null && echo -e "\n!!\n$*\n!!\n" && echo -e "\a" &)
+
 }

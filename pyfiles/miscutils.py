@@ -232,6 +232,18 @@ def sigma(ls):
     sigma = math.sqrt(1.0*sum([(mean-v)*(mean-v) for v in ls])/(length-1))
     return sigma
 
+def dist(a,b):
+    """
+    dist(a,b)
+
+    Returns the 2,3D euclidean distance between two points.
+    """
+    if(len(a) is 2):
+        return math.sqrt( (a[0]-b[0])**2 + (a[1]-b[1])**2 )
+    elif(len(a) is 3):
+        return math.sqrt( (a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2 )
+    else: return -1
+
 def jackknife(ls):
     """
     jackknife(list)
@@ -474,6 +486,8 @@ if __name__ == '__main__':
     mathematicaFormat - turns list into mathematica list
     avg - returns mean of list
     sigma - returns unbiased standard deviation of list
+    dist - returns the 2D/3D distance between two points
+    jackknife - returns mean, error for list via jackknife
     sleep - sleep for specified time in seconds
     sleepForMins - sleep with progress bar
     ascii - strips non-ascii characters from string

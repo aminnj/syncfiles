@@ -48,9 +48,14 @@ rm ~/.Xresources && ln -s ~/syncfiles/dotfiles/Xresources ~/.Xresources
 ## miscutils.py
 Contains various functions that would find common use in python. My hack for allowing importing of miscutils would be:
 ``` python
-import sys
-sys.path.append('~/syncfiles/pyfiles')
+import sys, os
+sys.path.append(os.getenv("HOME") + '~/syncfiles/pyfiles')
 ```
+or we can make an alias to start python with this included
+``` bash
+alias python=$'python -i -c "import sys; sys.path.append(\'$HOME/syncfiles/pyfiles\')"'
+```
+TODO: just append this to path
 
 ## stats.py
 Takes piped input and prints out length, mean, sigma, sum, min, max. It can ignore non-numerical lines, but it only handles 1 column. If specified, the first argument of stats.py provides the column of piped input to use
