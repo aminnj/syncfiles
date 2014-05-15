@@ -69,6 +69,7 @@ export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
 
 # if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
 alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
+function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 #fi
 
 function xterms {

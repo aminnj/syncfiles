@@ -1,4 +1,4 @@
-# [INSTALL]
+# INSTALL
 
 ## get Wombat color scheme
 > mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
@@ -25,7 +25,7 @@
 > wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 > cp toggle.vim ~/.vim/plugin && rm toggle.vim
 
-# [COPY&PASTE]
+# COPY & PASTE
 ``` bash
 mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
 xrdb -merge ~/.Xresources
@@ -44,7 +44,7 @@ rm -f ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
 rm -f ~/.Xresources && ln -s ~/syncfiles/dotfiles/Xresources ~/.Xresources
 ```
 
-# [PYFILES]
+# PYFILES
 ## miscutils.py
 Contains various functions that would find common use in python. My hack for allowing importing of miscutils would be:
 ``` python
@@ -117,7 +117,7 @@ produces
        0         5000       10000      15000      20000       25000      30000
 ```
 
-# [TIPS&TRICKS]
+# TIPS & TRICKS
 You can pipe into vim with "vim -" which reads from STDIN.
 ```
 seq 1 100 | vim -
