@@ -232,6 +232,29 @@ def sigma(ls):
     sigma = math.sqrt(1.0*sum([(mean-v)*(mean-v) for v in ls])/(length-1))
     return sigma
 
+def linfit(xs,ys):
+    """
+    linfit(xs, ys)
+
+    Performs a least-squares linear fit via y=m*x+b.
+    Returns m, b, error_m, error_b.
+    """
+    # http://mathworld.wolfram.com/LeastSquaresFitting.html
+    n = len(xs)
+    sumx, sumy = sum(xs), sum(ys)
+    sumxx, sumyy = sum([x*x for x in xs]), sum([y*y for y in ys])
+    sumxy = sum([xs[i]*ys[i] for i in range(len(xs))])
+    avgx, avgy = 1.0*sumx/n, 1.0*sumy/n
+    ssxx, ssyy = sumxx-n*avgx*avgx, sumyy-n*avgy*avgy
+    ssxy = sumxy-n*avgx*avgy
+    m = 1.0*ssxy/ssxx
+    b = avgy-m*avgx
+    s = math.sqrt((ssyy-m*ssxy)/(n-2))
+    errorm = s/math.sqrt(ssxx)
+    errorb = s/math.sqrt(1.0/n+avgx*avgx/ssxx)
+    return m,b, errorm, errorb
+
+
 def dist(a,b):
     """
     dist(a,b)
@@ -486,6 +509,7 @@ if __name__ == '__main__':
     mathematicaFormat - turns list into mathematica list
     avg - returns mean of list
     sigma - returns unbiased standard deviation of list
+    linfit - returns linear fit parameters and errors
     dist - returns the 2D/3D distance between two points
     jackknife - returns mean, error for list via jackknife
     sleep - sleep for specified time in seconds
@@ -504,3 +528,5 @@ if __name__ == '__main__':
     endTimer - ends timer; prints, returns time between start, end
     listToHistogram - returns frequency dictionary of list
     """
+
+    print linfit([1,2,3,4],[2,3,4,5.1])
