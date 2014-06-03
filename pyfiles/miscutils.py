@@ -527,6 +527,12 @@ if __name__ == '__main__':
     startTimer - starts timer
     endTimer - ends timer; prints, returns time between start, end
     listToHistogram - returns frequency dictionary of list
+
+    NOTE: You can get information about everything with
+        import miscutils
+        help(miscutils)
+        # OR, for example 
+        help(miscutils.jackknife)
+
     """
 
-    print linfit([1,2,3,4],[2,3,4,5.1])

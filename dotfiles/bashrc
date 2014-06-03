@@ -38,6 +38,7 @@ if [ "$TERM" == "xterm-color" ]; then
 fi
 
 export EDITOR=vim
+export DISPLAY=:0.0
 
 alias ll='ls -l'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'

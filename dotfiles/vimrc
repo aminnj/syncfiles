@@ -117,7 +117,7 @@ filetype indent on      " load FileType-specific indent files
 
 " ENABLE USE OF MOUSE (SCROLL, SELECT, CURSOR PLACEMENT)
 " in visual mode only (=a for all)
-set mouse=v
+" set mouse=v
 
 " shift hjkl over to jkl; and switch up and down
 noremap l <down>
@@ -176,7 +176,7 @@ map <F5> :setlocal spell! spelllang=en_us<CR>
 " nnoremap <Enter> o<Esc>
 
 "Sets F2 to enable and disable line numeration
-nnoremap <F2> :set nonumber!<CR>:set nornu<CR>:set foldcolumn=0<CR>
+nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
 nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 
@@ -211,11 +211,11 @@ if has("autocmd")
         autocmd BufWritePost .vimrc source %
 
 
-        if exists("+relativenumber")
-            set rnu | set nu
-            au InsertEnter * :set nornu | set number
-            au InsertLeave * :set relativenumber
-        endif
+        " if exists("+relativenumber")
+        "     set rnu | set nu
+        "     au InsertEnter * :set nornu | set number
+        "     au InsertLeave * :set relativenumber
+        " endif
 
     augroup END
 else
