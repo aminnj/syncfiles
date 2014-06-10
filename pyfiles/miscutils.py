@@ -252,6 +252,7 @@ def linfit(xs,ys):
     s = math.sqrt((ssyy-m*ssxy)/(n-2))
     errorm = s/math.sqrt(ssxx)
     errorb = s/math.sqrt(1.0/n+avgx*avgx/ssxx)
+    if(n == 2): errorm, errorb = 0.0, 0.0
     return m,b, errorm, errorb
 
 
