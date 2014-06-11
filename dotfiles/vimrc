@@ -91,6 +91,7 @@ set wildmenu
 " turn ruler on to show position
 set ruler
 
+set nocp
 execute pathogen#infect()
 
 "NERDTREE stuff
