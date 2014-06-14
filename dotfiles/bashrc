@@ -53,14 +53,20 @@ alias gridtick='grid-proxy-init -debug -verify'
 alias vomstick='voms-proxy-init -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
+
+
+# ssh
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
 alias lxplus5='ssh namin@lxplus5.cern.ch'
 alias lxplus='ssh namin@lxplus.cern.ch'
 alias brazos='ssh amin.nj@hurr.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
+alias ucsd='ssh namin@uaf-4.t2.ucsd.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias eos='ssh namin@eos.tamu.edu'
+
+
 alias tree='tree -C'
 alias stats='~/syncfiles/pyfiles/stats.py'
 alias histo='~/syncfiles/pyfiles/histo.py'
