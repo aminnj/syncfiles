@@ -63,6 +63,7 @@ alias brazos='ssh amin.nj@hurr.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias ucsd='ssh namin@uaf-4.t2.ucsd.edu'
+alias ucsb='ssh namin@neutrino.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias eos='ssh namin@eos.tamu.edu'
 
