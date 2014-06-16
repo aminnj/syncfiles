@@ -7,10 +7,11 @@
 > rm ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
 > rm ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
 > rm ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
+> rm ~/.tmux.conf && ln -s ~/syncfiles/dotfiles/tmuxrc ~/.tmux.conf
 
 ## pathogen (https://github.com/tpope/vim-pathogen)
 > mkdir -p ~/.vim/autoload ~/.vim/bundle
-> curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+> curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 
 ## NERDtree (https://github.com/scrooloose/nerdtree)
 > cd ~/.vim/bundle
@@ -30,7 +31,7 @@
 mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
 xrdb -merge ~/.Xresources
 mkdir -p ~/.vim/autoload ~/.vim/bundle
-curl -Sso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 cd ~/.vim/bundle
 git clone https://github.com/scrooloose/nerdtree.git
 git clone https://github.com/scrooloose/syntastic.git
@@ -42,6 +43,7 @@ rm -f ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
 rm -f ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
 rm -f ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
 rm -f ~/.Xresources && ln -s ~/syncfiles/dotfiles/Xresources ~/.Xresources
+> rm ~/.tmux.conf && ln -s ~/syncfiles/dotfiles/tmuxrc ~/.tmux.conf
 ```
 
 # PYFILES
