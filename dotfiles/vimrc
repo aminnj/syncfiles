@@ -45,6 +45,10 @@ nnoremap <leader>pf gqap
 " leader " to quote word under cursor
 nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
+
+set rtp+=~/powerline/powerline/bindings/vim
+
+
 " (C, cpp printout) turns
 " 1 2 3 
 " into
