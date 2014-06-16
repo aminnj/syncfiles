@@ -1,0 +1,53 @@
+# remember to call as "tmux -2" to fix color in vim
+
+set -g prefix C-a
+unbind C-b
+bind C-a send-prefix
+
+# listen to alerts from all windows
+set -g bell-action any
+
+# Reload key
+bind r source-file ~/.tmux.conf
+
+set -g status-position top
+
+# rebind pane tiling
+bind v split-window -h
+bind h split-window
+
+# quick pane cycling
+unbind ^A
+bind ^A select-pane -t :.+
+
+# screen like window toggling
+bind Tab last-window
+
+set-window-option -g mode-keys vi
+bind j select-pane -L
+bind k select-pane -D
+bind i select-pane -U
+bind l select-pane -R
+
+set -g base-index 1
+
+#------------
+# status bar
+#------------
+set-option -g status-position top
+set -g status-fg colour3
+set -g status-bg colour237
+#set -g status-left-length 50
+set -g status-left-length 50
+set -g clock-mode-colour colour75
+
+set -g mouse-select-pane off
+set -g pane-active-border-fg colour75
+
+
+set -g status-left "#[fg=colour154] #h "
+
+setw -g window-status-current-format "#[bg=colour235]#[fg=brightblue] • #I#[fg=brightblue]#[bg=colour235] [#W] "
+setw -g window-status-format "#[bg=colour235]#[fg=white,bold] #I#[fg=white,bold]#[bg=colour235] [#W] "
+
+set -g status-right '%A %D #[fg=colour154]%l:%M%p'
