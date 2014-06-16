@@ -8,6 +8,11 @@ set t_Co=256
 color wombat256mod
 set nu
 
+" fix backspace in tmux->ssh->vim
+if &term == "screen"
+    set t_kb=
+endif
+
 inoremap kj <Esc>
 " Type kj to get out of insert or visual mode!
 vnoremap kj <Esc>
