@@ -1,3 +1,7 @@
+# miscfiles
+Contains:
+* Patched Droid Sans Mono font with Powerline symbols and smooth box/line drawing characters for use in tmux (used fontforge to do this). Looks much nicer than the officially offered patched version of the font for powerline.
+
 # INSTALL
 
 ## get Wombat color scheme
