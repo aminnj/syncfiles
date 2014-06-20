@@ -8,7 +8,18 @@ def statistics(ls):
     mean = 1.0*totsum/length
     sigma = math.sqrt(1.0*sum([(mean-v)*(mean-v) for v in ls])/(length-1))
     maximum, minimum = max(ls), min(ls)
+    #erroronmean = jackknife(ls)[1]
     return (length, mean, sigma, totsum, minimum, maximum)
+
+def jackknife(ls):
+    N = len(ls)
+    totsum = sum(ls)
+    avgs = []
+    for e in ls:
+        avgs.append( (totsum-e)/(N-1) )
+    mu = float(sum(avgs))/len(avgs)
+    sig = math.sqrt(1.0*N*sum([(mu-v)**2 for v in ls])/(N-1))
+    return mu, sig
 
 def freq(ls):
     dout = {}

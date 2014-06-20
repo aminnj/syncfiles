@@ -62,11 +62,14 @@ nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::
 
 nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
 nnoremap <leader><space> :noh<cr>
+nnoremap <leader>j J " maintain line joining even though J remapped below
+vnoremap <leader>j J
+
 " }}}
 
 " o and O will put newlines below and above cursor
-nnoremap o m`o<esc>``
-nnoremap O m`O<esc>``
+" nnoremap o m`o<esc>``
+" nnoremap O m`O<esc>``
 
 " stop dumb window from opening from typo
 map q: :q
@@ -129,13 +132,13 @@ filetype indent on      " load FileType-specific indent files
 " set mouse=v
 
 " shift hjkl over to jkl; and switch up and down
-noremap l <down>
-noremap k <up>
-noremap ; <right>
-noremap j <left>
-
+"  noremap l <down>
+"  noremap k <up>
+"  noremap ; <right>
+"  noremap j <left>
+"  
 noremap K 5<up>
-noremap L 5<down>
+noremap J 5<down>
 
 
 " yank to end of line
@@ -145,12 +148,12 @@ nnoremap Y y$
 " nnoremap <Space> :
 
 " Alt+l,k to drag lines up and down through putty
-nnoremap l :m+<CR>==
-nnoremap k :m-2<CR>==
-inoremap l <Esc>:m+<CR>==gi
-inoremap k <Esc>:m-2<CR>==gi
-vnoremap l :m'>+<CR>gv=gv
-vnoremap k :m-2<CR>gv=gv
+" nnoremap l :m+<CR>==
+" nnoremap k :m-2<CR>==
+" inoremap l <Esc>:m+<CR>==gi
+" inoremap k <Esc>:m-2<CR>==gi
+" vnoremap l :m'>+<CR>gv=gv
+" vnoremap k :m-2<CR>gv=gv
 
 "remap VIM 0 to first non-blank character
 map 0 ^
