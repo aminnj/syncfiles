@@ -33,12 +33,13 @@ PS+=" \[\033[00;32m\]> "
 PS+="\[\e[0m\]"
 export PS1=$PS
 
-if [ "$TERM" == "xterm-color" ]; then
-    export PS1="\[\033[01;34m\][\t]\[\e[0m\] \[\033[01;35m\][\u@\h]\[\e[0m\] \w \[\033[01;32m\]> \[\e[0m\]"
-fi
+# if [ "$TERM" == "xterm-color" ]; then
+#     export PS1="\[\033[01;34m\][\t]\[\e[0m\] \[\033[01;35m\][\u@\h]\[\e[0m\] \w \[\033[01;32m\]> \[\e[0m\]"
+# fi
 
 export EDITOR=vim
 export DISPLAY=:0.0
+#export PYTHONSTARTUP=~/.pythonrc.py
 
 alias tmux='tmux -2' # fixes colors in vim
 

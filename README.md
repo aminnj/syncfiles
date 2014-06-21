@@ -25,6 +25,14 @@ Contains:
 > cd ~/.vim/bundle
 > git clone https://github.com/scrooloose/syntastic.git
 
+## vim-commentary (https://github.com/tpope/vim-commentary)
+> cd ~/.vim/bundle
+> git clone git://github.com/tpope/vim-commentary.git
+
+## vim-surround (https://github.com/tpope/vim-surround)
+> cd ~/.vim/bundle
+> git clone git://github.com/tpope/vim-surround.git
+
 ## Toggle plugin
 > mkdir -p ~/.vim/plugin
 > wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
@@ -39,6 +47,8 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 cd ~/.vim/bundle
 git clone https://github.com/scrooloose/nerdtree.git
 git clone https://github.com/scrooloose/syntastic.git
+git clone git://github.com/tpope/vim-commentary.git
+git clone git://github.com/tpope/vim-surround.git
 mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
