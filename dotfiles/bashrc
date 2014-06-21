@@ -74,7 +74,6 @@ alias io='ssh amin.nj@io.physics.tamu.edu'
 alias tree='tree -C'
 alias stats='~/syncfiles/pyfiles/stats.py'
 alias histo='~/syncfiles/pyfiles/histo.py'
-alias n='~/syncfiles/pyfiles/nwrapper.py'
 
 export HISTFILESIZE=500000
 export HISTSIZE=100000
