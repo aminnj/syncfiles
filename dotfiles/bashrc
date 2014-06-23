@@ -17,6 +17,8 @@ if [ "$TERM" != "dumb" ]; then
     fi
 fi
 
+
+
 # set window title to user@host:pwd
 echo -ne "\033]0;${USER}@`hostname`:`pwd`\007"
 

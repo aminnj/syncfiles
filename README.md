@@ -33,6 +33,11 @@ Contains:
 > cd ~/.vim/bundle
 > git clone git://github.com/tpope/vim-surround.git
 
+## supertab (git clone https://github.com/ervandew/supertab)
+> cd ~/.vim/bundle
+> git clone https://github.com/ervandew/supertab
+
+
 ## Toggle plugin
 > mkdir -p ~/.vim/plugin
 > wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
@@ -49,6 +54,7 @@ git clone https://github.com/scrooloose/nerdtree.git
 git clone https://github.com/scrooloose/syntastic.git
 git clone git://github.com/tpope/vim-commentary.git
 git clone git://github.com/tpope/vim-surround.git
+git clone https://github.com/ervandew/supertab
 mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim

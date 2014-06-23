@@ -18,10 +18,10 @@ inoremap kj <Esc>
 vnoremap kj <Esc>
 
 " control jikl (akin to wasd) will switch panes
-nnoremap <C-j> <C-w>h
-nnoremap <C-k> <C-w>j
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
 nnoremap <C-l> <C-w>l
-nnoremap <C-i> <C-w>k
+nnoremap <C-k> <C-w>k
 
 
 " leader stuff {{{
@@ -65,6 +65,8 @@ nnoremap <leader><space> :noh<cr>
 nnoremap <leader>j J " maintain line joining even though J remapped below
 vnoremap <leader>j J
 
+nnoremap <leader><Space> :noh<CR>
+
 " }}}
 
 " o and O will put newlines below and above cursor
@@ -105,10 +107,9 @@ set ruler
 set nocp
 execute pathogen#infect()
 
-"NERDTREE stuff
-map <C-n> :NERDTreeToggle<CR>
-
-
+" NERDTree {
+    map <C-n> :NERDTreeToggle<CR>
+" }
 
 " abbreviations for misspellings
 abbr hte the

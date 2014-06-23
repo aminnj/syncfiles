@@ -56,7 +56,7 @@ setw -g window-status-current-format "#[bg=colour235]#[fg=brightblue] • #I#[fg
 setw -g window-status-format "#[bg=colour235]#[fg=white,bold] #I#[fg=white,bold]#[bg=colour235] [#W] "
 
 # extremely hacky way of rounding to integer since I can't use int() function in awk or else the parentheses won't be escaped
-set -g status-right "#[fg=colour14] ҂  ҈ ҉ Mem #(free | grep Mem | awk '{print 100*$3/$2-100*$3/$2%%1}')%% #[fg=colour3]%A %D #[fg=colour154]%l:%M%p"
+#set -g status-right "#[fg=colour14] ҂  ҈ ҉ Mem #(free | grep Mem | awk '{print 100*$3/$2-100*$3/$2%%1}')%% #[fg=colour3]%A %D #[fg=colour154]%l:%M%p"
 
 
 # POWERLINE 
@@ -75,7 +75,7 @@ set -g status-left-length 20
 
 
 # set -g status-right "#[fg=colour14]  Mem #(free | grep Mem | awk '{print 100*$3/$2-100*$3/$2%%1}')%% ҂ #[fg=colour3]%A %D #[fg=colour154]%l:%M%p"
-set -g status-right "#[fg=colour233,bg=default,nobold,noitalics,nounderscore] #[fg=colour247,bg=colour233,nobold,noitalics,nounderscore] %A %D  #[fg=colour241,bg=colour233,nobold,noitalics,nounderscore] #[fg=colour2,bg=colour233,nobold,noitalics,nounderscore] Pane #P #[fg=colour236,bg=colour233,nobold,noitalics,nounderscore] #[fg=colour247,bg=colour236,nobold,noitalics,nounderscore] 2014-06-16#[fg=colour241,bg=colour236,nobold,noitalics,nounderscore] #[fg=colour252,bg=colour236,bold,noitalics,nounderscore] %l:%M%p #[fg=colour252,bg=colour236,nobold,noitalics,nounderscore] #[fg=colour16,bg=colour252,bold,noitalics,nounderscore]"
+set -g status-right "#[fg=colour233,bg=default,nobold,noitalics,nounderscore] #[fg=colour247,bg=colour233,nobold,noitalics,nounderscore] test  #[fg=colour241,bg=colour233,nobold,noitalics,nounderscore] #[fg=colour2,bg=colour233,nobold,noitalics,nounderscore] Pane #P #[fg=colour236,bg=colour233,nobold,noitalics,nounderscore] #[fg=colour247,bg=colour236,nobold,noitalics,nounderscore]  %A %D #[fg=colour241,bg=colour236,nobold,noitalics,nounderscore] #[fg=colour252,bg=colour236,bold,noitalics,nounderscore] %l:%M%p #[fg=colour252,bg=colour236,nobold,noitalics,nounderscore] #[fg=colour16,bg=colour252,bold,noitalics,nounderscore]"
 #set -g status-right " #A #B #C #D #E #F #G #H #I #J #K #L #M #N #O #P #Q #R #S #T #U #V #W #X #Y #Z "
 
 set -g status-right-length 150
