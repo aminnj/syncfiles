@@ -199,6 +199,14 @@ shift
 
 }
 
+function col {
+    if [ $# -lt 1 ]; then
+        echo "usage: col <col #>"
+        return 1
+    fi
+    awk -v x=$1 '{print $x}'
+
+}
 
 function extract {
    if [ -f $1 ] ; then
