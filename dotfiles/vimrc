@@ -115,14 +115,15 @@ execute pathogen#infect()
 " TagBar {
     nmap <C-t> :TagbarToggle<CR>
 " }
-
-" abbreviations for misspellings
+" vim-commentary {
+    autocmd FileType cpp set commentstring=\/\/\ %s
+" }
 
 " abbreviations for misspellings
 abbr hte the
 abbr teh the
 
-set scrolloff=5 " keep at least 5 lines visible on either side of cursor
+set scrolloff=3 " keep at least 3 lines visible on either side of cursor
 
 set noerrorbells visualbell t_vb=
 set ttyfast
