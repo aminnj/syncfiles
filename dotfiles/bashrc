@@ -1,4 +1,4 @@
-# .bashrc
+# .bashrc asdf
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -45,6 +45,7 @@ export DISPLAY=:0.0
 
 alias tmux='tmux -2' # fixes colors in vim
 
+alias l='ls -l'
 alias ll='ls -l'
 alias lk='ls -lthr'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'
@@ -71,7 +72,7 @@ alias ucsd='ssh namin@uaf-7.t2.ucsd.edu'
 alias ucsb='ssh namin@squark.physics.ucsb.edu'
 alias squark='ssh namin@squark.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
-alias grad='gshell.physics.ucsb.edu'
+alias grad='ssh namin@gshell.physics.ucsb.edu'
 #alias eos='ssh namin@eos.tamu.edu'
 
 

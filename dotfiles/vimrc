@@ -50,9 +50,10 @@ nnoremap <leader>pf gqap
 " leader " to quote word under cursor
 nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
+" Switch between the last two files
+nnoremap <leader><leader> <c-^>
 
 set rtp+=~/powerline/powerline/bindings/vim
-
 
 " (C, cpp printout) turns
 " 1 2 3 
@@ -62,7 +63,9 @@ nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::
 
 nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
 nnoremap <leader><space> :noh<cr>
-nnoremap <leader>j J " maintain line joining even though J remapped below
+
+" maintain line joining even though J remapped below
+nnoremap <leader>j J
 vnoremap <leader>j J
 
 nnoremap <leader><Space> :noh<CR>
@@ -104,6 +107,10 @@ set wildmode=list:longest,full
 
 " turn ruler on to show position
 set ruler
+
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
 
 set nocp
 execute pathogen#infect()
