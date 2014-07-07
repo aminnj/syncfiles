@@ -53,6 +53,12 @@ nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
 
+" paste from system clipboard, but only locally
+nnoremap <leader>pp "+p
+"note: if we wanted to do this by default, we could do
+"set clipboard=unnamed
+"but I'd like to have 2 main clipboards in use just in case
+
 set rtp+=~/powerline/powerline/bindings/vim
 
 " (C, cpp printout) turns
