@@ -3,6 +3,7 @@ syntax on
 " fixes error syntax for $( ) in .sh files
 let g:is_posix = 1
 set background=light
+set ffs=unix,dos
 
 set t_Co=256
 color wombat256mod
@@ -15,7 +16,8 @@ endif
 
 inoremap kj <Esc>
 " Type kj to get out of insert or visual mode!
-vnoremap kj <Esc>
+" virtual lag caused by the below mapping in visual mode!
+" vnoremap kj <Esc>
 
 " control jikl (akin to wasd) will switch panes
 nnoremap <C-h> <C-w>h
