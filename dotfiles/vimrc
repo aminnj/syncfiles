@@ -3,7 +3,6 @@ syntax on
 " fixes error syntax for $( ) in .sh files
 let g:is_posix = 1
 set background=light
-set ffs=unix,dos
 
 set t_Co=256
 color wombat256mod
