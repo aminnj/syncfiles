@@ -163,6 +163,11 @@ filetype indent on      " load FileType-specific indent files
 noremap K 5<up>
 noremap J 5<down>
 
+" remap arrow keys for long lines
+noremap <Down> gj
+noremap <Up> gk
+
+
 
 " yank to end of line
 nnoremap Y y$
