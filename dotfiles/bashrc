@@ -49,6 +49,9 @@ alias tmux='tmux -2' # fixes colors in vim
 if [[ $(hostname) == *uaf-* ]]; then 
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
 fi
+if [[ $(hostname) == *squark* ]]; then
+    source ~/root/bin/thisroot.sh
+fi
 
 alias l='ls -l'
 alias ll='ls -l'
