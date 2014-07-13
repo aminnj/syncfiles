@@ -6,10 +6,10 @@ autodetach on
 startup_message off
 defscrollback 30000
 vbell "off"
-bind l focus down
+bind j focus down
 bind k focus up
-bind j focus left
-bind ; focus right
+bind h focus left
+bind l focus right
 altscreen on
 
 
