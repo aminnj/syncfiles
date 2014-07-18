@@ -244,6 +244,7 @@ if [ -f $1 ] ; then
 
 function web {
 if [ $# -gt 0 ]; then
+    chmod -R a+r $@
     scp -rp $@ namin@web.physics.ucsb.edu:~/public_html/dump/
     for file in "$@"; do
         echo "http://web.physics.ucsb.edu/~namin/dump/$file"
