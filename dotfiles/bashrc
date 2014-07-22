@@ -49,10 +49,6 @@ alias tmux='tmux -2' # fixes colors in vim
 if [[ $(hostname) == *uaf-* ]]; then 
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
 fi
-if [[ $(hostname) == *uaf-6* ]]; then 
-    PATH=$PATH:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/bin/
-    export PATH
-fi
 if [[ $(hostname) == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
 fi
