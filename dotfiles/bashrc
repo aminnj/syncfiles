@@ -83,7 +83,6 @@ alias brazos='ssh amin.nj@hurr.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias ucsb='ssh namin@squark.physics.ucsb.edu'
-alias ucsd='ssh namin@uaf-9.t2.ucsd.edu'
 alias squark='ssh namin@squark.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias grad='ssh namin@gshell.physics.ucsb.edu'
@@ -223,6 +222,14 @@ if [ $# -lt 1 ]; then
 fi
 awk -v x=$1 '{print $x}'
 
+}
+
+function ucsd {
+if [ $# -lt 1 ]; then
+    ssh namin@uaf-9.t2.ucsd.edu
+else
+    ssh namin@uaf-${1}.t2.ucsd.edu
+fi
 }
 
 function extract {
