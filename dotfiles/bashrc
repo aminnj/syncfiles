@@ -40,7 +40,6 @@ export PS1=$PS
 # fi
 
 export EDITOR=vim
-export DISPLAY=:0.0
 #export PYTHONSTARTUP=~/.pythonrc.py
 
 alias tmux='tmux -2' # fixes colors in vim
@@ -51,6 +50,8 @@ if [[ $(hostname) == *uaf-* ]]; then
 fi
 if [[ $(hostname) == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
+else
+    export DISPLAY=:0.0
 fi
 
 alias l='ls -l'
