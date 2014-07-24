@@ -260,3 +260,15 @@ else
     echo "Usage: web [input files]"
 fi
 }
+
+function addnumbers {
+# useful links:
+# http://stackoverflow.com/a/9033109
+# http://www.markkurossi.com/genscript/FAQ.html
+input="$1"
+output="${1%03d.pdf}-header.pdf"
+pagenum=$(pdftk "$input" dump_data | grep "NumberOfPages" | cut -d":" -f2)
+enscript -L1 --header-font='Arial@32' --header='|$%|' --output - < <(for i in $(seq "$pagenum"); do echo; done) | ps2pdf - | pdftk "$input" multistamp - output $output
+
+mv $output $input
+}
