@@ -198,7 +198,10 @@ done
 }
 
 function pdftopng {
-convert -verbose -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
+#sharpen not really necessary
+#convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
+echo "$1 ==> ${1%%.pdf}.png" 
+convert -density 250 -trim $1 -quality 100 ${1%%.pdf}.png
 }
 
 function alarm {
