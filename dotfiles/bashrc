@@ -89,6 +89,7 @@ alias grad='ssh namin@gshell.physics.ucsb.edu'
 alias tree='tree -C'
 alias stats='~/syncfiles/pyfiles/stats.py'
 alias histo='~/syncfiles/pyfiles/histo.py'
+alias tabletex='~/syncfiles/pyfiles/tabletex.py'
 
 export HISTFILESIZE=500000
 export HISTSIZE=100000
