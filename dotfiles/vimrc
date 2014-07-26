@@ -78,6 +78,7 @@ vnoremap <leader>j J
 nnoremap <leader><Space> :noh<CR>
 nnoremap <leader>rr :w <bar> exec '!root -l -b -q run.C'<CR>
 
+
 " }}}
 
 " o and O will put newlines below and above cursor
@@ -241,7 +242,8 @@ if has("autocmd")
         " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
-        autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex '.shellescape('%')<CR>
+        autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
+        autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>
