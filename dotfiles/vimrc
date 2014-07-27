@@ -78,6 +78,8 @@ vnoremap <leader>j J
 nnoremap <leader><Space> :noh<CR>
 nnoremap <leader>rr :w <bar> exec '!root -l -b -q run.C'<CR>
 
+nnoremap <leader>xs :w <bar> exec '!xpdf -remote pdfname -exec reload &'<CR>
+nnoremap <leader>xu :w <bar> exec '!xpdf -remote pdfname -z 200 output.pdf &'<CR>
 
 " }}}
 
@@ -133,6 +135,7 @@ execute pathogen#infect()
 " }
 " vim-commentary {
     autocmd FileType cpp set commentstring=\/\/\ %s
+    autocmd FileType c set commentstring=\/\/\ %s
 " }
 
 " abbreviations for misspellings
