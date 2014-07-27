@@ -44,13 +44,16 @@ export EDITOR=vim
 
 alias tmux='tmux -2' # fixes colors in vim
 
+# special host-dependent stuff
 # cmsenv compatibility for ucsd uaf
 if [[ $(hostname) == *uaf-* ]]; then 
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
 fi
 if [[ $(hostname) == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
-else
+fi
+if [[ $(hostname) == *Nick* ]]; then 
+    source ~/root/bin/thisroot.sh
     export DISPLAY=:0.0
 fi
 
@@ -65,6 +68,7 @@ alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
 alias ,,='echo "$PWD -> $OLDPWD" && cd $OLDPWD'
 alias cd..='cd ..'
 alias bc='bc -l'
+alias iroot='command root'
 alias root='root -b -l'
 alias gridtick='grid-proxy-init -debug -verify'
 alias vomstick='voms-proxy-init -voms cms'
@@ -101,9 +105,8 @@ alias d='cd ~/desktop/'
 function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 #fi
 
-function xterms {
-export DISPLAY=:0.0
-xrdb -merge ~/.Xresources
+function xwin {
+startxwin >& /dev/null &
 }
 
 usingCrab=false
