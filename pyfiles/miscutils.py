@@ -255,6 +255,34 @@ def linfit(xs,ys):
     if(n == 2): errorm, errorb = 0.0, 0.0
     return m,b, errorm, errorb
 
+def linearIntersection(pointPairs, dimension):
+    """
+    linearIntersection(pointPairs, dimension)
+
+    Performs a least-squares fit to find the intersection
+    of N lines
+
+    Example usage:
+    pairs = [
+              [ (0,2), (4,2) ],
+              [ (0,0), (2,2) ],
+            ]
+
+    print linearIntersection(pairs, 2)
+    >> [2, 2]
+    """
+    dim = dimension
+    A = np.zeros((dim,dim))
+    B = np.zeros((dim,1))
+    for pointPair in pointPairs:
+        pa, pb = pointPair
+        vi = np.array([[pb[i]-pa[i]] for i in range(len(pa))])
+        vi = vi / np.linalg.norm(vi)
+        pi = np.array([[e] for e in pa])
+        A += np.identity(dim) - np.outer(vi,vi) 
+        B += (np.identity(dim) - np.outer(vi,vi)).dot(pi)
+    return np.linalg.inv(A).dot(B)
+
 
 def dist(a,b):
     """
@@ -511,6 +539,7 @@ if __name__ == '__main__':
     avg - returns mean of list
     sigma - returns unbiased standard deviation of list
     linfit - returns linear fit parameters and errors
+    linearIntersection - finds intersection of N lines
     dist - returns the 2D/3D distance between two points
     jackknife - returns mean, error for list via jackknife
     sleep - sleep for specified time in seconds

@@ -274,6 +274,7 @@ function addnumbers {
 # useful links:
 # http://stackoverflow.com/a/9033109
 # http://www.markkurossi.com/genscript/FAQ.html
+# note that numbers.pdf is in a 4:3 aspect ratio!
 if [ $# -gt 0 ]; then
     input="$1"
     output="${input}.pages"
