@@ -61,7 +61,7 @@ alias l='ls -l'
 alias ll='ls -l'
 alias lk='ls -lthr'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'
-alias hadoop='cd /hadoop/cms/store/user/namin/ && ls -l'
+alias hdp='cd /hadoop/cms/store/user/namin/ && ls -l'
 alias grep='grep --color=auto'
 alias ..='cd ..'
 alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
@@ -118,6 +118,12 @@ cmsenv
 echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
 source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 echo ">> usingCrab is true"
+
+if [[ $(hostname) == *uaf-* ]]; then
+    echo ">> source /code/osgcode/ucsdt2/Crab/etc/crab.sh"
+    source '/code/osgcode/ucsdt2/Crab/etc/crab.sh'
+fi
+
 usingCrab=true
 
 }
