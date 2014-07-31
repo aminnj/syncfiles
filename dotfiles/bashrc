@@ -231,7 +231,7 @@ awk -v x=$1 '{print $x}'
 
 function ucsd {
 if [ $# -lt 1 ]; then
-    ssh namin@uaf-9.t2.ucsd.edu
+    ssh namin@uaf-6.t2.ucsd.edu
 else
     ssh namin@uaf-${1}.t2.ucsd.edu
 fi
