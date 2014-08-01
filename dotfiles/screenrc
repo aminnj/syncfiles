@@ -1,7 +1,7 @@
 # force screen to use xterm as the $TERM value
 # as opposed to "screen" so that normal colors are used!
 # soft link ~/.screenrc to this
-term xterm-256color
+term screen-256color
 autodetach on
 startup_message off
 defscrollback 30000

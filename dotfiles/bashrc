@@ -17,6 +17,7 @@ if [ "$TERM" != "dumb" ]; then
     fi
 fi
 
+export TERM=xterm-256color
 
 
 # set window title to user@host:pwd
