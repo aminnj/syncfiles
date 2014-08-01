@@ -111,17 +111,20 @@ startxwin >& /dev/null &
 
 usingCrab=false
 function crabenv {
-echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
-source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
-echo ">> cmsenv"
-cmsenv
-echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
-source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
-echo ">> usingCrab is true"
 
 if [[ $(hostname) == *uaf-* ]]; then
+    echo ">> cmsenv"
+    cmsenv
     echo ">> source /code/osgcode/ucsdt2/Crab/etc/crab.sh"
     source '/code/osgcode/ucsdt2/Crab/etc/crab.sh'
+else
+    echo ">> source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh"
+    source '/afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
+    echo ">> cmsenv"
+    cmsenv
+    echo ">> source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh"
+    source '/afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
+    echo ">> usingCrab is true"
 fi
 
 usingCrab=true
