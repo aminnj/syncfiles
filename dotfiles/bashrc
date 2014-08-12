@@ -291,6 +291,14 @@ else
 fi
 }
 
+function package {
+if [ $# -gt 0 ]; then
+    . ~/syncfiles/miscfiles/package.sh $1
+else
+    echo "Usage: package [folder name]"
+fi
+}
+
 function addnumbers {
 # useful links:
 # http://stackoverflow.com/a/9033109
