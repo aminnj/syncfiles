@@ -19,7 +19,7 @@ fi
 
 export TERM=xterm-256color
 
-HOST=${HOST}
+HOST=$(hostname)
 
 # set window title to user@host
 echo -ne "\033]0;${USER}@${HOST}\007"
@@ -76,6 +76,7 @@ alias vomstick='voms-proxy-init -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
 alias rootenv='source ~/root/bin/thisroot.sh'
+alias crabenv3='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 
 
 # ssh
