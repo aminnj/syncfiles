@@ -198,12 +198,12 @@ set laststatus=2
 
 " format of statusline
 set statusline=
-set statusline=%t       "tail of the filename
-set statusline+=%h      "help file flag
-set statusline+=\ %#error# " START ERROR COLOR
-set statusline+=%m      "modified flaga
+set statusline+=%#error# " START ERROR COLOR
+set statusline+=%m     "modified flaga
 set statusline+=%r      "read only flags
 set statusline+=%*      " END COLORR
+set statusline+=\ %t       "tail of the filename
+set statusline+=%h      "help file flag
 set statusline+=\ %y      "filetype
 set statusline+=\ \[%{strftime('%I:%M%p\ \%a\ %b\ %d,\ %Y')}\]
 set statusline+=\ %{getcwd()}
