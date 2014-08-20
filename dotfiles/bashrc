@@ -77,6 +77,7 @@ alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
 alias rootenv='source ~/root/bin/thisroot.sh'
 alias crabenv3='source /cvmfs/cms.cern.ch/crab3/crab.sh'
+alias usa='source ~/syncfiles/miscfiles/usa.sh'
 
 
 # ssh
@@ -289,6 +290,14 @@ if [ $# -gt 0 ]; then
     done
 else
     echo "Usage: web [input files]"
+fi
+}
+
+function package {
+if [ $# -gt 0 ]; then
+    . ~/syncfiles/miscfiles/package.sh $1
+else
+    echo "Usage: package [folder name]"
 fi
 }
 
