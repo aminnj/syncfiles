@@ -4,12 +4,13 @@
 // #include <TTree.h>
 #include <TString.h>
 
-void counts(TString filename)
+void counts(TString foldername)
 // void counts(int test)
 {
 
-    std::cout << filename << std::endl;
-    TFile * fh = new TFile(filename);
-    std::cout << "Events: " << Events->GetEntries() << std::endl;
+    // std::cout << filename << std::endl;
+    TChain * ch = new TChain("Events");
+    ch->Add(foldername+"/*.root");
+    std::cout << "Events: " << ch->GetEntries() << std::endl;
 
 }
