@@ -9,6 +9,7 @@ color wombat256mod
 
 set nu
 
+
 " fix backspace in tmux->ssh->vim
 if &term == "screen"
     set t_kb=
@@ -282,6 +283,10 @@ function! g:ToggleColorColumn()
 endfunction
 
 
+" continue comment if in insert mode
+" but not when hitting o/O
+set formatoptions+=cr
+set formatoptions-=o
 
 
 set autochdir
