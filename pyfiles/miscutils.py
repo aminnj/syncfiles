@@ -82,6 +82,15 @@ class Histogram:
     def removeRange(self, x1, x2):
         self.points = [x for x in self.points if not(x < x2 and x > x1)]
 
+class colors:
+    magenta = '\033[95m'
+    blue = '\033[94m'
+    yellow = '\033[93m'
+    green = '\033[92m'
+    red = '\033[91m'
+    black = '\033[90m'
+    clear = '\033[0m'
+
 def dumpList(ls, filename, aw):
     """
     dumpList(list, filename, mode)
@@ -515,7 +524,7 @@ def listToHistogram(ls):
         else:
             dout[elem] += 1
     return dout
-    
+
 if __name__ == '__main__':
 
     print """
