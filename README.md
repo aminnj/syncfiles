@@ -152,3 +152,30 @@ seq 1 100 | vim -
 ```
 
 Cut and paste current command with `<Ctrl-U>` and `<Ctrl-Y>`, respectively. So if you type `ls some/long/dir/path/`, but want to `ls` the current directory, you can do `<Ctrl-U>` to yank `ls some/long/dir/path/`, do `ls`, and then `<Ctrl-Y>` to bring back `ls some/long/dir/path/`.
+
+# MISC INSTRUCTIONS
+## INSTALLING MATPLOTLIB
+download 
+freetype-2.4.0.tar.gz   12-Jul-2010 20:17   1.8M     
+from
+http://download.savannah.gnu.org/releases/freetype/
+
+and
+
+http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.3.1/matplotlib-1.3.1.tar.gz/download?use_mirror=iweb
+
+install all make+automake+gcc+g++ packages in cygwin
+install all freetype-related packages in cygwin
+
+unpack freetype and go inside
+run ./configure, make, make install
+
+unpack and go inside matplotlib
+apply this patch to files inside lib/matplotlib/tri/: https://github.com/ianthomas23/matplotlib/commit/1215f78874127c27505616fcd73043991035dd7e
+
+python setup.py build
+python setup.py install
+
+
+badabing DONE
+
