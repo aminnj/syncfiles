@@ -54,6 +54,7 @@ if [[ ${HOST} == *squark* ]]; then
     source ~/root/bin/thisroot.sh
 fi
 if [[ ${HOST} == *Nick* ]]; then 
+    alias python0='/cygdrive/c/Python27/python'
     # source ~/root/bin/thisroot.sh
     export DISPLAY=:0.0
 fi
