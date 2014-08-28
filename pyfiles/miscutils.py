@@ -342,10 +342,12 @@ def sleepForMins(mins):
     
     Sleeps for specified number of minutes. Displays a progress bar.
     """
-    print "sleeping for " + str(mins) + " minutes.",
-    for i in range(mins*10):
-        time.sleep(6)
+    print "sleeping for " + str(mins) + " minutes."
+    for i in range(int(mins*10)):
         progressbar(1.0*i/(mins*10), True)
+        time.sleep(6)
+    progressbar(1.0, True)
+    print
     print "done sleeping for " + str(mins) + " minutes"
     
 def ascii(s):
@@ -392,6 +394,7 @@ def progressbar(fraction, continuous=True):
     else:
         print "[{0}{1}]".format("#" * filled, "-" * (width-filled)),
         print "%3d%%" % (round(fraction*100))
+    sys.stdout.flush()
         
 def readSiteToString(url):
     """
