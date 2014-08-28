@@ -333,8 +333,10 @@ def sleep(t, verbose=False):
     and "done sleeping." on the same line.
     """
     if(verbose): print "sleeping for %i seconds." % (t),
+    sys.stdout.flush()
     time.sleep(t)
     if(verbose): print "done sleeping."
+    sys.stdout.flush()
     
 def sleepForMins(mins):
     """
