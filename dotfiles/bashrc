@@ -290,7 +290,7 @@ if [ $# -gt 0 ]; then
         echo "web.physics.ucsb.edu/~namin/dump/$file"
     done
 else
-    echo "Usage: web [input files]"
+    echo "Usage: web <input files>"
 fi
 }
 
@@ -298,7 +298,7 @@ function package {
 if [ $# -gt 0 ]; then
     . ~/syncfiles/miscfiles/package.sh $1
 else
-    echo "Usage: package [folder name]"
+    echo "Usage: package <folder name>"
 fi
 }
 
@@ -310,10 +310,15 @@ function addnumbers {
 if [ $# -gt 0 ]; then
     input="$1"
     output="${input}.pages"
-    numbers="${HOME}/syncfiles/miscfiles/pdfnumbers/numbers.pdf"
+    if [[ $* == *--wide* ]]; then
+        numbersFile=numbersWide.pdf
+    else
+        numbersFile=numbers.pdf
+    fi
+    numbers="${HOME}/syncfiles/miscfiles/pdfnumbers/${numbersFile}"
     pdftk "$input" multistamp "$numbers" output "$output"
     mv $output $input
 else
-    echo "Usage: addnumbers [pdf file]"
+    echo "Usage: addnumbers <pdf file> [--wide]"
 fi
 }
