@@ -253,6 +253,10 @@ eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' | grep Events"
 # export so this can be used in other scripts
 export -f nevts
 
+function tb {
+root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
+}
+
 function ucsd {
 if [ $# -lt 1 ]; then
     ssh namin@uaf-6.t2.ucsd.edu
