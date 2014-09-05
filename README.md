@@ -1,6 +1,13 @@
 # miscfiles
 Contains:
 * Patched Droid Sans Mono font with Powerline symbols and smooth box/line drawing characters for use in tmux (used fontforge to do this). Looks much nicer than the officially offered patched version of the font for powerline.
+* ROOT macro to open TBrowser: `tb` or `tb test.root`
+* ROOT macro to print number of events in ROOT files: `nevts test.root` or if they are in a folder, `nevts path/to/folder/`
+* USA script to print the flag, because every terminal needs more 'Murica: `usa`
+* Script to take folder with pdfs inside and convert each pdf to png, create an index file, and upload to website: `package foldername`
+* Script to add numbers to pdf file: `addnumbers test.pdf` or `addnumbers test.pdf --wide`
+* Script to convert ROOT histogram (printed to tex) into pdf
+
 
 # INSTALL
 
@@ -164,18 +171,25 @@ and
 
 http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.3.1/matplotlib-1.3.1.tar.gz/download?use_mirror=iweb
 
+```
 install all make+automake+gcc+g++ packages in cygwin
 install all freetype-related packages in cygwin
+```
 
 unpack freetype and go inside
-run ./configure, make, make install
+```
+./configure
+make
+make install
+```
 
 unpack and go inside matplotlib
 apply this patch to files inside lib/matplotlib/tri/: https://github.com/ianthomas23/matplotlib/commit/1215f78874127c27505616fcd73043991035dd7e
 
+```
 python setup.py build
 python setup.py install
-
+```
 
 badabing DONE
 
