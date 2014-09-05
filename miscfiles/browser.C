@@ -1,3 +1,3 @@
 {
-    TBrowser *tb = new TBrowser("browser","browser", 1280, 720);
+    TBrowser *tb = new TBrowser("browser","browser", 1500, 900);
 }
