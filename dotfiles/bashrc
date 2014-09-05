@@ -111,7 +111,12 @@ function say() { mplayer -really-quiet "http://translate.google.com/translate_tt
 #fi
 
 function xwin {
-startxwin >& /dev/null &
+# if ps | grep XWin | grep -v "grep" >& /dev/null; then
+    # echo "xwin already running."
+    startxwin >& /dev/null &
+# else
+    # startxwin >& /dev/null &
+# fi
 }
 
 usingCrab=false
@@ -259,9 +264,10 @@ root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
 
 function ucsd {
 if [ $# -lt 1 ]; then
-    ssh namin@uaf-6.t2.ucsd.edu
+    xwin
+    ssh -X namin@uaf-6.t2.ucsd.edu
 else
-    ssh namin@uaf-${1}.t2.ucsd.edu
+    ssh -X namin@uaf-${1}.t2.ucsd.edu
 fi
 }
 
