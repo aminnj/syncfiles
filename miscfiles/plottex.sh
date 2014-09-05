@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# see http://root.cern.ch/drupal/content/saving-canvas-tex
+# need to do c1->Print("hist.tex"). works in root 5.34+
 if [ $# -lt 1 ]; then
     echo "usage: plottex <hist.tex>"
     return 1
