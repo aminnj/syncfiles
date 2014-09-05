@@ -22,7 +22,7 @@ echo "\\scalebox{0.7}{\input{$1}}" >> temp_$1
 echo "\\end{figure}" >> temp_$1
 echo "\\end{document}" >> temp_$1
 
-# temp_hist.tex to temp.pdf
+# temp_hist.tex to hist.pdf
 echo "temp_$1 ==> temp_${1%%.tex}.pdf"
 pdflatex temp_$1 >& /dev/null
 mv temp_${1%%.tex}.pdf ${1%%.tex}.pdf
