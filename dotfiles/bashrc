@@ -310,6 +310,11 @@ if [ $# -gt 0 ]; then
     . ~/syncfiles/miscfiles/package.sh $1
 else
     echo "Usage: package <folder name>"
+    echo "   Optionally, a details.txt file inside the folder"
+    echo "   can be used to place labels on the plots."
+    echo "   For plots that you want details on, a line like"
+    echo "      h1D_pt.pdf: pt of all jets"
+    echo "   must be present. ':' is delimiter, and pdf name must match"
 fi
 }
 
