@@ -89,7 +89,7 @@ alias brazos='ssh amin.nj@hurr.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias ucsb='ssh namin@squark.physics.ucsb.edu'
-alias squark='ssh namin@squark.physics.ucsb.edu'
+alias squark='ssh -X namin@squark.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias grad='ssh namin@gshell.physics.ucsb.edu'
 #alias eos='ssh namin@eos.tamu.edu'
@@ -113,10 +113,10 @@ function say() { mplayer -really-quiet "http://translate.google.com/translate_tt
 
 function xwin {
 # if ps | grep XWin | grep -v "grep" >& /dev/null; then
-    # echo "xwin already running."
-    startxwin >& /dev/null &
+# echo "xwin already running."
+startxwin >& /dev/null &
 # else
-    # startxwin >& /dev/null &
+# startxwin >& /dev/null &
 # fi
 }
 
@@ -225,8 +225,28 @@ done
 function pdftopng {
 #sharpen not really necessary
 #convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
-echo "$1 ==> ${1%%.pdf}.png" 
-convert -density 200 -trim $1 ${1%%.pdf}.png
+if [ $# -gt 0 ]; then
+    echo "$1 ==> ${1%%.pdf}.png" 
+    convert -density 200 -trim $1 ${1%%.pdf}.png
+else
+    echo "Usage: pdftopng <pdf name>"
+fi
+}
+export -f pdftopng
+
+function pdftoppt {
+if [[ $* == *-h* ]]; then
+    echo "Usage: pdftoppt [optional text file]"
+    echo "   Optionally, a text file can be used to format the layout of the "
+    echo "   slides. Each line specifies a slide, and there are 3 possible formats:"
+    echo "      - 'a.pdf b.pdf' (places plots side-by-side on slide) "
+    echo "      - 'a.pdf b.pdf' (places plots side-by-side on slide) "
+    echo "      - 'a.pdf' (places one plot on entire slide)"
+    echo "      - 'text a.pdf' (text keyword says that a textbox will "
+    echo "                      take its place. Only works on left side)" 
+else
+    python ~/syncfiles/miscfiles/pdfppt/slides.py $*
+fi
 }
 
 function alarm {
@@ -265,7 +285,7 @@ root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
 
 function ucsd {
 if [ $# -lt 1 ]; then
-    xwin
+    # xwin
     ssh -X namin@uaf-6.t2.ucsd.edu
 else
     ssh -X namin@uaf-${1}.t2.ucsd.edu
