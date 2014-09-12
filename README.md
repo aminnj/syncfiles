@@ -1,6 +1,7 @@
 # miscfiles
 Contains:
 * Patched Droid Sans Mono font with Powerline symbols and smooth box/line drawing characters for use in tmux (used fontforge to do this). Looks much nicer than the officially offered patched version of the font for powerline.
+** https://github.com/todylu/monaco.ttf **
 * ROOT macro to open TBrowser: `tb` or `tb test.root`
 * ROOT macro to print number of events in ROOT files: `nevts test.root` or if they are in a folder, `nevts path/to/folder/`
 * USA script to print the flag, because every terminal needs more 'Murica: `usa`
