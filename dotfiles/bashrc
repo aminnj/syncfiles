@@ -52,6 +52,7 @@ if [[ ${HOST} == *uaf-* ]]; then
 fi
 if [[ ${HOST} == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
+    ~/syncfiles/miscfiles/doomsday.sh -trk || exit;
 fi
 if [[ ${HOST} == *Nick* ]]; then 
     alias python0='/cygdrive/c/Python27/python'
