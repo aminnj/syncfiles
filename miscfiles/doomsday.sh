@@ -121,7 +121,7 @@ function do_doomsday(){
 
   if $CORRECT; then
     echo -ne "\033[1;32m[SUCCESS]\033[0m ($ATTEMPTS attempts)";
-    echo "$TIME_INFO $CORRECT $ATTEMPTS" >> ~/datepractice.log
+    echo "$(date +%s) $TIME_INFO $CORRECT $ATTEMPTS" >> ~/datepractice.log
     EXIT_CODE=0;
   else
     if [ $ATTEMPTS -eq 7 ]; then
