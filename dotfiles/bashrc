@@ -319,9 +319,13 @@ if [ -f $1 ] ; then
 function web {
 if [ $# -gt 0 ]; then
     chmod -R a+r $@
-    scp -rp $@ namin@web.physics.ucsb.edu:~/public_html/dump/
+    if [[ $(hostname) == *uaf-* ]]; then 
+        cp $@ ~/public_html/dump/
+    else
+        scp -rp $@ namin@uaf-6.t2.ucsd.edu:~/public_html/dump/
+    fi
     for file in "$@"; do
-        echo "web.physics.ucsb.edu/~namin/dump/$file"
+        echo "uaf-6.t2.ucsd.edu/~namin/dump/$file"
     done
 else
     echo "Usage: web <input files>"
