@@ -230,9 +230,13 @@ function pdftopng {
 #convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
 if [ $# -gt 0 ]; then
     echo "$1 ==> ${1%%.pdf}.png" 
-    convert -density 200 -trim $1 ${1%%.pdf}.png
+    density=200
+    if [ $# -gt 1 ]; then
+        density=$2
+    fi
+    convert -density ${density} -trim $1 ${1%%.pdf}.png
 else
-    echo "Usage: pdftopng <pdf name>"
+    echo "Usage: pdftopng <pdf name> [optional density]"
 fi
 }
 export -f pdftopng
