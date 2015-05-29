@@ -57,6 +57,7 @@ fi
 if [[ ${HOST} == *Nick* ]]; then 
     alias python0='/cygdrive/c/Python27/python'
     export PATH=${PATH}:/cygdrive/d/Mathematica
+    export PATH=${PATH}:/cygdrive/c/Program\ Files/Wolfram\ Research/Mathematica/10.0
     # source ~/root/bin/thisroot.sh
     export DISPLAY=:0.0
 fi
@@ -64,6 +65,7 @@ fi
 alias l='ls -l'
 alias ll='ls -l'
 alias lk='ls -lthr'
+alias lo='ls --group-directories-first -la --sort=extension'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'
 alias hdp='cd /hadoop/cms/store/user/namin/ && ls -l'
 alias grep='grep --color=auto'
@@ -87,11 +89,11 @@ alias usa='source ~/syncfiles/miscfiles/usa.sh'
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
 alias lxplus5='ssh namin@lxplus5.cern.ch'
 alias lxplus='ssh namin@lxplus.cern.ch'
-alias brazos='ssh amin.nj@hurr.tamu.edu'
+alias brazos='ssh amin.nj@login.brazos.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias ucsb='ssh namin@squark.physics.ucsb.edu'
-alias squark='ssh -X namin@squark.physics.ucsb.edu'
+alias squark='ssh namin@squark.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias grad='ssh namin@gshell.physics.ucsb.edu'
 #alias eos='ssh namin@eos.tamu.edu'
@@ -111,6 +113,7 @@ export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
 # if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
 #alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 alias d='cd ~/desktop/'
+alias db='cd /cygdrive/d/dropbox/'
 function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 #fi
 
@@ -293,7 +296,8 @@ root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
 function ucsd {
 if [ $# -lt 1 ]; then
     # xwin
-    ssh -X namin@uaf-6.t2.ucsd.edu
+    # ssh -X namin@uaf-6.t2.ucsd.edu
+    ssh namin@uaf-6.t2.ucsd.edu
 else
     ssh -X namin@uaf-${1}.t2.ucsd.edu
 fi

@@ -22,6 +22,7 @@ print "-"*20
 totfiles, totsize, totevents = 0,0,0
 for fe in data['data']:
     f = fe['file'][0]
+    print f.keys()
     name, nevents, size, date = f['name'], f['nevents'], f['size'], f['modification_time']
     totfiles += 1
     totsize += size

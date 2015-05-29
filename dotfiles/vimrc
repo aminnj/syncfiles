@@ -252,7 +252,7 @@ if has("autocmd")
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python34/python.exe '.shellescape('%')<CR>
         autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
-        autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
+        autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
         autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
