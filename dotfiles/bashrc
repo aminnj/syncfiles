@@ -280,14 +280,18 @@ awk -v x=$1 '{print $x}'
 }
 
 function nevts {
-
 stuff='("'$1'")'
-
 eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' | grep Events"
-
 }
 # export so this can be used in other scripts
 export -f nevts
+
+function branches {
+# dumps branches of root file
+stuff='("'$1'")'
+eval "root -b -q -l '~/syncfiles/miscfiles/branches.C${stuff}' | grep branch: | cut -d ' ' -f2"
+}
+export -f branches
 
 function tb {
 root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
