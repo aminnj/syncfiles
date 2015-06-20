@@ -80,7 +80,7 @@ alias vomstick='voms-proxy-init -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
 alias rootenv='source ~/root/bin/thisroot.sh'
-alias crabenv3='source /cvmfs/cms.cern.ch/crab3/crab.sh'
+alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 alias usa='source ~/syncfiles/miscfiles/usa.sh'
 
 
