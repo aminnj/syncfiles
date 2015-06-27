@@ -250,7 +250,7 @@ if has("autocmd")
         " F6 executes gnuplot, python, C, C++ code by compiling and running
         " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
-        autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python34/python.exe '.shellescape('%')<CR>
+        autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python27/python.exe '.shellescape('%')<CR>
         autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
         autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
         autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>

@@ -57,7 +57,7 @@ if [[ ${HOST} == *Nick* ]]; then
     alias python0='/cygdrive/c/Python27/python'
     export PATH=${PATH}:/cygdrive/d/Mathematica
     export PATH=${PATH}:/cygdrive/c/Program\ Files/Wolfram\ Research/Mathematica/10.0
-    # source ~/root/bin/thisroot.sh
+    source ~/root/bin/thisroot.sh
     export DISPLAY=:0.0
 fi
 
@@ -76,7 +76,7 @@ alias bc='bc -l'
 alias iroot='command root'
 alias root='root -b -l'
 alias gridtick='grid-proxy-init -debug -verify'
-alias vomstick='voms-proxy-init -voms cms'
+alias voms='voms-proxy-init -hours 168 -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
 alias rootenv='source ~/root/bin/thisroot.sh'
