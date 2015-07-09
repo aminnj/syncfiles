@@ -95,6 +95,7 @@ alias ucsb='ssh namin@squark.physics.ucsb.edu'
 alias squark='ssh namin@squark.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias grad='ssh namin@gshell.physics.ucsb.edu'
+alias pi='ssh pi@169.231.29.254'
 #alias eos='ssh namin@eos.tamu.edu'
 
 
