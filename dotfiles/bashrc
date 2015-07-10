@@ -79,10 +79,14 @@ alias gridtick='grid-proxy-init -debug -verify'
 alias voms='voms-proxy-init -hours 168 -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
+alias gitcam='git commit -a -m'
 alias rootenv='source ~/root/bin/thisroot.sh'
 alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 alias usa='source ~/syncfiles/miscfiles/usa.sh'
 
+# dirs
+alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/"
+alias ss="cd ~/2015/ss/SSAnalysis/"
 
 # ssh
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
@@ -115,6 +119,7 @@ export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
 alias d='cd ~/desktop/'
 alias db='cd /cygdrive/d/dropbox/'
 function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
+function gitcamp() { git commit -a -m $* && git push; }
 #fi
 
 function xwin {

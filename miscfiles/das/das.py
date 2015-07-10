@@ -17,17 +17,25 @@ data = cli.get_data(host, query, idx, limit, debug, thr, ckey, cert)
 
 instance = data['data'][0]['das']['instance']
 
-
 print "-"*20
 totfiles, totsize, totevents = 0,0,0
 for fe in data['data']:
     f = fe['file'][0]
-    print f.keys()
-    name, nevents, size, date = f['name'], f['nevents'], f['size'], f['modification_time']
+    name = f['name']
+    try:
+        nevents = f['nevents']
+    except:
+        nevents = 0
+        print "*"*80
+        print "Couldn't get nevents for",f['name']
+        for key in f.keys():
+            print "%s: %s" % (key, str(f[key]))
+    size = f['size']
+    
     totfiles += 1
     totsize += size
     totevents += nevents
-    print name, nevents, cli.size_format(size,10), date
+    print name, nevents, cli.size_format(size,10)
 
 print "-"*20
 print "total number of files:", totfiles

@@ -1,7 +1,5 @@
 #include <TString.h>
 
-gErrorIgnoreLevel=kError;
-
 void counts(TString input)
 {
     TChain * ch = new TChain("Events");
