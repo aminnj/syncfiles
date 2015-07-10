@@ -258,11 +258,15 @@ def linfit(xs,ys):
     ssxy = sumxy-n*avgx*avgy
     m = 1.0*ssxy/ssxx
     b = avgy-m*avgx
-    s = math.sqrt((ssyy-m*ssxy)/(n-2))
-    errorm = s/math.sqrt(ssxx)
-    errorb = s/math.sqrt(1.0/n+avgx*avgx/ssxx)
-    if(n == 2): errorm, errorb = 0.0, 0.0
-    return m,b, errorm, errorb
+    try:
+        s = math.sqrt((ssyy-m*ssxy)/(n-2))
+        errorm = s/math.sqrt(ssxx)
+        errorb = s/math.sqrt(1.0/n+avgx*avgx/ssxx)
+        if(n == 2): errorm, errorb = 0.0, 0.0
+        return m,b, errorm, errorb
+    except:
+        print "ERROR:",m,b,ssxx,ssyy,ssxy,avgx,n
+        return m,b,-1,-1
 
 def linearIntersection(pointPairs, dimension):
     """
