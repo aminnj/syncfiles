@@ -79,7 +79,6 @@ vnoremap <leader>j J
 
 nnoremap <leader><Space> :noh<CR>
 " nnoremap <leader>rr :w <bar> exec '!root -l -b -q run.C'<CR>
-" nnoremap <leader>rr :w <bar> exec '!root -l -b -q doAll.C ; cp *.pdf ~/public_html/dump/'<CR>
 nnoremap <leader>rr :w <bar> exec '!. all.sh'<CR>
 
 " nnoremap <leader>xs :w <bar> exec '!xpdf -remote pdfname -exec reload &'<CR>
