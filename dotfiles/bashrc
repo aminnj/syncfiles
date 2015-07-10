@@ -155,11 +155,15 @@ function pdftopng {
 #convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
 if [ $# -gt 0 ]; then
     echo "$1 ==> ${1%%.pdf}.png" 
-    density=200
-    if [ $# -gt 1 ]; then
-        density=$2
+    if [[ $(hostname) == *uaf-* ]]; then 
+        gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
+    else
+        density=200
+        if [ $# -gt 1 ]; then
+            density=$2
+        fi
+        convert -density ${density} -trim $1 ${1%%.pdf}.png
     fi
-    convert -density ${density} -trim $1 ${1%%.pdf}.png
 else
     echo "Usage: pdftopng <pdf name> [optional density]"
 fi
@@ -233,21 +237,21 @@ function extract {
 if [ -f $1 ] ; then
     case $1 in
         *.tar.bz2)   tar xvjf $1    ;;
-    *.tar.gz)    tar xvzf $1    ;;
-*.bz2)       bunzip2 $1     ;;
-           *.rar)       unrar x $1       ;;
-       *.gz)        gunzip $1      ;;
-   *.tar)       tar xvf $1     ;;
-           *.tbz2)      tar xvjf $1    ;;
-       *.tgz)       tar xvzf $1    ;;
-   *.zip)       unzip $1       ;;
-           *.Z)         uncompress $1  ;;
-       *.7z)        7z x $1        ;;
-   *)           echo "don't know how to extract '$1'..." ;;
-       esac
-   else
-       echo "'$1' is not a valid file!"
-   fi
+        *.tar.gz)    tar xvzf $1    ;;
+        *.bz2)       bunzip2 $1     ;;
+        *.rar)       unrar x $1       ;;
+        *.gz)        gunzip $1      ;;
+        *.tar)       tar xvf $1     ;;
+        *.tbz2)      tar xvjf $1    ;;
+        *.tgz)       tar xvzf $1    ;;
+        *.zip)       unzip $1       ;;
+        *.Z)         uncompress $1  ;;
+        *.7z)        7z x $1        ;;
+        *)           echo "don't know how to extract '$1'..." ;;
+    esac
+else
+    echo "'$1' is not a valid file!"
+fi
 }
 
 function web {
