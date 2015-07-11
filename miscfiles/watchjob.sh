@@ -1,9 +1,9 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 job=$1
-for i in {1..3} ; do
+for i in {1..60} ; do
     echo "iteration $i"
-    sleep 1m
+    sleep 10m
     if [ $(condor_q $job | wc -l) -eq 5 ]; then 
         echo "found it"; 
     else
