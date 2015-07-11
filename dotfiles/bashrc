@@ -223,6 +223,10 @@ function tb {
 root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
 }
 
+function watchjob {
+nohup source ~/syncfiles/miscfiles/watchjob.sh $1 &
+}
+
 function ucsd {
 if [ $# -lt 1 ]; then
     # xwin
