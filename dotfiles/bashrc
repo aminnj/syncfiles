@@ -270,6 +270,10 @@ else
 fi
 }
 
+function niceplots {
+    . ~/syncfiles/miscfiles/niceplots.sh $1
+}
+
 function package {
 if [ $# -gt 0 ]; then
     . ~/syncfiles/miscfiles/package.sh $1
