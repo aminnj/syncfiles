@@ -227,6 +227,10 @@ function watchjob {
 nohup ~/syncfiles/miscfiles/watchjob.sh $1 &
 }
 
+function makeLooper {
+. ~/syncfiles/miscfiles/makeLooper.sh $*
+}
+
 function ucsd {
 if [ $# -lt 1 ]; then
     # xwin
