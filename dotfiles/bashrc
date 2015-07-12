@@ -60,6 +60,7 @@ if [[ ${HOST} == *Nick* ]]; then
     source ~/root/bin/thisroot.sh
     export DISPLAY=:0.0
 fi
+export PATH=${PATH}:~/syncfiles/miscfiles/
 
 alias l='ls -l'
 alias ll='ls -l'
@@ -225,10 +226,6 @@ root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
 
 function watchjob {
 nohup ~/syncfiles/miscfiles/watchjob.sh $1 &
-}
-
-function makeLooper {
-. ~/syncfiles/miscfiles/makeLooper.sh $*
 }
 
 function ucsd {

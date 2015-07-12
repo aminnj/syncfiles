@@ -10,7 +10,8 @@ branches="evt_event"
 
 if [ $# -lt 1 ]; then
     echo "makeLooper -i inputFile.root -t [treeName] -b \"branch1 branch2 branch3 ...\""
-    return 1
+    exit
+    # return 1
 fi
 
 OPTIND=1
@@ -26,7 +27,8 @@ shift $((OPTIND-1))
 if [ -z $input ]; then
     echo "You forgot the input file. Usage is:"
     echo "   makeLooper -i inputFile.root -t [treeName] -b \"branch1 branch2 branch3 ...\""
-    return 1
+    exit
+    # return 1
 fi
 
 ### GET FILES
@@ -139,7 +141,7 @@ echo "echo \"uaf-6.t2.ucsd.edu/~namin/dump/$merged\"" >> $all
 echo ">>> Getting a CMSSW environment"
 cmsrel CMSSW_7_4_6_patch6 > /dev/null 2>&1
 cd CMSSW_7_4_6_patch6
-cmsenv
+eval `scram runtime -sh` # cmsenv
 cd ..
 
 echo ">>> Do \". all.sh\" now"
