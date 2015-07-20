@@ -259,7 +259,7 @@ if has("autocmd")
         autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>
         " put printf template into code if using c++ and type PF in insert mode
-        autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
+        " autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
         autocmd FileType markdown nnoremap <F6> :w <bar> exec "!'/cygdrive/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' ".shellescape('%')<CR>
         autocmd FileType html nnoremap <F6> :w <bar> exec "!'/cygdrive/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' ".shellescape('%')<CR>
 

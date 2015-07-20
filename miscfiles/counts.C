@@ -2,6 +2,7 @@
 
 void counts(TString input)
 {
+    gErrorIgnoreLevel=kError;
     TChain * ch = new TChain("Events");
     if(input.Contains(".root")) {
         ch->Add(input);
