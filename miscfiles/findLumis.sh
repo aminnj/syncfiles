@@ -65,12 +65,12 @@ void ${scanner%.*}() {
     runLumiOutput.close();
 }" >> $scanner
 
-if [ "x$CMSSW_BASE" == "x" ]; then
-    echo "Do cmsenv first!"
-    exit 1
-fi
+CMSSW_VERSION=CMSSW_7_4_1
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/$CMSSW_VERSION/src
+eval `scramv1 runtime -sh`
+cd -
 
-root -b -q $scanner
+root -l -b -q $scanner
 csv2json.py $outtxt > $outjson
 
 mkdir -p runcsv
