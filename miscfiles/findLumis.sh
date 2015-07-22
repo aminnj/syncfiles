@@ -29,7 +29,7 @@ echo "#include <iostream>
 #include \"TFile.h\"
 #include \"TROOT.h\"
 using namespace std;
-gErrorIgnoreLevel=kError;
+// gErrorIgnoreLevel=kError;
 void ${scanner%.*}() {
     TChain *chain = new TChain(\"t\");
     chain->Add(\"$files\");
@@ -44,10 +44,10 @@ void ${scanner%.*}() {
         TTree *tree = (TTree*)file->Get(\"$tree\");
         TString filename(currentFile->GetTitle());
         int run, lumi;
-        TBranch *run_branch = tree->GetBranch(\"run\");
+        TBranch *run_branch = tree->GetBranch(\"evt_run\");
         run_branch->SetAddress(&run);
         tree->GetBranch(\"run\"); 
-        TBranch *lumi_branch = tree->GetBranch(\"lumi\");
+        TBranch *lumi_branch = tree->GetBranch(\"evt_lumiBlock\");
         lumi_branch->SetAddress(&lumi);
         tree->GetBranch(\"lumi\"); 
         for( unsigned int event = 0; event < tree->GetEntriesFast(); ++event) {
