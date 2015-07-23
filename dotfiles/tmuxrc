@@ -4,6 +4,10 @@ set -g prefix C-a
 unbind C-b
 bind C-a send-prefix
 
+# set -g prefix C-b
+# unbind C-a
+# bind C-b send-prefix
+
 # listen to alerts from all windows
 set -g bell-action any
 
@@ -21,6 +25,11 @@ bind _ split-window
 # quick pane cycling
 unbind ^A
 bind ^A select-pane -t :.+
+
+
+# # quick pane cycling
+# unbind ^B
+# bind ^B select-pane -t :.+
 
 # screen like window toggling
 bind Tab last-window
@@ -53,3 +62,4 @@ set -g status-left "#[fg=colour154] #h "
 setw -g window-status-current-format "#[bg=colour235]#[fg=brightblue] • #I#[fg=brightblue]#[bg=colour235] [#W] "
 setw -g window-status-format "#[bg=colour235]#[fg=white,bold] #I#[fg=white,bold]#[bg=colour235] [#W] "
 
+set -g status-right "#[fg=colour233,bg=default,nobold,noitalics,nounderscore] •#[fg=colour247,bg=colour233,nobold,noitalics,nounderscore] test  #[fg=colour241,bg=colour233,nobold,noitalics,nounderscore] •#[fg=colour2,bg=colour233,nobold,noitalics,nounderscore] Pane #P #[fg=colour236,bg=colour233,nobold,noitalics,nounderscore] •#[fg=colour247,bg=colour236,nobold,noitalics,nounderscore]  %A %D #[fg=colour241,bg=colour236,nobold,noitalics,nounderscore] •#[fg=colour252,bg=colour236,bold,noitalics,nounderscore] %l:%M%p #[fg=colour252,bg=colour236,nobold,noitalics,nounderscore] •#[fg=colour16,bg=colour252,bold,noitalics,nounderscore]"

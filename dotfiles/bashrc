@@ -88,7 +88,7 @@ alias usa='source ~/syncfiles/miscfiles/usa.sh'
 
 # dirs
 alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/"
-alias ss="cd ~/2015/ss/SSAnalysis/"
+alias ss="cd ~/2015/ss/SSAnalysis/CMSSW_7_1_6/; cmsenv; cd ../WZRun2/"
 
 # ssh
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'

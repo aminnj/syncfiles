@@ -89,6 +89,25 @@ sys.path.append(os.getenv("HOME") + '~/syncfiles/pyfiles')
 ```
 or we can modify the pythonpath variable for this (included in bashrc)
 
+## tabletex.py
+Suppose we had a text file (test.txt) with the contents (note that the spacing doesn't have to look like this)
+```
+col1 | col2          | col3 | col4
+
+1    | 2             | 3    | 4
+4    | multirow 3 10 | 8    | multirow 2 $\met$
+7    | -             | -    | -
+7    | -             | -    | -
+1    | 2             | 3    | -
+```
+and we wanted to make a nice LaTeX table from it. Well, now you can. Simply do `cat test.txt | python tabletex.py` to get
+the TeXified source. To go a step further, you could do `cat test.txt | python tabletex.py | pdflatex; pdfcrop texput.pdf output.pdf`.
+The syntax is as follows:
+- columns are separated by |
+- - indicates an empty entry
+- a blank line will cause the script to draw two horizontal lines instead of one
+- "multirow [x] [y]" will join [x] rows starting with the current and put the content [y] inside
+
 ## stats.py
 Takes piped input and prints out length, mean, sigma, sum, min, max. It can ignore non-numerical lines, but it only handles 1 column. If specified, the first argument of stats.py provides the column of piped input to use
 ``` bash
