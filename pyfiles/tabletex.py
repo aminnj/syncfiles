@@ -16,6 +16,9 @@ def listToRanges(a):
 def parseCols(inputcols, maxcols, prevmulti):
     cols = []
     colsMultirow = []
+    for i in range( maxcols - len(inputcols) ):
+        inputcols.append("-")
+
     for i,col in enumerate(inputcols):
         if(col.strip() == "-"):
             cols.append(" ")
@@ -34,15 +37,14 @@ def parseCols(inputcols, maxcols, prevmulti):
         if( i+1 in prevmulti.keys() ):
             prevmulti[i+1] -= 1
 
-            if(prevmulti[i+1] == 0): del prevmulti[i+1]
+            if(prevmulti[i+1] == 0):
+                del prevmulti[i+1]
 
     colsMultirow = prevmulti.keys()
     colsNotMultirow = list(set(range(1,maxcols+1))-set(colsMultirow))
-    
+
     print "     ",
     print " & ".join(cols),
-    if(len(cols) < maxcols):
-        print " & " * (maxcols - len(cols)),
 
     print "\\\\ ",
     if(len(colsMultirow) > 0):
@@ -57,7 +59,7 @@ if __name__ == "__main__":
     lines = []
     maxcols = -1
 
-    # content = [x.strip('\n') for x in open("test.txt","r").readlines()]
+    # content = [x.strip('\n') for x in open("parse.txt","r").readlines()]
     # for item in content:
     for item in sys.stdin:
         line = item.strip().split("|")
@@ -72,9 +74,11 @@ if __name__ == "__main__":
     print "\\usepackage{multirow}"
     print "\\usepackage{slashed}"
     print "\\newcommand{\\met}{\\slashed{E}_\\mathrm{T}}"
+    print "\\renewcommand{\\arraystretch}{1.2}"
     print "\\begin{document}"
     print "\\pagenumbering{gobble}% remove (eat) page numbers"
-    print "\\begin{center}"
+    print "\\begin{table}[h]"
+    print "\\centering"
     print "    \\begin{tabular}{|"+"c|" * maxcols+"}"
     print "    \\hline"
     prevMultiRowInfo={}
@@ -85,7 +89,7 @@ if __name__ == "__main__":
         else:
             prevMultiRowInfo = parseCols(line, maxcols, prevMultiRowInfo)
     print "    \\end{tabular}"
-    print "\\end{center}"
+    print "\\end{table}"
     print "\\end{document}"
 
 
