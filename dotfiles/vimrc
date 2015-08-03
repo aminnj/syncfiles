@@ -84,6 +84,10 @@ nnoremap <leader>rr :w <bar> exec '!. all.sh'<CR>
 " nnoremap <leader>xs :w <bar> exec '!xpdf -remote pdfname -exec reload &'<CR>
 nnoremap <leader>xu :w <bar> exec '!xpdf -remote pdfname -z 200 output.pdf &'<CR>
 
+" F12 toggles formatting so you can paste without
+" screwing up formatting of contents.
+nnoremap <leader>pt :set paste!<CR>
+
 " }}}
 
 " o and O will put newlines below and above cursor
@@ -232,9 +236,6 @@ nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
 nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 
-" F12 toggles formatting so you can paste without
-" screwing up formatting of contents.
-set pastetoggle=<F12>
 " autocommands {{{
 "
 " this is why I made a group for autocommands:
@@ -253,7 +254,8 @@ if has("autocmd")
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python27/python.exe '.shellescape('%')<CR>
         autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
-        autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
+        autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; cp '.shellescape('%:r').'.pdf ~/public_html/dump/'<CR>
+        " autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
         autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
