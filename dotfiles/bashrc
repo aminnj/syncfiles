@@ -50,6 +50,7 @@ alias tmux='tmux -2' # fixes colors in vim
 if [[ ${HOST} == *uaf-* ]]; then 
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
     unset SSH_ASKPASS
+    export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
 fi
 if [[ ${HOST} == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
