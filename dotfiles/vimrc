@@ -87,6 +87,7 @@ nnoremap <leader>xu :w <bar> exec '!xpdf -remote pdfname -z 200 output.pdf &'<CR
 " F12 toggles formatting so you can paste without
 " screwing up formatting of contents.
 nnoremap <leader>pt :set paste!<CR>
+set pastetoggle=<F12>
 
 " }}}
 
