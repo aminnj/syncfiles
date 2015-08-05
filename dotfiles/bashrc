@@ -123,7 +123,10 @@ alias d='cd ~/desktop/'
 alias db='cd /cygdrive/d/dropbox/'
 function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 function gitcamp() { git commit -a -m \"$@\"; git push; }
-#fi
+function mailme() {
+ if [ $? -eq 0 ];  then str="[UAFNotify] Command ended SUCCESSFULLY on $(date) with status code $?";  else  str="[UAFNotify] Command FAILED on $(date) with status code $?"; fi; str=$(echo $str | sed 's/:/./g'); echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
+
+}
 
 function xwin {
 # if ps | grep XWin | grep -v "grep" >& /dev/null; then
