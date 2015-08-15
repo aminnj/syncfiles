@@ -7,6 +7,8 @@ from PIL import Image
 import datetime, time
 import json
 
+sys.path.append("/usr/local/bin/tesseract")
+
 def cleanText(txt):
     newtxt = []
     for line in txt.split("\n"):
@@ -131,8 +133,12 @@ info["good"]["beamsgood"] = "stable" in beam
 info["good"]["systemsgood"] = systemsgood
 info["good"]["bfieldgood"] = bfield > 3.7
 info["good"]["energygood"] = energy > 6400
+info["good"]["timestamp"] = timestamp
+info["good"]["timestampparsed"] = timestampparsed
 
 print json.dumps(info, indent=4)
 out = open("monitor.json","w")
 out.write(json.dumps(info, indent=4))
 out.close()
+
+# os.system("scp monitor.json namin@uaf-6.t2.ucsd.edu:~/public_html/monitor.json")
