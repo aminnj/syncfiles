@@ -51,13 +51,13 @@ print systemsin, systemson, systemsgood
 
 # Magnetic field
 txt = pt.image_to_string("cms.png")
-bfield = -1.0
+bfield = -1
 try:
     for line in cleanText(txt):
         if "[T]" not in line: continue
         bfield = float(line.split(" ")[-1])
-except: 
-    print "couldn't get bfield from:", txt
+except: pass
+if bfield < 0: print "couldn't get bfield from:", txt
 print "bfield",bfield
 
 
@@ -65,15 +65,16 @@ print "bfield",bfield
 txt = pt.image_to_string("cmstop.png")
 run = -1
 try:
-    for item in cleanText(txt)[0].split():
+    clean = ''.join(i for i in cleanText(txt)[0] if (i.isdigit() or i==' '))
+    for item in clean.split():
         try:
             maybeRun = int(item)
-            if maybeRun > 200000:
+            if 200000 < maybeRun < 600000:
                 run = maybeRun
         except:
             pass
-except: 
-    print "couldn't get run from:", txt
+except: pass
+if run < 0: print "couldn't get run from:", txt
 print "run",run
 
 txt = pt.image_to_string("lhctop.png")
@@ -82,37 +83,34 @@ txt = pt.image_to_string("lhctop.png")
 fill = -1
 try:
     fill = int(cleanText(txt)[0].split(":")[1].strip().split()[0])
-except: 
-    print "couldn't get fill from:", txt
+except: pass
+if fill < 0: print "couldn't get fill from:", txt
 print "fill",fill
 
 # Energy
 energy = -1
 try:
     energy = int(cleanText(txt)[0].split(":")[2].strip().split()[0])
-except: 
-    print "couldn't get energy from:", txt
+except: pass
+if energy < 0: print "couldn't get energy from:", txt
 print "energy", energy
 
 # Beam status
 beam = ""
 try:
     beam = cleanText(txt)[1].split(":")[1].strip().lower()
-except: 
-    print "couldn't get beam from:", txt
+except: pass
+if beam == "": print "couldn't get beam from:", txt
 print "beam",beam
 
 # Timestamp from monitor picture
 timestamp, timestampparsed = "", 0
 try:
-    print txt
-    print cleanText(txt)[0]
-    print cleanText(txt)[0].split()[-2:]
     timestamp = " ".join(cleanText(txt)[0].split()[-2:]).strip()
     # 15-08-15 07:49:12
     timestampparsed = int(time.mktime(datetime.datetime.strptime(timestamp, "%d-%m-%y %H:%M:%S").timetuple()))
-except: 
-    print "couldn't get timestamp from:", txt
+except: pass
+if timestampparsed == 0: print "couldn't get timestamp from:", txt
 print "timestamp",timestamp
 
 
