@@ -91,6 +91,10 @@ alias usa='source ~/syncfiles/miscfiles/usa.sh'
 alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
 alias ss="cd ~/2015/ss/SSAnalysis/CMSSW_7_1_6/; cmsenv; cd ../WZRun2/"
 alias jec="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
+alias sm="cd ~/Software/slideMaker/; ls -lrth"
+alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
+
+
 
 # ssh
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
@@ -269,7 +273,7 @@ function web {
 if [ $# -gt 0 ]; then
     chmod -R a+r $@
     if [[ $(hostname) == *uaf-* ]]; then 
-        cp $@ ~/public_html/dump/
+        cp -rp $@ ~/public_html/dump/
     else
         scp -rp $@ namin@uaf-6.t2.ucsd.edu:~/public_html/dump/
     fi
