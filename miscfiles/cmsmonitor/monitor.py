@@ -4,8 +4,7 @@
 import pytesser as pt
 import os,sys,commands
 from PIL import Image
-import datetime, time
-import json
+import datetime, time, json, re
 
 sys.path.append("/usr/local/bin/tesseract")
 
@@ -57,6 +56,11 @@ try:
         if "[T]" not in line: continue
         bfield = float(line.split(" ")[-1])
 except: pass
+# if we couldn't find it using [T], then regex for #.###
+try:
+    s = re.search("[0-9]\.[0-9][0-9][0-9]",cleanText(txt))
+    if s and bfield == -1: bfield = float(s.group())
+except: pass
 if bfield < 0: print "couldn't get bfield from:", txt
 print "bfield",bfield
 
@@ -71,6 +75,7 @@ try:
             maybeRun = int(item)
             if 200000 < maybeRun < 600000:
                 run = maybeRun
+                break
         except:
             pass
 except: pass
@@ -139,4 +144,14 @@ out = open("monitor.json","w")
 out.write(json.dumps(info, indent=4))
 out.close()
 
-# os.system("scp monitor.json namin@uaf-6.t2.ucsd.edu:~/public_html/monitor.json")
+good = info["good"]
+realtime = good["realtime"]
+timestampparsed = good["timestampparsed"]
+energygood = good["energygood"]
+beamsgood = good["beamsgood"]
+bfieldgood = good["bfieldgood"]
+systemsgood = good["systemsgood"]
+out = open("data.txt","a")
+out.write("%i %i %i %i %i %i\n" % (realtime,timestampparsed,energygood,beamsgood,bfieldgood,systemsgood))
+out.close()
+
