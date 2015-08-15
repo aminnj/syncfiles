@@ -133,8 +133,8 @@ info["good"]["beamsgood"] = "stable" in beam
 info["good"]["systemsgood"] = systemsgood
 info["good"]["bfieldgood"] = bfield > 3.7
 info["good"]["energygood"] = energy > 6400
-info["good"]["timestampparsed"] = timestampparsed
 info["good"]["realtime"] = int((datetime.datetime.now() + datetime.timedelta(hours=9)).strftime("%s"))
+info["good"]["timestampparsed"] = timestampparsed
 
 print json.dumps(info, indent=4)
 out = open("monitor.json","w")
