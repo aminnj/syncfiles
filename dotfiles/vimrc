@@ -51,7 +51,7 @@ nnoremap <leader>h# yyPVr#jyypVr#
 nnoremap <leader>pf gqap
 
 " leader " to quote word under cursor
-nnoremap <leader>" viW<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
+nnoremap <leader>" viw<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
