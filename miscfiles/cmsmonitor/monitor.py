@@ -57,7 +57,7 @@ print systemsin, systemson, systemsgood
 
 # Magnetic field
 txt = pt.image_to_string("cms.png")
-bfield = -1
+bfield = -0.001
 try:
     for line in cleanText(txt):
         if "[T]" not in line: continue
