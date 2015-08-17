@@ -65,11 +65,10 @@ try:
 except: pass
 # if we couldn't find it using [T], then regex for #.###
 try:
-    s = re.search("[0-9]\.[0-9][0-9][0-9]",cleanText(txt))
-    if s and bfield == -1: bfield = float(s.group())
+    s = re.search("[0-9]\.[0-9][0-9][0-9]"," ".join(cleanText(txt)))
+    if s and bfield < 0.0: bfield = float(s.group())
 except: pass
 if bfield < 0: print "couldn't get bfield from:", txt
-print "bfield",bfield
 
 
 # Run number

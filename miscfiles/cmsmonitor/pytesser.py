@@ -27,10 +27,7 @@ class TesseractNotFound(Exception): #When tesseract is not found in the path
     pass
 
 def check_path(): #Check if tesseract is in the path raise TesseractNotFound otherwise
-    print os.environ.get('PATH','')
     for path in os.environ.get('PATH', '').split(':'):
-    # for path in ["/usr/local/bin"]:
-        print path
         filepath = os.path.join(path, PROG_NAME)
         if os.path.exists(filepath) and not os.path.isdir(filepath):
             return True
