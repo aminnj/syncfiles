@@ -146,7 +146,6 @@ info["good"]["energygood"] = energy > 6390
 info["good"]["realtime"] = int((datetime.datetime.now() + datetime.timedelta(hours=9)).strftime("%s"))
 info["good"]["timestampparsed"] = timestampparsed
 
-info["score"] = {}
 
 
 fractionalSystemsGood = 1.0*numSystemsgood/21
@@ -156,8 +155,9 @@ fractionalBfield = 1.0*bfield/3.8
 # 3 points for full energy, 5 for full B, 5 for full systems, 2 for stable beams
 scorefine = 3.0*fractionalEnergy + 5.0*fractionalBfield + 5.0*fractionalSystemsGood + 2.0*("stable" in beam)
 scoregrainy = 5*systemsgood + 5*(bfield>3.7) + 5*("stable" in beam)
-info["scorefine"] = scorefine
-info["scoregrainy"] = scoregrainy
+info["score"] = {}
+info["score"]["scorefine"] = scorefine
+info["score"]["scoregrainy"] = scoregrainy
 
 
 
