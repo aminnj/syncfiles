@@ -1,7 +1,7 @@
 # requires tesseract
 # On mac: brew install tesseract
 #         brew link tesseract
-import pytesser as pt
+import pytesseract as pt
 import os,sys,commands
 from PIL import Image
 import datetime, time, json, re
@@ -18,11 +18,15 @@ def cleanText(txt):
 # setup: get images, crop them
 os.system("curl -o lhc.png https://vistar-capture.web.cern.ch/vistar-capture/lhc1.png")
 os.system("curl -o cms.png https://cmspage1.web.cern.ch/cmspage1/data/page1.png")
-imgCMS = Image.open("cms.png")
-imgCMS.crop((0,0,800,30)).save("cmstop.png")
-imgLHC = Image.open("lhc.png")
-imgLHC.crop((0,0,1024,90)).save("lhctop.png")
 
+imgCMS = Image.open("cms.png")
+imgLHC = Image.open("lhc.png")
+imgCMStop = imgCMS.crop((0,0,800,30))
+imgLHCtop = imgLHC.crop((0,0,1024,90))
+imgCMSbfield = imgCMS.crop((710,433,782,446))
+(width, height) = imgCMSbfield.size
+scale = 4
+imgCMSbfield = imgCMSbfield.resize((scale*width,scale*height), Image.BICUBIC)
 
 # CMS subsystems
 dy = (583.0-374)/13.0
@@ -35,7 +39,6 @@ for i in range(14):
     coords = (498,374+i*dy)
     rgb = rgbimg.getpixel(coords)
     if(250 > rgb[1] > 240): systemsin.append(systemsall[i])
-
 for i in range(14):
     coords = (556,374+i*dy)
     rgb = rgbimg.getpixel(coords)
@@ -56,7 +59,7 @@ for system in ["CSC","DT","ECAL","ES","HCAL","PIXEL","RPC","TRACKER"]:
 print systemsin, systemson, systemsgood
 
 # Magnetic field
-txt = pt.image_to_string("cms.png")
+txt = pt.image_to_string(imgCMSbfield)
 bfield = -0.001
 try:
     for line in cleanText(txt):
@@ -72,7 +75,7 @@ if bfield < 0: print "couldn't get bfield from:", txt
 
 
 # Run number
-txt = pt.image_to_string("cmstop.png")
+txt = pt.image_to_string(imgCMStop)
 run = -1
 try:
     clean = ''.join(i for i in cleanText(txt)[0] if (i.isdigit() or i==' '))
@@ -88,7 +91,7 @@ except: pass
 if run < 0: print "couldn't get run from:", txt
 print "run",run
 
-txt = pt.image_to_string("lhctop.png")
+txt = pt.image_to_string(imgLHCtop)
 
 # Fill
 fill = -1
