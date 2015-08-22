@@ -104,6 +104,10 @@ set shortmess=atI
 set backspace=indent,eol,start
 set hidden
 
+" copies a line and comments the old line
+nmap zz yygccp
+vmap zz V<Esc>gvygvgc`>p
+
 " inoremap { {}<Left>
 inoremap {<CR> {<CR>}<Esc>==O
 inoremap {{ {
