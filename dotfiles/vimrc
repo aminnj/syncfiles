@@ -36,6 +36,10 @@ map <leader>tk :tabclose<cr>
 map <leader>tm :tabnext<cr>
 map <leader>ww :w!<cr>
 map <leader>qq :wq<cr>
+nmap <Leader>p "+p
+nmap <Leader>P "+P
+vmap <Leader>p "+p
+vmap <Leader>P "+P
 
 " indent file
 map <Leader>i mkHmlgg=G`lzt`k

@@ -3,7 +3,7 @@
 job=$1
 for i in {1..60} ; do
     echo "iteration $i"
-    sleep 10m
+    sleep 1m
     if [ $(condor_q $job | wc -l) -eq 5 ]; then 
         echo "found it"; 
     else
