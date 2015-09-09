@@ -27,12 +27,12 @@ echo -ne "\033]0;${USER}@${HOST}\007"
 # Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
 
 PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\] \w"
-#PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;33m\][\u@\h]\[\e[0m\] \w"
+# PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;33m\][\u@\h]\[\e[0m\] \w"
 
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
 fi
-PS+=" \[\033[00;32m\]> "
+PS+=" \[\033[01;32m\]> "
 PS+="\[\e[0m\]"
 export PS1=$PS
 
@@ -60,7 +60,7 @@ if [[ ${HOST} == *Nick* ]]; then
     alias python0='/cygdrive/c/Python27/python'
     export PATH=${PATH}:/cygdrive/d/Mathematica
     export PATH=${PATH}:/cygdrive/c/Program\ Files/Wolfram\ Research/Mathematica/10.0
-    source ~/root/bin/thisroot.sh
+    # source ~/root/bin/thisroot.sh
     export DISPLAY=:0.0
 fi
 export PATH=${PATH}:~/syncfiles/miscfiles/

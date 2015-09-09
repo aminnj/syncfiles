@@ -17,6 +17,8 @@ Contains:
 
 ## soft link rc files to git files
 > rm ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
+> rm ~/.minttyrc && ln -s ~/syncfiles/dotfiles/minttyrc ~/.minttyrc
+> rm ~/.inputrc && ln -s ~/syncfiles/dotfiles/inputrc ~/.inputrc
 > rm ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
 > rm ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
 > rm ~/.tmux.conf && ln -s ~/syncfiles/dotfiles/tmuxrc ~/.tmux.conf
@@ -67,6 +69,7 @@ git clone https://github.com/scrooloose/nerdtree.git
 git clone https://github.com/scrooloose/syntastic.git
 git clone git://github.com/tpope/vim-commentary.git
 git clone git://github.com/tpope/vim-surround.git
+git clone git://github.com/godlygeek/tabular.git
 git clone https://github.com/ervandew/supertab
 git clone https://github.com/majutsushi/tagbar.git
 mkdir -p ~/.vim/plugin
