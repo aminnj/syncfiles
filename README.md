@@ -16,12 +16,12 @@ Contains:
 > mkdir -p ~/.vim/colors && cd ~/.vim/colors && wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
 
 ## soft link rc files to git files
-> rm ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
-> rm ~/.minttyrc && ln -s ~/syncfiles/dotfiles/minttyrc ~/.minttyrc
-> rm ~/.inputrc && ln -s ~/syncfiles/dotfiles/inputrc ~/.inputrc
-> rm ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
-> rm ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
-> rm ~/.tmux.conf && ln -s ~/syncfiles/dotfiles/tmuxrc ~/.tmux.conf
+> rm -f ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
+> rm -f ~/.minttyrc && ln -s ~/syncfiles/dotfiles/minttyrc ~/.minttyrc
+> rm -f ~/.inputrc && ln -s ~/syncfiles/dotfiles/inputrc ~/.inputrc
+> rm -f ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
+> rm -f ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
+> rm -f ~/.tmux.conf && ln -s ~/syncfiles/dotfiles/tmuxrc ~/.tmux.conf
 
 ## pathogen (https://github.com/tpope/vim-pathogen)
 > mkdir -p ~/.vim/autoload ~/.vim/bundle
