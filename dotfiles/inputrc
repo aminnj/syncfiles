@@ -59,7 +59,7 @@ $if Bash
 
   # Filename completion/expansion
   #set completion-ignore-case on
-  #set show-all-if-ambiguous on
+  set show-all-if-ambiguous on
 
   # Expand homedir name
   #set expand-tilde on
