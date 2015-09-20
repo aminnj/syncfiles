@@ -139,7 +139,7 @@ echo "cp $merged ~/public_html/dump/" >> $all
 echo "echo \"uaf-6.t2.ucsd.edu/~namin/dump/$merged\"" >> $all
 
 echo ">>> Getting a CMSSW environment"
-cmsrel CMSSW_7_4_6_patch6 > /dev/null 2>&1
+cmsrel CMSSW_7_4_6_patch6
 cd CMSSW_7_4_6_patch6
 eval `scram runtime -sh` # cmsenv
 cd ..

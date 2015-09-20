@@ -26,7 +26,7 @@ for pic in $dir/*.png; do
     echo $pic
     basepic=$(basename $pic)
     echo "<div style='position:relative;z-index:1;display:inline;padding-left:0px;padding-right:0px'>" >> $index
-    echo "<a href='${basepic%%.png}.pdf'><img src='${basepic}' width='600px'/></a>" >> $index
+    echo "<a href='${basepic%%.png}.pdf'><img src='${basepic}' height='400px'/></a>" >> $index
 
     # if we have details file, cat and grep for detail
     if [ -f $details ]; then
