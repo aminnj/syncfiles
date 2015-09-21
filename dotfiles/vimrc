@@ -4,6 +4,9 @@ syntax on
 let g:is_posix = 1
 set background=light
 
+set backupdir=~/.backup,.
+set directory=~/.backup,.
+
 set t_Co=256
 color wombat256mod
 
@@ -16,6 +19,7 @@ if &term == "screen"
 endif
 
 inoremap kj <Esc>
+inoremap kJ <Esc>
 " Type kj to get out of insert or visual mode!
 " virtual lag caused by the below mapping in visual mode!
 " vnoremap kj <Esc>

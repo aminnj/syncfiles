@@ -46,5 +46,9 @@ echo "<html>" >> $index
 # wait
 chmod -R a+r $dir
 mkdir -p ~/public_html/dump/
-cp -rp $dir ~/public_html/dump/
+if [[ $(hostname) == *uaf-* ]]; then 
+    cp -rp $dir ~/public_html/dump/
+else
+    scp -rp $dir namin@uaf-6.t2.ucsd.edu:~/public_html/dump/
+fi
 echo "uaf-6.t2.ucsd.edu/~$USER/dump/$index"

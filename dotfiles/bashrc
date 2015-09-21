@@ -79,7 +79,7 @@ alias cd..='cd ..'
 alias bc='bc -l'
 alias iroot='command root'
 alias root='root -b -l'
-alias rot='root -b -l -q'
+alias rot='root -b -l -q -n'
 alias gridtick='grid-proxy-init -debug -verify'
 alias voms='voms-proxy-init -hours 168 -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
@@ -90,13 +90,21 @@ alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 alias usa='source ~/syncfiles/miscfiles/usa.sh'
 
 # dirs
-alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
-alias ss="cd ~/2015/ss/SSAnalysis/CMSSW_7_1_6/; cmsenv; cd ../WZRun2/"
-alias jec="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
-alias sm="cd ~/Software/slideMaker/; ls -lrth"
-alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
-alias fr="cd ~/2015/fr/CMSSW_7_4_1_patch1/src; cmsenv "
-alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
+if [[ $HOST == *uaf-* ]]; then 
+    alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
+    alias ss="cd ~/2015/ss/SSAnalysis/CMSSW_7_1_6/; cmsenv; cd ../WZRun2/"
+    alias jec="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
+    alias sm="cd ~/Software/slideMaker/; ls -lrth"
+    alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
+    alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
+    alias fr="cd ~/2015/fr/CMSSW_7_4_1_patch1/src; cmsenv "
+    alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
+    alias mks="cd ~/public_html/makers; ls -lrth"
+fi
+
+if [[ $HOST == *squark* ]]; then 
+    alias mks="cd ~/sandbox/makers; ls -lrth"
+fi
 
 
 
@@ -171,7 +179,7 @@ function pdftopng {
 #convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
 if [ $# -gt 0 ]; then
     echo "$1 ==> ${1%%.pdf}.png" 
-    if [[ $(hostname) == *uaf-* ]]; then 
+    if [[ $HOST == *uaf-* ]]; then 
         gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
     else
         density=200
