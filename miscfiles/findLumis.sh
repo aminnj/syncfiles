@@ -31,7 +31,7 @@ echo "#include <iostream>
 using namespace std;
 // gErrorIgnoreLevel=kError;
 void ${scanner%.*}() {
-    TChain *chain = new TChain(\"t\");
+    TChain *chain = new TChain(\"$tree\");
     chain->Add(\"$files\");
     TObjArray *listOfFiles = chain->GetListOfFiles();
     TIter fileIter(listOfFiles);

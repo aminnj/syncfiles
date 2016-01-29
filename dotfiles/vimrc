@@ -19,6 +19,7 @@ if &term == "screen"
 endif
 
 inoremap kj <Esc>
+inoremap kJ <Esc>
 " Type kj to get out of insert or visual mode!
 " virtual lag caused by the below mapping in visual mode!
 " vnoremap kj <Esc>
@@ -57,7 +58,7 @@ nnoremap <leader>pf gqap
 nnoremap <leader>" viw<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
 " Switch between the last two files
-nnoremap <leader><leader> <c-^>
+" nnoremap <leader><leader> <c-^>
 
 " paste from system clipboard, but only locally
 nnoremap <leader>pp "+p
@@ -260,6 +261,7 @@ if has("autocmd")
         " F6 executes gnuplot, python, C, C++ code by compiling and running
         " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
+        autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python27/python.exe '.shellescape('%')<CR>
         autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
         autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; cp '.shellescape('%:r').'.pdf ~/public_html/dump/'<CR>

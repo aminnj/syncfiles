@@ -90,15 +90,26 @@ alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 alias usa='source ~/syncfiles/miscfiles/usa.sh'
 
 # dirs
-alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
-alias ss="cd ~/2015/ss/SSAnalysis/CMSSW_7_1_6/; cmsenv; cd ../WZRun2/"
-alias jec="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
-alias sm="cd ~/Software/slideMaker/; ls -lrth"
-alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
-alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
-alias fr="cd ~/2015/fr/CMSSW_7_4_1_patch1/src; cmsenv "
-alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
-alias mks="cd ~/public_html/makers; ls -lrth"
+if [[ $HOST == *uaf-* ]]; then 
+    alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
+    alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
+    alias jec="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
+    alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
+    alias halo="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
+    alias sm="cd ~/Software/slideMaker/; ls -lrth"
+    alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
+    alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
+    alias fr="cd ~/2015/fr/CMSSW_7_4_1_patch1/src; cmsenv "
+    alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
+    alias mks="cd ~/public_html/makers; ls -lrth"
+    alias 76x="cd /home/users/namin/2015/76x/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
+    alias new76x="cd /home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
+    alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
+fi
+
+if [[ $HOST == *squark* ]]; then 
+    alias mks="cd ~/sandbox/makers; ls -lrth"
+fi
 
 
 
@@ -173,7 +184,7 @@ function pdftopng {
 #convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
 if [ $# -gt 0 ]; then
     echo "$1 ==> ${1%%.pdf}.png" 
-    if [[ $(hostname) == *uaf-* ]]; then 
+    if [[ $HOST == *uaf-* ]]; then 
         gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
     else
         density=200
@@ -222,6 +233,12 @@ fi
 awk -v x=$1 '{print $x}'
 
 }
+
+function xcp {
+xrdcp root://xrootd.unl.edu/$1 $2
+}
+# export so this can be used in other scripts
+export -f xcp
 
 function nevts {
 stuff='("'$1'")'
@@ -291,10 +308,12 @@ else
     echo "Usage: web <input files>"
 fi
 }
+export -f web
 
 function niceplots {
 . ~/syncfiles/miscfiles/niceplots.sh $1
 }
+export -f niceplots
 
 function package {
 if [ $# -gt 0 ]; then
