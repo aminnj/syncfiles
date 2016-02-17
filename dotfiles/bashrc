@@ -41,6 +41,7 @@ export PS1=$PS
 # fi
 
 export EDITOR=vim
+export NICK="nick"
 #export PYTHONSTARTUP=~/.pythonrc.py
 
 alias tmux='tmux -2' # fixes colors in vim
