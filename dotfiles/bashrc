@@ -24,11 +24,11 @@ HOST=$(hostname)
 # set window title to user@host
 echo -ne "\033]0;${USER}@${HOST}\007"
 
-PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\] \w"
+PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\]"
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
-PS+=" \[\033[01;32m\]> "
+PS+=" \w \[\033[01;32m\]> "
 PS+="\[\e[0m\]"
 export PS1=$PS
 
