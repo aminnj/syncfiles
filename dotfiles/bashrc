@@ -24,21 +24,13 @@ HOST=$(hostname)
 # set window title to user@host
 echo -ne "\033]0;${USER}@${HOST}\007"
 
-# Example: [23:35:56] [amin.nj@elara] ~/syncfiles/dotfiles > 
-
 PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\] \w"
-# PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;33m\][\u@\h]\[\e[0m\] \w"
-
 if [ -n "$WINDOW" ]; then
-    PS+=" \[\033[01;34m\][${WINDOW}]\[\e[0m\]"
+    PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
 PS+=" \[\033[01;32m\]> "
 PS+="\[\e[0m\]"
 export PS1=$PS
-
-# if [ "$TERM" == "xterm-color" ]; then
-#     export PS1="\[\033[01;34m\][\t]\[\e[0m\] \[\033[01;35m\][\u@\h]\[\e[0m\] \w \[\033[01;32m\]> \[\e[0m\]"
-# fi
 
 export EDITOR=vim
 export NICK="nick"
@@ -162,22 +154,27 @@ startxwin >& /dev/null &
 }
 
 function screens {
-COUNTER=0
-for i in `screen -ls | egrep -n ".*Detached.*" | awk '{print $2}' | cut -f1 -d '.'`; do
-    (( COUNTER++ ))
-    echo $COUNTER "=>" $i
-    #echo $1
-
-    if [ $# -gt 0 ]; then
-        #echo $#
-        if [ "$1" -eq "$COUNTER" ]; then
-            #echo this screen
-            screen -r $i
-        fi
-
+inpName=$1
+for att in $(screen -ls | grep Attached | awk '{print $1}'); do
+    id=$att
+    att=${att##*.}
+    [ -z "$inpName" ] && echo "Attached: $att"
+    if [[ $inpName == $att ]]; then
+        echo "Can't attach $att because it's already open"
+        return
     fi
-
 done
+
+for det in $(screen -ls | grep Detached | awk '{print $1}'); do
+    id=$det
+    det=${det##*.}
+    [ -z "$inpName" ] && echo "Detached: $det"
+    if [[ $inpName == $det ]]; then
+        screen -r $id
+        return
+    fi
+done
+[ ! -z "$inpName" ] && echo "No screens found with that name!"
 }
 
 function pdftopng {
