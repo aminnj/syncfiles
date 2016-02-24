@@ -188,7 +188,6 @@ for att in $(screen -ls | grep Attached | awk '{print $1}'); do
         return
     fi
 done
-
 for det in $(screen -ls | grep Detached | awk '{print $1}'); do
     id=$det
     det=${det##*.}
@@ -198,7 +197,10 @@ for det in $(screen -ls | grep Detached | awk '{print $1}'); do
         return
     fi
 done
-[ ! -z "$inpName" ] && echo "No screens found with that name!"
+if [ ! -z "$inpName" ]; then
+    echo "No screens found with that name. Making one!"
+    screen -S $inpName
+fi
 }
 
 function pdftopng {
