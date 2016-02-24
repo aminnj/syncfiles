@@ -11,6 +11,7 @@ set t_Co=256
 color wombat256mod
 
 set nu
+set nowrap
 
 
 " fix backspace in tmux->ssh->vim
@@ -142,6 +143,10 @@ set splitright
 set nocp
 execute pathogen#infect()
 
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+
 " NERDTree {
     map <C-n> :NERDTreeToggle<CR>
     let g:NERDTreeDirArrows=0
@@ -268,7 +273,8 @@ if has("autocmd")
         " autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
         autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-        autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+        " autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
+        autocmd FileType cpp nnoremap <leader><leader> :w <bar> exec '!root -b -q -l'.shellescape('%')<CR>
         autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>
         " put printf template into code if using c++ and type PF in insert mode
         " autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i

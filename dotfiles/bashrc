@@ -105,6 +105,7 @@ if [[ $HOST == *uaf-* ]]; then
     alias 76x="cd /home/users/namin/2015/76x/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias new76x="cd /home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
+    alias 80x="cd ~/2016/80x/CMSSW_8_0_0_pre6/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
 fi
 
 if [[ $HOST == *squark* ]]; then 
@@ -158,6 +159,29 @@ startxwin >& /dev/null &
 # else
 # startxwin >& /dev/null &
 # fi
+}
+
+function pg {
+PWD1=`pwd`
+PWD2=$1
+if [ -e $PWD1/$PWD2 ] ; then
+  blah=$PWD1/$PWD2
+  if [[ $HOST == *squark* ]]; then 
+    echo `greadlink -f $blah`
+  else
+    echo `readlink -f $blah`
+  fi
+else
+  if [ -e $PWD2 ]; then 
+      if [[ $HOST == *squark* ]]; then 
+      echo `greadlink -f $PWD2`
+    else
+      echo `readlink -f $PWD2`
+    fi
+  else
+    echo "$PWD1/$PWD2 does not exist." 
+  fi
+fi
 }
 
 function screens {
