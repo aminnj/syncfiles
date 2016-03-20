@@ -114,7 +114,7 @@ nmap zz yygccp
 vmap zz V<Esc>gvygvgc`>p
 
 " inoremap { {}<Left>
-inoremap {<CR> {<CR>}<Esc>==O
+inoremap {<Tab> {<CR>}<Esc>==O
 inoremap {{ {
 " inoremap {} {}
 
@@ -146,6 +146,9 @@ execute pathogen#infect()
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+
+" easymotion
+nmap s <Plug>(easymotion-overwin-f2)
 
 " NERDTree {
     map <C-n> :NERDTreeToggle<CR>
