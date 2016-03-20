@@ -51,6 +51,9 @@ Contains:
 > cd ~/.vim/bundle
 > git clone https://github.com/majutsushi/tagbar.git
 
+## vim-easymotion (git clone https://github.com/Lokaltog/vim-easymotion.git)
+> cd ~/.vim/bundle
+> git clone git://github.com/Lokaltog/vim-easymotion.git
 
 
 ## Toggle plugin
@@ -72,6 +75,7 @@ git clone git://github.com/tpope/vim-surround.git
 git clone git://github.com/godlygeek/tabular.git
 git clone https://github.com/ervandew/supertab
 git clone https://github.com/majutsushi/tagbar.git
+git clone git://github.com/Lokaltog/vim-easymotion.git
 mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
