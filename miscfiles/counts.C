@@ -1,9 +1,9 @@
 #include <TString.h>
 
-void counts(TString input)
+void counts(TString input, TString treeName="Events")
 {
     gErrorIgnoreLevel=kError;
-    TChain * ch = new TChain("Events");
+    TChain * ch = new TChain(treeName);
     if(input.Contains(".root")) {
         ch->Add(input);
     } else {
