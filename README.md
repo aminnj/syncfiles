@@ -76,6 +76,7 @@ git clone git://github.com/godlygeek/tabular.git
 git clone https://github.com/ervandew/supertab
 git clone https://github.com/majutsushi/tagbar.git
 git clone git://github.com/Lokaltog/vim-easymotion.git
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
