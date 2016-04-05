@@ -101,7 +101,7 @@ set pastetoggle=<F12>
 " nnoremap O m`O<esc>``
 
 " stop dumb window from opening from typo
-map q: :q
+" map q: :q
 
 nnoremap <space> %
 
@@ -142,6 +142,30 @@ set splitright
 
 set nocp
 execute pathogen#infect()
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+
+let &t_ti.="\e[1 q"
+let &t_SI.="\e[5 q"
+let &t_EI.="\e[1 q"
+let &t_te.="\e[0 q"
+
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_map = '<c-p>'
