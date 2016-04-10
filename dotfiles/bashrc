@@ -98,7 +98,9 @@ if [[ $HOST == *uaf-* ]]; then
     alias 76x="cd /home/users/namin/2015/76x/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias new76x="cd /home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
-    alias 80x="cd ~/2016/80x/CMSSW_8_0_0_pre6/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
+    alias 80x="cd ~/2016/80x_Apr8/CMSSW_8_0_3_patch1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
+    alias duck="cd ~/forFrank/NtupleTools/AutoTwopler"
+
 fi
 
 if [[ $HOST == *squark* ]]; then 
