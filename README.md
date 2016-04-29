@@ -39,6 +39,14 @@ Contains:
 > cd ~/.vim/bundle
 > git clone git://github.com/tpope/vim-commentary.git
 
+## vim-jdaddy (https://github.com/tpope/vim-jdaddy)
+> cd ~/.vim/bundle
+> git clone https://github.com/tpope/vim-jdaddy
+> `gwaj` will take a json object in the paste buffer and append it onto 
+> the current json object the cursor is on
+> `gqaj` will pretty-print the json object the cursor is on
+
+
 ## vim-surround (https://github.com/tpope/vim-surround)
 > cd ~/.vim/bundle
 > git clone git://github.com/tpope/vim-surround.git
@@ -72,6 +80,8 @@ git clone https://github.com/scrooloose/nerdtree.git
 git clone https://github.com/scrooloose/syntastic.git
 git clone git://github.com/tpope/vim-commentary.git
 git clone git://github.com/tpope/vim-surround.git
+git clone git://github.com/tpope/vim-fugitive.git
+git clone https://github.com/tpope/vim-jdaddy
 git clone git://github.com/godlygeek/tabular.git
 git clone https://github.com/ervandew/supertab
 git clone https://github.com/majutsushi/tagbar.git

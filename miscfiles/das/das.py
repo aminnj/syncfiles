@@ -35,7 +35,7 @@ for fe in data['data']:
     totfiles += 1
     totsize += size
     totevents += nevents
-    print name, nevents, cli.size_format(size,10)
+    # print name, nevents, cli.size_format(size,10)
 
 print "-"*20
 print "total number of files:", totfiles
