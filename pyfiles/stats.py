@@ -2,6 +2,20 @@
 
 import math, sys, os
 
+def hum(num):
+    # stolen from http://stackoverflow.com/questions/17973278/python-decimal-engineering-notation-for-mili-10e-3-and-micro-10e-6
+    sgn = ''
+    if num < 0: num, sgn = -num, '-'
+
+    exp = int(math.floor(math.log10(num)))
+    exp3 = exp-(exp % 3)
+    x3 = num/(10**exp3)
+
+    if exp3 >= -24 and exp3 <= 24 and exp3 != 0: exp3_text = 'yzafpnum kMGTPEZY'[ ( exp3 - (-24)) / 3]
+    elif exp3 == 0: exp3_text = ''
+    else: exp3_text = 'e%s' % exp3
+    return '%s%s%s' % (sgn,round(x3,2),exp3_text)
+
 def statistics(ls):
     length = len(ls)
     totsum = sum(ls)
@@ -9,7 +23,8 @@ def statistics(ls):
     sigma = math.sqrt(1.0*sum([(mean-v)*(mean-v) for v in ls])/(length-1))
     maximum, minimum = max(ls), min(ls)
     #erroronmean = jackknife(ls)[1]
-    return (length, mean, sigma, totsum, minimum, maximum)
+    return (length, mean, sigma, totsum, minimum, maximum, \
+           hum(length), hum(mean), hum(sigma), hum(totsum), hum(minimum), hum(maximum))
 
 def jackknife(ls):
     N = len(ls)
@@ -65,10 +80,10 @@ if __name__ == "__main__":
             makehisto(words)
     else: 
         print """
-        length: {0}
-        mean:   {1}
-        sigma:  {2}
-        sum:    {3}
-        min:    {4}
-        max:    {5}
+        length: {0} ({6})
+        mean:   {1} ({7})
+        sigma:  {2} ({8})
+        sum:    {3} ({9})
+        min:    {4} ({10})
+        max:    {5} ({11})
         """.format(*statistics(nums))

@@ -19,7 +19,9 @@ if &term == "screen"
     set t_kb=
 endif
 
-set term=screen-256color
+if exists('$TMUX')
+    set term=screen-256color
+endif
 
 inoremap kj <Esc>
 inoremap kJ <Esc>
@@ -137,6 +139,7 @@ set bs=2
 "turn on wild menu for tab command completion
 set wildmenu
 set wildmode=list:longest,full
+set wildignorecase
 
 " turn ruler on to show position
 set ruler
@@ -154,11 +157,9 @@ let &t_SI.="\e[5 q"
 let &t_EI.="\e[1 q"
 let &t_te.="\e[0 q"
 
-let g:neocomplete#enable_at_startup = 0
-
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
+" set runtimepath^=~/.vim/bundle/ctrlp.vim
+" let g:ctrlp_map = '<c-p>'
+" let g:ctrlp_cmd = 'CtrlP'
 
 " easymotion
 nmap s <Plug>(easymotion-overwin-f2)
