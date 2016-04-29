@@ -19,6 +19,8 @@ if &term == "screen"
     set t_kb=
 endif
 
+set term=screen-256color
+
 inoremap kj <Esc>
 inoremap kJ <Esc>
 " Type kj to get out of insert or visual mode!
@@ -94,6 +96,9 @@ nnoremap <leader>xu :w <bar> exec '!xpdf -remote pdfname -z 200 output.pdf &'<CR
 nnoremap <leader>pt :set paste!<CR>
 set pastetoggle=<F12>
 
+
+nnoremap <leader>n :NeoCompleteToggle<CR>
+
 " }}}
 
 " o and O will put newlines below and above cursor
@@ -148,6 +153,8 @@ let &t_ti.="\e[1 q"
 let &t_SI.="\e[5 q"
 let &t_EI.="\e[1 q"
 let &t_te.="\e[0 q"
+
+let g:neocomplete#enable_at_startup = 0
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_map = '<c-p>'

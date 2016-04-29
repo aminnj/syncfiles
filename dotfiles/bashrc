@@ -77,6 +77,7 @@ alias gridtick='grid-proxy-init -debug -verify'
 alias voms='voms-proxy-init -hours 168 -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
+alias em='emacs'
 alias gitcam='git commit -a -m'
 alias rootenv='source ~/root/bin/thisroot.sh'
 alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
@@ -145,6 +146,9 @@ function gitcamp() { git commit -a -m \"$@\"; git push; }
 function mailme() {
  if [ $? -eq 0 ];  then str="[UAFNotify] Command ended SUCCESSFULLY on $(date) with status code $?";  else  str="[UAFNotify] Command FAILED on $(date) with status code $?"; fi; str=$(echo $str | sed 's/:/./g'); echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
 
+}
+function utc() {
+    date -d "1970-01-01 $1 sec UTC"
 }
 
 function xwin {
@@ -306,8 +310,8 @@ nohup ~/syncfiles/miscfiles/watchjob.sh $1 &
 function ucsd {
 if [ $# -lt 1 ]; then
     # xwin
-    # ssh -X namin@uaf-6.t2.ucsd.edu
-    ssh namin@uaf-6.t2.ucsd.edu
+    # ssh -X namin@uaf-10.t2.ucsd.edu
+    ssh namin@uaf-10.t2.ucsd.edu
 else
     ssh -X namin@uaf-${1}.t2.ucsd.edu
 fi
@@ -388,4 +392,8 @@ if [ $# -gt 0 ]; then
 else
     echo "Usage: addnumbers <pdf file> [--wide]"
 fi
+}
+
+function myip {
+    curl "http://icanhazip.com/"
 }
