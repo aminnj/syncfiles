@@ -19,24 +19,28 @@ examples:
            - prints out above information for ALL files
 
 Or you can import dis_client and make a query using online syntax and get a json via:
-       dis_client.query(q="..." [, type="basic"] [, detail=False])
+       dis_client.query(q="..." [, typ="basic"] [, detail=False])
 """
 
-BASE_URL = "http://uaf-8.t2.ucsd.edu/~namin/makers/disMaker/handler.py"
+BASE_URL_PATTERN = "http://uaf-{NUM}.t2.ucsd.edu/~namin/makers/disMaker/handler.py"
 
 def query(q, typ="basic", detail=False):
-    url = '%s?%s' % (BASE_URL, urllib.urlencode({"query": q, "type": typ, "short": "" if detail else "short"}))
+    url_pattern = '%s?%s' % (BASE_URL_PATTERN, urllib.urlencode({"query": q, "type": typ, "short": "" if detail else "short"}))
 
     data = {}
-    try:
-        content =  urllib2.urlopen(url).read() 
-        data = json.loads(content)
-    except: print "Failed to perform URL fetching and decoding!"
+    # try all uafs
+    for num in map(str,[8,10,6,3,4,5]):
+        try:
+            url = url_pattern.replace("{NUM}",num)
+            content =  urllib2.urlopen(url).read() 
+            data = json.loads(content)
+            break
+        except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
 
     return data
 
         
-def get_output_string(q, typ="basic", detail=False):
+def get_output_string(q, typ="basic", detail=False, show_json=False):
     buff = ""
     data = query(q, typ, detail)
 
@@ -47,9 +51,14 @@ def get_output_string(q, typ="basic", detail=False):
         return "DIS failure: %s" % data["response"]["fail_reason"]
 
     data = data["response"]["payload"]
+    
+    if show_json:
+        return json.dumps(data, indent=4)
+
 
     if type(data) == dict:
         if "files" in data: data = data["files"]
+
 
     if type(data) == list:
         for elem in data:
@@ -60,12 +69,14 @@ def get_output_string(q, typ="basic", detail=False):
                 buff += str(elem)
             buff += "\n"
     elif type(data) == dict:
-        for key in data:
+        for ikey,key in enumerate(data):
             buff += "%s: %s\n\n" % (key, data[key])
 
+    # ignore whitespace at end
+    buff = buff.rstrip()
     return buff
 
-def test():
+def test(one=False):
 
     queries = [
     {"q":"/*/CMSSW_8_0_5*RelVal*/MINIAOD","typ":"basic","detail":False},
@@ -75,16 +86,20 @@ def test():
     {"q":"* | grep nevents_out","typ":"snt","detail":False},
     {"q":"/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM","typ":"mcm","detail":True},
     ]
+    if one: queries = queries[3:4]
     for q_params in queries:
         print get_output_string(**q_params)
 
 if __name__ == '__main__':
+    
+    # test(one=True)
 
     parser = argparse.ArgumentParser()
     parser.add_argument("query", help="query")
     parser.add_argument("-t", "--type", help="type of query")
     parser.add_argument("-d", "--detail", help="show more detailed information", action="store_true")
+    parser.add_argument("-j", "--json", help="show output as full json", action="store_true")
     args = parser.parse_args()
     if not args.type: args.type = "basic"
-    print get_output_string(args.query, typ=args.type, detail=args.detail)
+    print get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json)
 

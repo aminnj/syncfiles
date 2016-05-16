@@ -6,11 +6,11 @@ if [ $# -lt 1 ]; then
 fi
 
 dir=$1
-# for i in $(ls -1 $dir/*.pdf); do
-#     pdftopng $i &
-# done
+for i in $(ls -1 $dir/*.pdf); do
+    pdftopng $i &
+done
 
-# wait
+wait
 
 index=$dir/_index.php
 details=$dir/details.txt

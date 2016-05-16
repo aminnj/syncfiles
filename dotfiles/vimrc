@@ -11,7 +11,7 @@ set t_Co=256
 color wombat256mod
 
 set nu
-set nowrap
+" set nowrap
 
 
 " fix backspace in tmux->ssh->vim
@@ -20,6 +20,9 @@ if &term == "screen"
 endif
 
 if exists('$TMUX')
+    set term=screen-256color
+endif
+if exists('$UCSD')
     set term=screen-256color
 endif
 
@@ -67,6 +70,9 @@ nnoremap <leader>" viw<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
 
 " paste from system clipboard, but only locally
 nnoremap <leader>pp "+p
+
+
+
 "note: if we wanted to do this by default, we could do
 "set clipboard=unnamed
 "but I'd like to have 2 main clipboards in use just in case
@@ -210,10 +216,36 @@ noremap J 5<down>
 noremap <Down> gj
 noremap <Up> gk
 
+" MRU command-line completion
+function! s:MRUComplete(ArgLead, CmdLine, CursorPos)
+    return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
+endfunction
+
+" MRU function
+function! s:MRU(command, arg)
+    if a:command == "tabedit"
+        execute a:command . " " . a:arg . "|lcd %:p:h"
+    else
+        execute a:command . " " . a:arg
+    endif
+endfunction
+
+" commands
+command! -nargs=1 -complete=customlist,<sid>MRUComplete ME call <sid>MRU('edit', <f-args>)
+command! -nargs=1 -complete=customlist,<sid>MRUComplete MS call <sid>MRU('split', <f-args>)
+command! -nargs=1 -complete=customlist,<sid>MRUComplete MV call <sid>MRU('vsplit', <f-args>)
+command! -nargs=1 -complete=customlist,<sid>MRUComplete MT call <sid>MRU('tabedit', <f-args>)
+
+
+" cnoremap <expr> <Tab>   getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"
+" cnoremap <expr> <S-Tab> getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"
 
 
 " yank to end of line
 nnoremap Y y$
+
+" select last pasted text
+nnoremap gp `[v`]
 
 
 nnoremap o o<Esc><up>

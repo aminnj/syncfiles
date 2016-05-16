@@ -47,6 +47,7 @@ if [[ ${HOST} == *uaf-* ]]; then
     unset SSH_ASKPASS
     export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
     export PYTHONPATH=$PYTHONPATH:/home/users/namin/Software/slideMaker
+    export UCSD="true"
 fi
 if [[ ${HOST} == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
@@ -84,6 +85,7 @@ alias gitcam='git commit -a -m'
 alias rootenv='source ~/root/bin/thisroot.sh'
 alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 alias usa='source ~/syncfiles/miscfiles/usa.sh'
+alias cond='condor_q $USER'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
@@ -105,7 +107,8 @@ if [[ $HOST == *uaf-* ]]; then
     alias new76x="cd /home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 80x="cd ~/2016/80x_Apr8/CMSSW_8_0_3_patch1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
-    alias duck="cd ~/forFrank/NtupleTools/AutoTwopler"
+    alias duck="cd ~/duck_80x/NtupleTools/AutoTwopler"
+    alias lepton="cd ~/2016/ss/LeptonBabyMaker/CMSS*/; cmsenv; cd .."
 
 fi
 
@@ -142,12 +145,20 @@ export HISTFILESIZE=500000
 export HISTSIZE=100000
 export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
 
+# Fix spelling errors for cd
+shopt -s cdspell
+
+git config --global alias.co checkout
+git config --global alias.ci 'commit -a -m'
+
+# Disable annoying mail messages
+unset MAILCHECK
+
 # if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
 #alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 alias d='cd ~/desktop/'
 alias db='cd /cygdrive/d/dropbox/'
 function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
-function gitcamp() { git commit -a -m \"$@\"; git push; }
 function mailme() {
  if [ $? -eq 0 ];  then str="[UAFNotify] Command ended SUCCESSFULLY on $(date) with status code $?";  else  str="[UAFNotify] Command FAILED on $(date) with status code $?"; fi; str=$(echo $str | sed 's/:/./g'); echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
 
@@ -271,8 +282,13 @@ if [ $# -lt 1 ]; then
     echo "usage: col <col #>"
     return 1
 fi
-awk -v x=$1 '{print $x}'
+num=$1
 
+if [[ $num -lt 0 ]]; then 
+    awk "{print \$(NF+$((num+1)))}"
+else
+    awk -v x=$num '{print $x}'
+fi
 }
 
 function xcp {
