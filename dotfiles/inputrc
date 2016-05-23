@@ -24,6 +24,11 @@
 set completion-ignore-case on
 set completion-prefix-display-length 2
 
+# reload this file with <C-x><C-r>
+"\C-x\C-r": re-read-init-file
+
+# alt-m wraps current command with "for i in $(); do echo $i; done" and places cursor before done
+"\em": '\C-afor i in $(\C-e); do echo $i;  done\C-b\C-b\C-b\C-b\C-b'
 
 # the following line is actually
 # equivalent to "\C-?": delete-char
@@ -44,6 +49,15 @@ set completion-prefix-display-length 2
 # VT220
 "\eOH": beginning-of-line
 "\eOF": end-of-line
+
+
+
+# Be more intelligent when autocompleting by also looking at the text after
+# the cursor. For example, when the current line is "cd ~/src/mozil", and
+# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
+# ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
+# Readline used by Bash 4.)
+set skip-completed-text on
 
 # Allow 8-bit input/output
 #set meta-flag on

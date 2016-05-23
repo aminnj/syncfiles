@@ -35,7 +35,7 @@ test_fnames = [
 ]
 
 
-def print_missing(fnames):
+def print_missing(fnames, quiet=False):
     # key is non-numeric prefix and values are lists of the numbers
     d = {}
     for fname in fnames:
@@ -67,10 +67,12 @@ def print_missing(fnames):
     for pfx in d.keys():
         try:
             missing = sorted(list(set(range(1,max(d[pfx])+1))-set(d[pfx])))
-            if len(missing) == 0: print "%s %s*.root: GOOD %s" % (OKGREEN, pfx, ENDC)
-            else: print "%s %s*.root: BAD %s" % (FAIL, pfx, ENDC)
+            tot = max(d[pfx])
+            if len(missing) == 0: print "%s %s*.root: GOOD (%i) %s" % (OKGREEN, pfx, tot, ENDC)
+            else: print "%s %s*.root: MISSING (%i/%i) %s" % (FAIL, pfx, len(missing), tot, ENDC)
 
-            for miss in missing: print "   missing %s%i.root" % (pfx, miss)
+            if not quiet:
+                for miss in missing: print "   missing %s%i.root" % (pfx, miss)
             print 
         except:
             pass
@@ -82,10 +84,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("location", help="directory (or wildcard for files) to check")
+    parser.add_argument("-q", "--quiet", help="don't show all filenames", action="store_true")
     args = parser.parse_args()
 
     if "*" in args.location: fnames = glob.glob(args.location)
     else: fnames = os.listdir(args.location)
 
-    print_missing(fnames)
+    print_missing(fnames, args.quiet)
 

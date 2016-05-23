@@ -39,6 +39,9 @@ export NICK="nick"
 
 alias tmux='tmux -2' # fixes colors in vim
 
+# this is so we can use <C-s> to forward history search without nuking the terminal
+stty stop ""
+
 # special host-dependent stuff
 # cmsenv compatibility for ucsd uaf
 export PATH=${PATH}:${HOME}/syncfiles/pyfiles/
@@ -89,6 +92,7 @@ alias cond='condor_q $USER'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
+    alias ev="cd ~/sandbox/CMSSW_8_0_6/; cmsenv; cd -"
     alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
     alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss74="cd ~/2016/ss/SSAnalysis/; . setup.sh;"

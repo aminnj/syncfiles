@@ -12,6 +12,7 @@ color wombat256mod
 
 set nu
 " set nowrap
+set sidescroll=1
 
 
 " fix backspace in tmux->ssh->vim
@@ -57,7 +58,7 @@ map <Leader>i mkHmlgg=G`lzt`k
 " ==========================================
 nnoremap <leader>h= yyPVr=jyypVr=
 nnoremap <leader>h/ yyPVr/jyypVr/
-nnoremap <leader>h# yyPVr#jyypVr#
+nnoremap <leader>h# :center 40<cr>hhv0r#A<space><esc>20A#<esc>d40<bar>YppVr#kk.
 
 "format paragraph to 80 chars
 nnoremap <leader>pf gqap
@@ -295,7 +296,7 @@ if has("autocmd")
         autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         " autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-        autocmd FileType cpp nnoremap <leader><leader> :w <bar> exec '!root -b -q -l'.shellescape('%')<CR>
+        autocmd FileType cpp nnoremap <leader><leader> :w <bar> exec '!root -b -q -l -n'.shellescape('%')<CR>
         autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>
         " put printf template into code if using c++ and type PF in insert mode
         " autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
