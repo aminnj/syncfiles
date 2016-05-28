@@ -35,7 +35,7 @@ test_fnames = [
 ]
 
 
-def print_missing(fnames, quiet=False):
+def print_missing(fnames, quiet=False, themax=None):
     # key is non-numeric prefix and values are lists of the numbers
     d = {}
     for fname in fnames:
@@ -66,10 +66,11 @@ def print_missing(fnames, quiet=False):
 
     for pfx in d.keys():
         try:
-            missing = sorted(list(set(range(1,max(d[pfx])+1))-set(d[pfx])))
             tot = max(d[pfx])
-            if len(missing) == 0: print "%s %s*.root: GOOD (%i) %s" % (OKGREEN, pfx, tot, ENDC)
-            else: print "%s %s*.root: MISSING (%i/%i) %s" % (FAIL, pfx, len(missing), tot, ENDC)
+            if themax: tot = int(themax)
+            missing = sorted(list(set(range(1,tot+1))-set(d[pfx])))
+            if len(missing) == 0: print "%s %s*.root: ALL GOOD (%i) %s" % (OKGREEN, pfx, tot, ENDC)
+            else: print "%s %s*.root: MISSING %i/%i %s" % (FAIL, pfx, len(missing), tot, ENDC)
 
             if not quiet:
                 for miss in missing: print "   missing %s%i.root" % (pfx, miss)
@@ -85,10 +86,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("location", help="directory (or wildcard for files) to check")
     parser.add_argument("-q", "--quiet", help="don't show all filenames", action="store_true")
+    parser.add_argument("-m", "--max", help="if you know the max number, then you can specify it")
     args = parser.parse_args()
 
     if "*" in args.location: fnames = glob.glob(args.location)
     else: fnames = os.listdir(args.location)
 
-    print_missing(fnames, args.quiet)
+    print_missing(fnames, args.quiet, args.max)
 

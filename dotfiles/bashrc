@@ -97,13 +97,14 @@ if [[ $HOST == *uaf-* ]]; then
     alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss74="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss76="cd ~/2016/ss/76x/SSAnalysis/; . setup.sh;"
+    alias ss80="cd ~/2016/ss/80x/SSAnalysis/; . setup.sh;"
     alias jec="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
     alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     alias halo="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     alias sm="cd ~/Software/slideMaker/; ls -lrth"
     alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
     alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
-    alias fr="cd ~/2015/fr/CMSSW_7_4_1_patch1/src; cmsenv "
+    alias fr="cd ~/2016/ss/76x/SSAnalysis/; . setup.sh; cd FakeRate/measurement_region/"
     alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
     alias mks="cd ~/public_html/makers; ls -lrth"
     alias dis="cd ~/public_html/makers/disMaker; ls -lrth"
@@ -234,6 +235,27 @@ if [ ! -z "$inpName" ]; then
     screen -S $inpName
 fi
 }
+
+function clog {
+    if [ $# -gt 0 ]; then
+        temp_file=$(mktemp)
+        jobid=$1
+        condor_history $USER -limit 20 | grep $jobid
+        condor_history -l $jobid > $temp_file
+        iwd=$(cat $temp_file | grep "^Iwd" | cut -d\" -f2)
+        out=$(cat $temp_file | grep "^Out" | cut -d\" -f2)
+        err=$(cat $temp_file | grep "^Err" | cut -d\" -f2)
+        [[ "$out" == "/"* ]] || out=${iwd}/${out}
+        [[ "$err" == "/"* ]] || err=${iwd}/${err}
+        echo $out
+        echo $err
+        vim -O $out $err
+        rm $temp_file
+    else
+        condor_history $USER -limit 20
+    fi
+}
+
 
 function pdftopng {
 #sharpen not really necessary
