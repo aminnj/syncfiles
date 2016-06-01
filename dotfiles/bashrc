@@ -92,7 +92,7 @@ alias cond='condor_q $USER'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
-    alias ev="cd ~/sandbox/CMSSW_8_0_6/; cmsenv; cd -"
+    alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_6/; cmsenv; cd -"
     alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
     alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss74="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
