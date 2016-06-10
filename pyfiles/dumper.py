@@ -56,7 +56,10 @@ def dump(fname_in, treename="Events", max_nevents=1, cut=""):
 
     f = TFile(fname_in)
     tree = f.Get(treename)
-    aliases = tree.GetListOfAliases()
+    try:
+        aliases = tree.GetListOfAliases()
+    except:
+        aliases = None
     branches = tree.GetListOfBranches()
 
     d_bname_to_info = {}
@@ -108,9 +111,13 @@ def dump(fname_in, treename="Events", max_nevents=1, cut=""):
             class_name = d_bname_to_info[bname]["class"]
             bobj = tree.__getattr__(bname)
 
-            print "--> %s:" % alias,
 
-            vals = get_vals(bobj, class_name)
+            try:
+                vals = get_vals(bobj, class_name)
+            except:
+                continue
+
+            print "--> %s:" % alias,
 
             if type(vals) == list:
                 print ",".join(map(str,vals))
@@ -148,6 +155,8 @@ if __name__ == "__main__":
         nevents = int(args.nevents)
     if args.cut:
         cut = str(args.cut)
+    if args.treename:
+        treename = args.treename
 
 
     with warnings.catch_warnings():

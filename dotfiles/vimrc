@@ -47,7 +47,8 @@ map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tk :tabclose<cr>
 map <leader>tm :tabnext<cr>
-map <leader>ww :w!<cr>
+map <leader>ww :set nowrap!<cr>
+map <leader>nn :set nu!<cr>
 map <leader>qq :wq<cr>
 
 " indent file

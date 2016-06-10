@@ -52,7 +52,7 @@ class Reader(object):
                 branchname = branch.GetName()
                 classname = branch.GetClassName()
 
-                self.alias_to_classname[aliasname] = classname
+                self.alias_to_classname[branchname] = classname
                 self.alias_to_branchname[branchname] = branchname.replace(".obj","")
                 self.alias_to_isvector[branchname] = "vector<" in classname
 

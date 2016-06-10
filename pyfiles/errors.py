@@ -59,10 +59,11 @@ class E:
         return other_val, other_err
 
     def __str__(self):
-        return "%f +- %f" % (self.val, self.err)
+        # why use strings? I want python to choose ndecimal places for me
+        return "%s +- %s" % (str(self.val), str(self.err))
 
     def __repr__(self):
-        return "%f +- %f" % (self.val, self.err)
+        return "%s +- %s" % (str(self.val), str(self.err))
 
 if __name__ == "__main__":
     v1 = E(10.0,1.0)

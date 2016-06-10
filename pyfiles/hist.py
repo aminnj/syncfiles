@@ -49,7 +49,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     name = args.name or "hist"
-    outname = "/tmp/namin/%s.pdf" % name
+    outname = "%s.pdf" % name
     drawopt = args.drawopt or ""
 
     rows = []

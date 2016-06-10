@@ -36,11 +36,41 @@ def query(q, typ="basic", detail=False):
             data = json.loads(content)
             break
         except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
+        if "test" in BASE_URL_PATTERN: break
 
     return data
 
+def listofdicts_to_table(lod):
+    colnames = list(set(sum([thing.keys() for thing in lod],[])))
+
+    # key is col name and value is maximum length of any entry in that column
+    d_colsize = {}
+    for thing in lod:
+        for colname in colnames:
+            val = str(thing.get(colname,""))
+            if colname not in d_colsize: d_colsize[colname] = len(colname)+1
+            d_colsize[colname] = max(len(val)+1, d_colsize[colname])
+
+    # sort colnames from longest string lengths to shortest
+    colnames = sorted(colnames, key=d_colsize.get, reverse=True)
+
+    buff = ""
+    header = ""
+    for icol,colname in enumerate(colnames):
+        header += ("%%%s%is" % ("-" if icol==0 else "", d_colsize[colname])) % colname
+    buff += header + "\n"
+    for thing in lod:
+        line = ""
+        for icol,colname in enumerate(colnames):
+            tmp = "%%%s%is" % ("-" if icol==0 else "", d_colsize[colname])
+            tmp = tmp % str(thing.get(colname,""))
+            line += tmp
+        buff += line + "\n"
+            
+    return buff
+
         
-def get_output_string(q, typ="basic", detail=False, show_json=False):
+def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False):
     buff = ""
     data = query(q, typ, detail)
 
@@ -61,13 +91,18 @@ def get_output_string(q, typ="basic", detail=False, show_json=False):
 
 
     if type(data) == list:
-        for elem in data:
-            if type(elem) == dict:
-                for key in elem:
-                    buff += "%s:%s\n" % (key, elem[key])
-            else:
-                buff += str(elem)
-            buff += "\n"
+
+        if pretty_table:
+            buff += listofdicts_to_table(data)
+        else:
+            for elem in data:
+                if type(elem) == dict:
+                    for key in elem:
+                        buff += "%s:%s\n" % (key, elem[key])
+                else:
+                    buff += str(elem)
+                buff += "\n"
+
     elif type(data) == dict:
         for ikey,key in enumerate(data):
             buff += "%s: %s\n\n" % (key, data[key])
@@ -85,6 +120,7 @@ def test(one=False):
     {"q":"/GJets*/*/* | grep cms3tag,dataset_name","typ":"snt","detail":False},
     {"q":"* | grep nevents_out","typ":"snt","detail":False},
     {"q":"/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM","typ":"mcm","detail":True},
+    {"q":"/GJets*/*/* | grep cms3tag,dataset_name","typ":"snt","detail":False,"pretty_table":True},
     ]
     if one: queries = queries[3:4]
     for q_params in queries:
@@ -99,7 +135,14 @@ if __name__ == '__main__':
     parser.add_argument("-t", "--type", help="type of query")
     parser.add_argument("-d", "--detail", help="show more detailed information", action="store_true")
     parser.add_argument("-j", "--json", help="show output as full json", action="store_true")
+    parser.add_argument("-p", "--table", help="show output as pretty table", action="store_true")
+    parser.add_argument("-v", "--dev", help="use developer instance", action="store_true")
     args = parser.parse_args()
+
+    
+    if args.dev: BASE_URL_PATTERN = BASE_URL_PATTERN.replace("handler.py","test/handler.py")
+
     if not args.type: args.type = "basic"
-    print get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json)
+
+    print get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json, pretty_table=args.table)
 

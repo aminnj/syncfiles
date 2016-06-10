@@ -3,10 +3,12 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
+
 
 if [ "$TERM" != "dumb" ]; then
     dircolors -b 1>/dev/null 2>/dev/null
@@ -42,6 +44,8 @@ alias tmux='tmux -2' # fixes colors in vim
 # this is so we can use <C-s> to forward history search without nuking the terminal
 stty stop ""
 
+
+
 # special host-dependent stuff
 # cmsenv compatibility for ucsd uaf
 export PATH=${PATH}:${HOME}/syncfiles/pyfiles/
@@ -51,6 +55,7 @@ if [[ ${HOST} == *uaf-* ]]; then
     export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
     export PYTHONPATH=$PYTHONPATH:/home/users/namin/Software/slideMaker
     export UCSD="true"
+    export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
 if [[ ${HOST} == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
@@ -122,7 +127,6 @@ if [[ $HOST == *squark* ]]; then
 fi
 
 
-
 # ssh
 alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
 alias lxplus5='ssh namin@lxplus5.cern.ch'
@@ -149,16 +153,12 @@ alias das='python ~/syncfiles/miscfiles/das/das.py'
 export HISTFILESIZE=500000
 export HISTSIZE=100000
 export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
-
 # Fix spelling errors for cd
 shopt -s cdspell
-
-git config --global alias.co checkout
-git config --global alias.ci 'commit -a -m'
-
+# git config --global alias.co checkout
+# git config --global alias.ci 'commit -a -m'
 # Disable annoying mail messages
 unset MAILCHECK
-
 # if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
 #alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 alias d='cd ~/desktop/'
@@ -303,6 +303,16 @@ shift
 
 }
 
+function drop {
+# drops the first n lines
+if [ $# -lt 1 ]; then
+    echo "usage: drop <drop #>"
+    return 1
+fi
+n=$1
+tail --lines=+$((n+1))
+}
+
 function col {
 if [ $# -lt 1 ]; then
     echo "usage: col <col #>"
@@ -329,7 +339,7 @@ if [ $# -gt 1 ]; then
 else
     stuff='("'$1'")'
 fi
-eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' | grep Events | cut -d ' ' -f2"
+eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' 2>&1 | grep Events | cut -d ' ' -f2"
 }
 # export so this can be used in other scripts
 export -f nevts
@@ -352,6 +362,10 @@ root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
 
 function watchjob {
 nohup ~/syncfiles/miscfiles/watchjob.sh $1 &
+}
+
+function hdpfilelist {
+hadoop fs -du -s /cms/store/user/${USER}/*
 }
 
 function ucsd {

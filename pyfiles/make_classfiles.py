@@ -29,19 +29,32 @@ if __name__ == "__main__":
 
     d_bname_to_info = {}
 
-    cuts = ["filtcscBeamHalo2015","evtevent","evtlumiBlock","evtbsp4","hltprescales","hltbits","hlttrigNames","musp4","evtpfmet","muschi2","ak8jets_pfcandIndicies","hlt_prescales"]
+    # cuts = ["filtcscBeamHalo2015","evtevent","evtlumiBlock","evtbsp4","hltprescales","hltbits","hlttrigNames","musp4","evtpfmet","muschi2","ak8jets_pfcandIndicies","hlt_prescales"]
+    cuts = ["lep1_p4","lep2_p4"]
     isCMS3 = False
+    have_aliases = False
     for branch in branches:
         bname = branch.GetName()
         cname = branch.GetClassName()
+        btitle = branch.GetTitle()
 
         if bname in ["EventSelections", "BranchListIndexes", "EventAuxiliary", "EventProductProvenance"]: continue
         # if not any([cut in bname for cut in cuts]): continue
 
+        # sometimes root is stupid and gives no class name, so must infer it from btitle (stuff like "btag_up/F")
+        if not cname:
+            if btitle.endswith("/i"): cname = "unsigned int"
+            elif btitle.endswith("/l"): cname = "unsigned long long"
+            elif btitle.endswith("/F"): cname = "float"
+            elif btitle.endswith("/I"): cname = "int"
+            elif btitle.endswith("/O"): cname = "bool"
+            elif btitle.endswith("/D"): cname = "double"
+
+        typ = cname[:]
         if "edm::Wrapper" in cname:
             isCMS3 = True
             typ = cname.replace("edm::Wrapper<","")[:-1]
-            typ = classname_to_type(typ)
+        typ = classname_to_type(typ)
 
         d_bname_to_info[bname] = {
                 "class": cname,
@@ -50,6 +63,7 @@ if __name__ == "__main__":
                 }
 
     if aliases:
+        have_aliases = True
         for ialias, alias in enumerate(aliases):
             aliasname = alias.GetName()
             branch = tree.GetBranch(tree.GetAlias(aliasname))
@@ -82,7 +96,7 @@ if __name__ == "__main__":
     buff += 'class %s {\n' % classname
     buff += 'private:\n'
     buff += 'protected:\n'
-    buff += 'unsigned int index;\n'
+    buff += '\tunsigned int index;\n'
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
         typ = d_bname_to_info[bname]["type"]
@@ -97,6 +111,7 @@ if __name__ == "__main__":
         alias = d_bname_to_info[bname]["alias"]
         typ = d_bname_to_info[bname]["type"]
         buff += '\t%s &%s();\n' % (typ, alias)
+    buff += "\tstatic void progress( int nEventsTotal, int nEventsChain );\n"
     buff += '};\n\n'
 
     buff += "#ifndef __CINT__\n"
@@ -128,10 +143,15 @@ if __name__ == "__main__":
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
         buff += '\t%s_branch = 0;\n' % (alias)
-        buff += '\tif (tree->GetAlias("%s") != 0) {\n' % (alias)
-        buff += '\t\t%s_branch = tree->GetBranch(tree->GetAlias("%s"));\n' % (alias, alias)
+        if have_aliases:
+            buff += '\tif (tree->GetAlias("%s") != 0) {\n' % (alias)
+            buff += '\t\t%s_branch = tree->GetBranch(tree->GetAlias("%s"));\n' % (alias, alias)
+        else:
+            buff += '\tif (tree->GetBranch("%s") != 0) {\n' % (alias)
+            buff += '\t\t%s_branch = tree->GetBranch("%s");\n' % (alias, alias)
         buff += '\t\tif (%s_branch) { %s_branch->SetAddress(&%s_); }\n' % (alias, alias, alias)
         buff += '\t}\n'
+
     buff += '\ttree->SetMakeClass(0);\n'
     buff += "}\n"
 
@@ -163,6 +183,25 @@ if __name__ == "__main__":
         buff += "\t}\n"
         buff += "\treturn %s_;\n" % (alias)
         buff += "}\n"
+
+    buff += "void %s::progress( int nEventsTotal, int nEventsChain ){\n" % (classname)
+    buff += "  int period = 1000;\n"
+    buff += "  if(nEventsTotal%1000 == 0) {\n"
+    buff += "    if (isatty(1)) {\n"
+    buff += "      if( ( nEventsChain - nEventsTotal ) > period ){\n"
+    buff += "        float frac = (float)nEventsTotal/(nEventsChain*0.01);\n"
+    buff += "        printf(\"\\015\\033[32m ---> \\033[1m\\033[31m%4.1f%%\"\n"
+    buff += "             \"\\033[0m\\033[32m <---\\033[0m\\015\", frac);\n"
+    buff += "        fflush(stdout);\n"
+    buff += "      }\n"
+    buff += "      else {\n"
+    buff += "        printf(\"\\015\\033[32m ---> \\033[1m\\033[31m%4.1f%%\"\n"
+    buff += "               \"\\033[0m\\033[32m <---\\033[0m\\015\", 100.);\n"
+    buff += "        cout << endl;\n"
+    buff += "      }\n"
+    buff += "    }\n"
+    buff += "  }\n"
+    buff += "}\n"
 
     buff += "namespace %s {\n" % (namespace)
     for bname in d_bname_to_info:

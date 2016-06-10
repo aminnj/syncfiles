@@ -2,7 +2,7 @@
 
 void counts(TString input, TString treeName="Events")
 {
-    gErrorIgnoreLevel=kError;
+    gErrorIgnoreLevel=kWarning;
     TChain * ch = new TChain(treeName);
     if(input.Contains(".root")) {
         ch->Add(input);
