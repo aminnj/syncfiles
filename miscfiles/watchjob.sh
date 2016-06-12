@@ -1,14 +1,16 @@
 #!/bin/bash
 
-job=$1
-for i in {1..60} ; do
+jobs=$@
+njobs=$(echo $jobs | wc -w)
+
+for i in {1..600} ; do
     echo "iteration $i"
-    sleep 1m
-    if [ $(condor_q $job | wc -l) -eq 7 ]; then 
-        echo "found it"; 
-    else
-        echo "Did not find it" 
-        echo "Job $job ended on $(date)" | mail -s "[UAFNotify] Job $job ended on $(date)" amin.nj@gmail.com
+    sleep 2m
+    if [ $(condor_q $jobs | wc -l) -eq $(condor_q kittycats | wc -l) ]; then 
+        echo "Job(s) $jobs ended on $(date)" | mail -s "[UAFNotify] $njobs job(s) ended on $(date)" amin.nj@gmail.com
         break
+    else
+        echo "Jobs still running"
     fi
 done
+

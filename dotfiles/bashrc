@@ -262,15 +262,17 @@ function pdftopng {
 #convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
 if [ $# -gt 0 ]; then
     echo "$1 ==> ${1%%.pdf}.png" 
-    if [[ $HOST == *uaf-* ]]; then 
-        gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
-    else
-        density=200
-        if [ $# -gt 1 ]; then
-            density=$2
-        fi
-        convert -density ${density} -trim $1 ${1%%.pdf}.png
+    # if [[ $HOST == *uaf-* ]]; then 
+    #     gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
+    # else
+
+    density=150
+    if [ $# -gt 1 ]; then
+        density=$2
     fi
+    convert -density ${density} -trim $1 ${1%%.pdf}.png
+
+    # fi
 else
     echo "Usage: pdftopng <pdf name> [optional density]"
 fi
@@ -335,7 +337,11 @@ export -f xcp
 
 function nevts {
 if [ $# -gt 1 ]; then
-    stuff='("'$1'","'$2'")'
+    if [ $# -gt 2 ]; then
+        stuff='("'$1'","'$2'","'$3'")'
+    else
+        stuff='("'$1'","'$2'")'
+    fi
 else
     stuff='("'$1'")'
 fi
@@ -361,7 +367,9 @@ root.exe -l $* ~/syncfiles/miscfiles/browser.C -dir $(pwd)
 }
 
 function watchjob {
-nohup ~/syncfiles/miscfiles/watchjob.sh $1 &
+njobs=$(echo $@ | wc -w)
+echo "Will email you when the $njobs job(s) $@ finish(es)"
+nohup ~/syncfiles/miscfiles/watchjob.sh $@ &
 }
 
 function hdpfilelist {
