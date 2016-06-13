@@ -270,7 +270,7 @@ if [ $# -gt 0 ]; then
     if [ $# -gt 1 ]; then
         density=$2
     fi
-    convert -density ${density} -trim $1 ${1%%.pdf}.png
+    convert -density ${density} -trim $1 -fuzz 1% ${1%%.pdf}.png
 
     # fi
 else
@@ -425,7 +425,7 @@ fi
 export -f web
 
 function niceplots {
-. ~/syncfiles/miscfiles/niceplots.sh $1
+. ~/syncfiles/miscfiles/niceplots.sh $@
 }
 export -f niceplots
 

@@ -6,6 +6,14 @@ if [ $# -lt 1 ]; then
 fi
 
 dir=$1
+outdir=$1
+
+echo "$# args"
+if [ $# -gt 1 ]; then 
+    echo "Will put the stuff in $outdir instead"
+    outdir=$2;
+fi
+
 for i in $(ls -1 $dir/*.pdf); do
     pdftopng $i &
     sleep 0.1
@@ -21,10 +29,10 @@ cp $index $dir/
 
 # wait
 chmod -R a+r $dir
-mkdir -p ~/public_html/dump/
+mkdir -p ~/public_html/dump/$outdir/
 if [[ $(hostname) == *uaf-* ]]; then 
-    cp -rp $dir ~/public_html/dump/
+    cp -rp $dir/* ~/public_html/dump/$outdir/
 else
-    scp -rp $dir namin@uaf-6.t2.ucsd.edu:~/public_html/dump/
+    scp -rp $dir/* namin@uaf-6.t2.ucsd.edu:~/public_html/dump/$outdir/
 fi
-echo "uaf-6.t2.ucsd.edu/~$USER/dump/$dir/"
+echo "uaf-6.t2.ucsd.edu/~$USER/dump/$outdir/"

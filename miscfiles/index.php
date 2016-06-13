@@ -46,6 +46,15 @@ $(function() {
     });
 });
 
+// vimlike: press / to focus on search box
+$(document).keydown(function(e) {
+    if(e.keyCode == 191) {
+        console.log(e.keyCode); 
+        e.preventDefault();
+        $("#filter").focus();
+    }
+});
+
 </script>
 
 </head>
