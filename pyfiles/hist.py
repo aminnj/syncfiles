@@ -46,6 +46,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--name", help="histogram name and filename")
     parser.add_argument("-d", "--drawopt", help="draw options, like 'TEXTE'")
     parser.add_argument("-s", "--nostatbox", help="don't show statbox", action="store_true")
+    parser.add_argument("-l", "--log", help="logscale", action="store_true")
     args = parser.parse_args()
 
     name = args.name or "hist"
@@ -83,6 +84,8 @@ if __name__ == "__main__":
         for row in rows:
             h1.Fill(row[0])
 
+        if args.log: c1.SetLogy()
+
         h1.Draw(drawopt)
         c1.SaveAs(outname)
 
@@ -90,6 +93,8 @@ if __name__ == "__main__":
         h2 = r.TH2F("vals", name, dbin["nbinsx"],dbin["xlow"],dbin["xhigh"],dbin["nbinsy"],dbin["ylow"],dbin["yhigh"])
         for row in rows:
             h2.Fill(row[0], row[1])
+
+        if args.log: c1.SetLogz()
 
         h2.Draw(drawopt)
         c1.SaveAs(outname)

@@ -55,7 +55,7 @@ if [[ ${HOST} == *uaf-* ]]; then
     export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
     export PYTHONPATH=$PYTHONPATH:/home/users/namin/Software/slideMaker
     export UCSD="true"
-    export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
+    # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
 if [[ ${HOST} == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
@@ -97,13 +97,17 @@ alias cond='condor_q $USER'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
-    alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_6/; cmsenv; cd -"
+    alias fullfast="cd ~/sandbox/fullfastjets/"
+    alias lumi="cd ~/dataTuple/NtupleTools/dataTuple  ; cd CMSSW*/ ; cmsenv; crabenv; cd ..; python findMissingLumis.py | tee lumiSummary.txt"
+    alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/; cmsenv; cd -"
     alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
-    alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
+    # alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss74="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss76="cd ~/2016/ss/76x/SSAnalysis/; . setup.sh;"
     alias ss80="cd ~/2016/ss/80x/SSAnalysis/; . setup.sh;"
-    alias jec="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
+    alias ssm="cd ~/2016/ss/master/SSAnalysis/; . setup.sh;"
+    alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
+    alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
     alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     alias halo="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     alias sm="cd ~/Software/slideMaker/; ls -lrth"
@@ -413,10 +417,10 @@ if [ $# -gt 0 ]; then
     if [[ $(hostname) == *uaf-* ]]; then 
         cp -rp $@ ~/public_html/dump/
     else
-        scp -rp $@ namin@uaf-6.t2.ucsd.edu:~/public_html/dump/
+        scp -rp $@ ${USER}@uaf-6.t2.ucsd.edu:~/public_html/dump/
     fi
     for file in "$@"; do
-        echo "uaf-6.t2.ucsd.edu/~namin/dump/$file"
+        echo "uaf-6.t2.ucsd.edu/~${USER}/dump/$(basename $file)"
     done
 else
     echo "Usage: web <input files>"

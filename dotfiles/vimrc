@@ -51,6 +51,14 @@ map <leader>tm :tabnext<cr>
 map <leader>ww :set nowrap!<cr>
 map <leader>nn :set nu!<cr>
 map <leader>qq :wq<cr>
+map <leader>ff :vertical wincmd f<CR>
+
+" table delimited by space for whole document
+map <leader>ts ggVG:Tab / <cr>
+" table delimited by comma for whole document
+map <leader>tc ggVG:Tab /,<cr>
+" replace multiple spaces with single space
+map <leader>ss :%s/  \+/ /g<cr>
 
 " indent file
 map <Leader>i mkHmlgg=G`lzt`k

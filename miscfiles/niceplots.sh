@@ -16,7 +16,7 @@ fi
 
 for i in $(ls -1 $dir/*.pdf); do
     pdftopng $i &
-    sleep 0.1
+    sleep 0.05
 done
 
 wait
@@ -33,7 +33,7 @@ mkdir -p ~/public_html/dump/$outdir/
 if [[ $(hostname) == *uaf-* ]]; then 
     cp -rp $dir/* ~/public_html/dump/$outdir/
 else
-    ssh namin@uaf-6.t2.ucsd.edu "mkdir -p ~/public_html/dump/$outdir; rm ~/public_html/dump/$outdir/*.png"
-    scp -rp $dir/* namin@uaf-6.t2.ucsd.edu:~/public_html/dump/$outdir/
+    ssh $USER@uaf-6.t2.ucsd.edu "mkdir -p ~/public_html/dump/$outdir; rm ~/public_html/dump/$outdir/*.png"
+    scp -rp $dir/* $USER@uaf-6.t2.ucsd.edu:~/public_html/dump/$outdir/
 fi
 echo "uaf-6.t2.ucsd.edu/~$USER/dump/$outdir/"

@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
         d_bname_to_info[bname] = {
                 "class": cname,
-                "alias": bname,
+                "alias": bname.replace(".",""),
                 "type": typ,
                 }
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
             branch = tree.GetBranch(tree.GetAlias(aliasname))
             branchname = branch.GetName().replace("obj","")
             if branchname not in d_bname_to_info: continue
-            d_bname_to_info[branchname]["alias"] = aliasname
+            d_bname_to_info[branchname]["alias"] = aliasname.replace(".","")
 
 
     buff = ""
