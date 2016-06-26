@@ -534,6 +534,10 @@ def listToHistogram(ls):
             dout[elem] += 1
     return dout
 
+def web(fname):
+    os.system("cp %s ~/public_html/dump/" % fname)
+    print "Copied to uaf-6.t2.ucsd.edu/~namin/dump/%s" % fname
+
 if __name__ == '__main__':
 
     print """
