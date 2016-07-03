@@ -11,6 +11,8 @@ echo $folder;
 </title>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 <style>
 
@@ -28,40 +30,49 @@ position:relative;
 top: 30px;
 }
 
+/* dark theme */
+/* body { */
+/* background-color: black; */
+/* color: white; */
+/* } */
+
 </style>
 
 <script>
 
 
 $(function() {
+
+    // drag images and hover over others to overlay
+    $( ".box" ).draggable({
+        opacity: 0.35,
+        helper: "clone",
+        snap: true,
+        revert: true,
+    });
+
+    // drag and drop to sort the images
+    // $("#images").sortable();
+
     $( "input[id='filter']" ).on('keyup', function() {
         $("#message").html("");
-
         var pattern = $(this).val();
         var modifier = "";
-        if(pattern.toLowerCase() == pattern) modifier = "i"; // case insensitive IFF all letters are lowercase
+        if(pattern.toLowerCase() == pattern) modifier = "i"; // like :set smartcase in vim (case-sensitive if there's an uppercase char)
         var elems = $(".box").filter(function() {
             var matches = this.id.match(new RegExp(pattern,modifier));  
             if(matches) {
                 var legendTitle = $(this).find("fieldset > legend");
                 legendTitle.html( "<b>"+legendTitle.text().replace(matches[0],"<font style='color:#F00'>"+matches[0]+"</font>")+"</b>" );
-                /* console.log(matches); */
-                /* console.log($(this)); */
-                /* console.log($(this).find("fieldset > legend")); */
             }
             return matches;
         });
-
-
         if(pattern.length < 1) {
             $('.box').show();
             return;
         }
-        /* console.log( $(this).val() ); */
         $('.box').hide();
-        /* var elems = $('[id*='+pattern+']'); */
         if(elems.length == 0) {
-            /* console.log("no matching names"); */ 
             $("#message").html("No matching images!");
         } else {
             elems.show();
@@ -74,7 +85,7 @@ $(document).keydown(function(e) {
     if(e.keyCode == 191) {
         console.log(e.keyCode); 
         e.preventDefault();
-        $("#filter").focus();
+        $("#filter").focus().select();
     }
 });
 
@@ -109,7 +120,6 @@ foreach($files as $curimg){
     $tolink = $curimg;
     if(in_array($same_pdf, $files)) $tolink = $same_pdf;
 
-    /* $color="#21618C"; */
     $color="lightgray";
 
     $red="#B03A2E";

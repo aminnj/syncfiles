@@ -16,7 +16,7 @@ fi
 
 for i in $(ls -1 $dir/*.pdf); do
     pdftopng $i &
-    sleep 0.05
+    sleep 0.2
 done
 
 wait

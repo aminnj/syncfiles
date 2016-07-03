@@ -7,7 +7,9 @@ def hum(num):
     sgn = ''
     if num < 0: num, sgn = -num, '-'
 
-    exp = int(math.floor(math.log10(num)))
+    try: exp = int(math.floor(math.log10(num)))
+    except: exp = 0
+
     exp3 = exp-(exp % 3)
     x3 = num/(10**exp3)
 

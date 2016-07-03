@@ -54,7 +54,7 @@ map <leader>qq :wq<cr>
 map <leader>ff :vertical wincmd f<CR>
 
 " table delimited by space for whole document
-map <leader>ts ggVG:Tab / <cr>
+map <leader>ts ggVG:Tab / <cr>:set nohl<cr>
 " table delimited by comma for whole document
 map <leader>tc ggVG:Tab /,<cr>
 " replace multiple spaces with single space

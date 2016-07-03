@@ -13,7 +13,7 @@ fi
 if [ "$TERM" != "dumb" ]; then
     dircolors -b 1>/dev/null 2>/dev/null
     if (( $? == 0 )); then
-        alias ls='ls --color=auto'
+        alias ls='ls --color=auto --ignore=*.{o,d,aux,pcm,cxx,d,nav,snm,pyc,toc} --ignore=AutoDict*'
     else
         alias ls='ls -G'
     fi
@@ -75,6 +75,7 @@ alias lk='ls -lthr'
 alias lo='ls --group-directories-first -la --sort=extension'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'
 alias hdp='cd /hadoop/cms/store/user/namin/ && ls -l'
+alias hdu='hadoop fs -du -s -h'
 alias grep='grep --color=auto'
 alias ..='cd ..'
 alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
@@ -106,6 +107,7 @@ if [[ $HOST == *uaf-* ]]; then
     alias ss76="cd ~/2016/ss/76x/SSAnalysis/; . setup.sh;"
     alias ss80="cd ~/2016/ss/80x/SSAnalysis/; . setup.sh;"
     alias ssm="cd ~/2016/ss/master/SSAnalysis/; . setup.sh;"
+    alias lim="cd ~/2016/ss/master/SSAnalysis/cards; cd CMSSW_7_1_6; cmsenv; cd .."
     alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
     alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
     alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
@@ -154,8 +156,15 @@ alias tabletex='~/syncfiles/pyfiles/tabletex.py'
 alias plottex='source ~/syncfiles/miscfiles/plottex.sh'
 alias das='python ~/syncfiles/miscfiles/das/das.py'
 
-export HISTFILESIZE=500000
-export HISTSIZE=100000
+#Make history more useful - stolen from alex
+export PROMPT_COMMAND="history -a"
+export HISTSIZE=1000000
+export HISTFILESIZE=1000000
+export HISTTIMEFORMAT='%F %T '
+export HISTCONTROL=ignoreboth
+shopt -s cmdhist #(combine multiline commands)
+shopt -s histappend #(multiple terminals all save to history)
+
 export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
 # Fix spelling errors for cd
 shopt -s cdspell
@@ -167,13 +176,24 @@ unset MAILCHECK
 #alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 alias d='cd ~/desktop/'
 alias db='cd /cygdrive/d/dropbox/'
+
+#Add path - stolen from Alex
+pathadd(){
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then PATH="${PATH:+"$PATH:"}$1"; fi
+    if [ -d "$1" ] && [[ ":$PYTHONPATH:" != *":$1:"* ]]; then PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$1"; fi
+}
+
 function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 function mailme() {
  if [ $? -eq 0 ];  then str="[UAFNotify] Command ended SUCCESSFULLY on $(date) with status code $?";  else  str="[UAFNotify] Command FAILED on $(date) with status code $?"; fi; str=$(echo $str | sed 's/:/./g'); echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
 
 }
-function utc() {
+function utc {
     date -d "1970-01-01 $1 sec UTC"
+}
+
+function quad {
+    python -c "from errors import E; print (E(0.0,$1)+E(0.0,$2)).err"
 }
 
 function xwin {
