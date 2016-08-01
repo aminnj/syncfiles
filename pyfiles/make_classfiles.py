@@ -2,6 +2,8 @@
 
 import ROOT as r
 import argparse
+import sys
+import os
 
 def classname_to_type(cname): return "const " + cname.strip()
 
@@ -9,11 +11,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("filename", help="name of file to make classfile on")
-    parser.add_argument("-q", "--quiet", help="don't show all filenames", action="store_true")
     parser.add_argument("-t", "--tree", help="treename (default: Events)", default="Events")
     parser.add_argument("-o", "--namespace", help="namespace (default: tas)", default="tas")
     parser.add_argument("-n", "--objectname", help="objectname (default: cms3)", default="cms3")
     parser.add_argument("-c", "--classname", help="classname (default: CMS3)", default="CMS3")
+    parser.add_argument("-l", "--looper", help="make a looper as well", default=False, action="store_true")
     args = parser.parse_args()
 
     fname_in = args.filename
@@ -21,11 +23,75 @@ if __name__ == "__main__":
     classname = args.classname
     objectname = args.objectname
     namespace = args.namespace
+    make_looper = args.looper
 
     f = r.TFile(fname_in)
     tree = f.Get(treename)
     aliases = tree.GetListOfAliases()
     branches = tree.GetListOfBranches()
+
+    if os.path.isfile("ScanChain.C") or os.path.isfile("doAll.C"):
+        print ">>> Hey, you already have a looper here! I will be a bro and not overwrite them. Delete 'em if you want to regenerate 'em."
+        make_looper = False
+
+    if make_looper:
+        print ">>> Making looper"
+        print ">>> Checking out cmstas/Software"
+        os.system("[[ -d Software/ ]] || git clone https://github.com/cmstas/Software")
+
+        buff = ""
+        buff += "{\n"
+        buff += "    gSystem->Exec(\"mkdir -p plots\");\n\n"
+        buff += "    gROOT->ProcessLine(\".L Software/dataMCplotMaker/dataMCplotMaker.cc+\");\n"
+        buff += "    gROOT->ProcessLine(\".L CMS3.cc+\");\n"
+        buff += "    gROOT->ProcessLine(\".L ScanChain.C+\");\n\n"
+        buff += "    TChain *ch = new TChain(\"Events\");\n"
+        buff += "    ch->Add(\"../DYJetsToLL.root\");\n\n"
+        buff += "    ScanChain(ch);\n\n"
+        buff += "}\n\n"
+        with open("doAll.C", "w") as fhout: fhout.write(buff)
+
+        buff = ""
+        buff += "#pragma GCC diagnostic ignored \"-Wsign-compare\"\n"
+        buff += "#include \"Software/dataMCplotMaker/dataMCplotMaker.h\"\n\n"
+        buff += "#include \"TFile.h\"\n"
+        buff += "#include \"TTree.h\"\n"
+        buff += "#include \"TCut.h\"\n"
+        buff += "#include \"TColor.h\"\n"
+        buff += "#include \"TCanvas.h\"\n"
+        buff += "#include \"TH2F.h\"\n"
+        buff += "#include \"TH1.h\"\n"
+        buff += "#include \"TChain.h\"\n\n"
+        buff += "#include \"CMS3.h\"\n\n"
+        buff += "using namespace std;\n"
+        buff += "using namespace tas;\n\n"
+        buff += "int ScanChain(TChain *ch){\n\n"
+        buff += "    TH1F * h_met = new TH1F(\"met\", \"met\", 50, 0, 300);\n\n"
+        buff += "    int nEventsTotal = 0;\n"
+        buff += "    int nEventsChain = ch->GetEntries();\n\n"
+        buff += "    TFile *currentFile = 0;\n"
+        buff += "    TObjArray *listOfFiles = ch->GetListOfFiles();\n"
+        buff += "    TIter fileIter(listOfFiles);\n\n"
+        buff += "    while ( (currentFile = (TFile*)fileIter.Next()) ) { \n\n"
+        buff += "        TFile *file = new TFile( currentFile->GetTitle() );\n"
+        buff += "        TTree *tree = (TTree*)file->Get(\"Events\");\n"
+        buff += "        cms3.Init(tree);\n\n"
+        buff += "        TString filename(currentFile->GetTitle());\n\n"
+        buff += "        for( unsigned int event = 0; event < tree->GetEntriesFast(); ++event) {\n\n"
+        buff += "            cms3.GetEntry(event);\n"
+        buff += "            nEventsTotal++;\n\n"
+        buff += "            CMS3::progress(nEventsTotal, nEventsChain);\n\n"
+        buff += "            h_met->Fill(evt_pfmet());\n\n"
+        buff += "        }//event loop\n\n"
+        buff += "        delete file;\n"
+        buff += "    }//file loop\n\n"
+        buff += "    TString comt = \" --outOfFrame --lumi 1.0 --type Simulation --darkColorLines --legendCounts --legendRight -0.05  --outputName plots/\";\n"
+        buff += "    std::string com = comt.Data();\n"
+        buff += "    TH1F * empty = new TH1F(\"\",\"\",1,0,1);\n\n"
+        buff += "    dataMCplotMaker(empty,{h_met} ,{\"t#bar{t}\"},\"MET\",\"\",com+\"h_met.pdf --isLinear\");\n\n"
+        buff += "    return 0;\n\n"
+        buff += "}\n\n"
+        with open("ScanChain.C", "w") as fhout: fhout.write(buff)
 
     d_bname_to_info = {}
 
@@ -140,6 +206,7 @@ if __name__ == "__main__":
     buff += '#include "%s.h"\n' % classname
     buff += "%s %s;\n\n" % (classname, objectname)
     buff += "void %s::Init(TTree *tree) {\n" % (classname)
+    buff += "\ttree->SetMakeClass(1);\n"
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
         buff += '\t%s_branch = 0;\n' % (alias)
@@ -213,5 +280,6 @@ if __name__ == "__main__":
     with open("%s.cc" % classname, "w") as fhout:
         fhout.write(buff)
     print ">>> Saved %s.cc" % (classname)
+
 
 

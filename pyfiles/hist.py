@@ -50,7 +50,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     name = args.name or "hist"
-    outname = "%s.pdf" % name
+    outname = "%s.pdf" % name.replace("_","").replace(" ","_").replace("^","")
     drawopt = args.drawopt or ""
 
     rows = []
@@ -66,14 +66,11 @@ if __name__ == "__main__":
     rows = [row for row in rows if len(row) == best_size]
 
     dbin = parse_bin_settings(args.bin_settings, best_size)
-    print "Making histogram with settings:"
-    print "\tndimensions = %i" % best_size
-    print "\tname: %s" % (name)
+    print "Making %iD histogram (%s) with settings:" % (best_size, name)
     print "\tnbinsx,xlow,xhigh = %i,%.1f,%.1f" % (dbin["nbinsx"],dbin["xlow"],dbin["xhigh"])
     if best_size > 1:
         print "\tnbinsy,ylow,yhigh = %i,%.1f,%.1f" % (dbin["nbinsy"],dbin["ylow"],dbin["yhigh"])
-    print "\tstatbox: %s" % (str(not args.nostatbox))
-    print "\tdraw options: %s" % (drawopt)
+    print "\tstatbox: %s, draw options: %s" % (str(not args.nostatbox), drawopt)
 
     import ROOT as r
     c1 = r.TCanvas("c1")
@@ -104,6 +101,8 @@ if __name__ == "__main__":
         print "I don't know how to handle %i columns" % best_size
         sys.exit()
 
+    os.system("cat %s | ic" % outname)
+
     os.system("cp %s ~/public_html/dump/" % outname)
-    print "\nOutput: uaf-6.t2.ucsd.edu/~namin/dump/%s.pdf" % name
+    print "%s\nOutput: uaf-6.t2.ucsd.edu/~namin/dump/%s.pdf %s" % (OKGREEN, name, ENDC)
 

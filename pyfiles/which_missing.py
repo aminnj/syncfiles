@@ -35,7 +35,7 @@ test_fnames = [
 ]
 
 
-def print_missing(fnames, quiet=False, themax=None):
+def print_missing(fnames, quiet=False, themax=None, total=False):
     # key is non-numeric prefix and values are lists of the numbers
     d = {}
     for fname in fnames:
@@ -64,19 +64,42 @@ def print_missing(fnames, quiet=False, themax=None):
         except:
             pass
 
+    n_total = 0
+    n_missing = 0
+
+    lines_missing = []
     for pfx in d.keys():
         try:
+            line = ""
             tot = max(d[pfx])
             if themax: tot = int(themax)
             missing = sorted(list(set(range(1,tot+1))-set(d[pfx])))
-            if len(missing) == 0: print "%s %s*.root: ALL GOOD (%i) %s" % (OKGREEN, pfx, tot, ENDC)
-            else: print "%s %s*.root: MISSING %i/%i %s" % (FAIL, pfx, len(missing), tot, ENDC)
+            # if len(missing) == 0: print "%s %s*.root: ALL GOOD (%i) %s" % (OKGREEN, pfx, tot, ENDC)
+            # else: print "%s %s*.root: MISSING %i/%i %s" % (FAIL, pfx, len(missing), tot, ENDC)
+            if len(missing) == 0: line += "%s %s*.root: ALL GOOD (%i) %s\n" % (OKGREEN, pfx, tot, ENDC)
+            else: line += "%s %s*.root: MISSING %i/%i %s\n" % (FAIL, pfx, len(missing), tot, ENDC)
+
 
             if not quiet:
-                for miss in missing: print "   missing %s%i.root" % (pfx, miss)
-            print 
+                # for miss in missing: print "   missing %s%i.root" % (pfx, miss)
+                # print 
+                for miss in missing: line += "   missing %s%i.root\n" % (pfx, miss)
+                line += "\n"
+
+            lines_missing.append([line,len(missing)])
+
+            n_total += tot
+            n_missing += len(missing)
         except:
             pass
+
+    lines_missing = sorted(lines_missing, key=lambda x: x[1])
+
+    print "".join([line for line,_ in lines_missing])
+
+    if total:
+        print "Total: %i" % n_total
+        print "Missing: %i" % n_missing
 
 
 if __name__ == "__main__":
@@ -87,10 +110,11 @@ if __name__ == "__main__":
     parser.add_argument("location", help="directory (or wildcard for files) to check")
     parser.add_argument("-q", "--quiet", help="don't show all filenames", action="store_true")
     parser.add_argument("-m", "--max", help="if you know the max number, then you can specify it")
+    parser.add_argument("-t", "--total", help="if you want a total/summary count", action="store_true")
     args = parser.parse_args()
 
     if "*" in args.location: fnames = glob.glob(args.location)
     else: fnames = os.listdir(args.location)
 
-    print_missing(fnames, args.quiet, args.max)
+    print_missing(fnames, args.quiet, args.max, args.total)
 

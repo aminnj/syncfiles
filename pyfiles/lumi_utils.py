@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
+# http://stackoverflow.com/questions/15760712/python-readline-module-prints-escape-character-during-import
+import os, sys
+if 'xterm' in os.environ['TERM']: os.environ['TERM'] = 'vt100'
+redirect = not sys.stdout.isatty()
+
 import commands
 from itertools import groupby
 import glob
-import os
 import json
-from multiprocessing.dummy import Pool as ThreadPool 
+# from multiprocessing.dummy import Pool as ThreadPool 
+from multiprocessing import Pool as ThreadPool 
 import ROOT as r
 import glob
 from tqdm import tqdm
@@ -55,10 +60,11 @@ class RunLumis():
     def __str__(self): 
         # convert keys to strings
         js = self.getJson()
-        newjs = {}
-        for key in js:
-            newjs[str(key)] = js[key]
-        return str(newjs)
+        return json.dumps(js)
+        # newjs = {}
+        # for key in js:
+        #     newjs[str(key)] = js[key]
+        # return str(newjs)
 
     def __contains__(self, obj):
         if type(obj) == int: return obj in self.rls
@@ -136,7 +142,7 @@ class RunLumis():
             fhout.write(self.getSNT())
             print "Wrote snt format to file %s" % fname
 
-BRILCALC_FILE = "/home/users/namin/dataTuple/NtupleTools/dataTuple/lumis/lumis_skim.csv"
+BRILCALC_FILE = "/home/users/namin/dataTuple/2016D/NtupleTools/dataTuple/lumis/lumis_skim.csv"
 d_brilcalc = {}
 def makeBrilcalcMap():
     dLumiMap =  {}
@@ -151,18 +157,37 @@ def makeBrilcalcMap():
                 d_brilcalc[(run,ls)] = recordedPB
             except: pass
 
-def getRunLumis(fname, treename="Events"):
+def getChunks(v,n=3): return [ v[i:i+n] for i in range(0, len(v), n) ]
+
+def getRunLumis(fnames, treename="Events"):
+    # print "fnames", fnames
     # returns dict where keys are runs and values are sets of lumi sections
+    if type(fnames) == list:
+        fname = fnames[0]
+    else:
+        fname = fnames
+
     f1 = r.TFile(fname)
-    treename = [obj.GetName() for obj in f1.GetListOfKeys()][0]
-    tree = f1.Get(treename)
-    isCMS3style = treename == "Events" or "Lepton" in tree.GetTitle()
+    treenames = [obj.GetName() for obj in f1.GetListOfKeys()]
+    treename = treenames[0]
+    if len(treenames) > 1 and "Events" in treenames:
+        treename = "Events"
+
+    if type(fnames) == list:
+        tree = r.TChain(treename)
+        for fname in fnames:
+            tree.Add(fname)
+    else:
+        tree = f1.Get(treename)
+
+    isLeptonTree = ("Lepton" in tree.GetTitle()) or ("Lepton" in f1.GetListOfKeys()[0].GetTitle())
+    isCMS3style = (treename == "Events")  or isLeptonTree
     N = tree.GetEntries()
 
     # print "running on %i entries for %s" % (N, fname)
     if isCMS3style:
         tree.SetBranchStatus("*",0)
-        if "Lepton" in tree.GetTitle():
+        if isLeptonTree:
             tree.SetBranchStatus("*evt_run*",1)
             tree.SetBranchStatus("*evt_lumiBlock*",1)
         else:
@@ -180,13 +205,13 @@ def getRunLumis(fname, treename="Events"):
     runs = tree.GetV1()
     lumis = tree.GetV2()
 
-    rls = set((int(runs[i]), int(lumis[i])) for i in range(N))
     d_rl = { }
-    for run, ls in rls:
+    for i in range(N):
+        run, ls = int(runs[i]), int(lumis[i])
         if run not in d_rl: d_rl[run] = set([])
         d_rl[run].add(ls)
 
-    f1.Close()
+    if type(fnames) != list: f1.Close()
     return RunLumis(d_rl)
 
 def test():
@@ -226,27 +251,34 @@ if __name__ == '__main__':
     if not doJson and not doLumi and not doSNT:
         doJson, doLumi = True, True
 
+    fnames = glob.glob(fname_patt)
+    isRootFile = ".root" in fnames[0]
+    isJsonTextFile = ".json" in fnames[0] or ".txt" in fnames[0]
+
     # fname_patt = "/hadoop/cms/store/group/snt/run2_data/Run2016C_MET_MINIAOD_PromptReco-v2/merged/V08-00-07/merged_ntuple_10.root"
     # fname_patt = "/nfs-7/userdata/leptonTree/v1.09FR_80X/2p6ifb/2016DoubleMuon.root"
     # fname_patt = "/nfs-7/userdata/ss2015/ssBabies/v8.02/Data*.root"
     # fname_patt = "/nfs-7/userdata/dataTuple/nick/json_lists/Run2016B_MET_MINIAOD_PromptReco-v2/*.txt"
     # fname_patt = "/home/users/namin/2016/ss/master/SSAnalysis/goodRunList/*.txt"
-    if ".root" in fname_patt:
-
-        fnames = glob.glob(fname_patt)
+    if isRootFile:
         pool = ThreadPool(7)
         vals = []
-        for result in tqdm(pool.imap_unordered(getRunLumis, fnames),total=len(fnames)):
-            vals.append(result)
+        chunks = getChunks(fnames, 20)
+        if redirect:
+            for result in pool.imap_unordered(getRunLumis, chunks):
+                vals.append(result)
+        else:
+            for result in tqdm(pool.imap_unordered(getRunLumis, chunks),total=len(chunks)):
+                vals.append(result)
         pool.close()
         pool.join()
         allRunLumis = sum(vals, RunLumis({}))
 
-    elif ".json" in fname_patt or ".txt" in fname_patt:
+    elif isJsonTextFile:
         isJson = False
         allRunLumis = RunLumis()
-        fnames = glob.glob(fname_patt)
-        for fname in tqdm(fnames):
+        if len(fnames) > 10 and not redirect: fnames = tqdm(fnames)
+        for fname in fnames:
             with open(fname, "r") as fhin:
                 try:
                     js = json.load(fhin)

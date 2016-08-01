@@ -23,7 +23,7 @@ wait
 
 index=$HOME/syncfiles/miscfiles/index.php
 
-cp $index $dir/
+ln -s $index $dir/index.php
 
 
 

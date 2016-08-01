@@ -110,8 +110,9 @@ foreach($files as $curimg){
 
     if (!(strpos($curimg,'.png') || strpos($curimg,'.jpg'))) continue;
 
-    $fname_no_ext = explode(".",$curimg);
-    $fname_no_ext = $fname_no_ext[0];
+    /* $fname_no_ext = explode(".",$curimg); */
+    /* $fname_no_ext = $fname_no_ext[0]; */
+    $fname_no_ext = preg_replace('/\\.[^.\\s]{3,4}$/', '', $curimg);
     $fname_col_no_ext = $fname_no_ext;
 
     // find corresponding pdf and link to it if it exists
