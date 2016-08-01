@@ -12,9 +12,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("filename", help="name of file to make classfile on")
     parser.add_argument("-t", "--tree", help="treename (default: Events)", default="Events")
+    parser.add_argument("-n", "--num", help="number of top branches to show", default=30)
     args = parser.parse_args()
     fname_in = args.filename
     treename = args.tree
+    maxnum = int(args.num)
 
     # fname_in = "/home/users/namin/2016/ss/80x/SSAnalysis/batch/tzq_10.root"
     # treename = "t"
@@ -108,8 +110,10 @@ if __name__ == "__main__":
     print
 
 
-    print "%-85s %s" % ("branchname", "size (%)")
+    print "%-85s %s" % ("branchname", "size (%) [compression factor]")
     print "-" * 90
-    for b in sorted(branches, key=lambda x: x.get("frac", 0.0), reverse=True)[:30]:
-        print "%-85s %2.1f (%03.1f)" % (b["bname"], 100.0*b["frac"], 1.0*b["uncompBytes"]/b["compBytes"])
+    top_branches = sorted(branches, key=lambda x: x.get("frac", 0.0), reverse=True)[:maxnum]
+    maxcols = max([len(b["bname"]) for b in top_branches[:maxnum]])+4
+    for b in top_branches:
+        print ("%-{0}s %2.1f [%03.1f]".format(maxcols)) % (b["bname"], 100.0*b["frac"], 1.0*b["uncompBytes"]/b["compBytes"])
 

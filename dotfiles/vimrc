@@ -39,6 +39,8 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-l> <C-w>l
 nnoremap <C-k> <C-w>k
 
+vnoremap . :norm .<cr>
+
 "
 "
 " leader stuff {{{
@@ -286,6 +288,13 @@ nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 " this is why I made a group for autocommands:
 " http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
 
+" for https://github.com/nathanaelkane/vim-indent-guides
+" note: <leader>ig toggles the indent guides
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=238
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=244
+let g:indent_guides_guide_size=1
+
 if has("autocmd")
     augroup Group1
         autocmd!
@@ -297,6 +306,8 @@ if has("autocmd")
         au BufNewFile,BufRead *.md setlocal ft=markdown
         " F6 executes gnuplot, python, C, C++ code by compiling and running
         " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
+        au FileType crontab set nobackup nowritebackup
+
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python27/python.exe '.shellescape('%')<CR>
