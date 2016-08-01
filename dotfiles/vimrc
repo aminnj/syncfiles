@@ -293,6 +293,8 @@ if has("autocmd")
         autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " close vim if only nerdtree is left
         au InsertLeave * set nopaste
 
+        au FileType crontab set nobackup nowritebackup
+
         au BufNewFile,BufRead *.{p,gp} setlocal ft=gnuplot
         au BufNewFile,BufRead *.md setlocal ft=markdown
         " F6 executes gnuplot, python, C, C++ code by compiling and running

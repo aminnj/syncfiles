@@ -59,6 +59,7 @@ if [[ ${HOST} == *uaf-* ]]; then
 fi
 if [[ ${HOST} == *squark* ]]; then 
     source ~/root/bin/thisroot.sh
+    alias webd='web $(ls -1rtd ~/Downloads/* | tail -n 1)'
 fi
 if [[ ${HOST} == *Nick* ]]; then 
     alias python0='/cygdrive/c/Python27/python'
@@ -90,7 +91,9 @@ alias voms='voms-proxy-init -hours 168 -voms cms'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
 alias em='emacs'
-alias gitcam='git commit -a -m'
+alias gam='git commit -a -m'
+alias gd='git diff'
+alias gp='git push'
 alias rootenv='source ~/root/bin/thisroot.sh'
 alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 alias usa='source ~/syncfiles/miscfiles/usa.sh'
@@ -189,7 +192,11 @@ function mailme() {
 
 }
 function utc {
-    date -d "1970-01-01 $1 sec UTC"
+    if [[ ${HOST} == *squark* ]]; then 
+        date -r $1
+    else
+        date -d "1970-01-01 $1 sec UTC"
+    fi
 }
 
 function quad {
@@ -359,6 +366,12 @@ xrdcp root://xrootd.unl.edu/$1 $2
 # export so this can be used in other scripts
 export -f xcp
 
+function gamp {
+msg=$@
+git commit -a -m $msg
+git push
+}
+
 function nevts {
 if [ $# -gt 1 ]; then
     if [ $# -gt 2 ]; then
@@ -404,9 +417,9 @@ function ucsd {
 if [ $# -lt 1 ]; then
     # xwin
     # ssh -X namin@uaf-10.t2.ucsd.edu
-    ssh namin@uaf-10.t2.ucsd.edu
+    ssh -X namin@uaf-10.t2.ucsd.edu
 else
-    ssh -X namin@uaf-${1}.t2.ucsd.edu
+    ssh namin@uaf-${1}.t2.ucsd.edu
 fi
 }
 
