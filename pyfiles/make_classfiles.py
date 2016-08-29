@@ -43,10 +43,10 @@ if __name__ == "__main__":
         buff += "{\n"
         buff += "    gSystem->Exec(\"mkdir -p plots\");\n\n"
         buff += "    gROOT->ProcessLine(\".L Software/dataMCplotMaker/dataMCplotMaker.cc+\");\n"
-        buff += "    gROOT->ProcessLine(\".L CMS3.cc+\");\n"
+        buff += "    gROOT->ProcessLine(\".L %s.cc+\");\n" % classname
         buff += "    gROOT->ProcessLine(\".L ScanChain.C+\");\n\n"
-        buff += "    TChain *ch = new TChain(\"Events\");\n"
-        buff += "    ch->Add(\"../DYJetsToLL.root\");\n\n"
+        buff += "    TChain *ch = new TChain(\"%s\");\n" % treename
+        buff += "    ch->Add(\"%s\");\n\n" % fname_in
         buff += "    ScanChain(ch);\n\n"
         buff += "}\n\n"
         with open("doAll.C", "w") as fhout: fhout.write(buff)
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         buff += "#include \"TH2F.h\"\n"
         buff += "#include \"TH1.h\"\n"
         buff += "#include \"TChain.h\"\n\n"
-        buff += "#include \"CMS3.h\"\n\n"
+        buff += "#include \"%s.h\"\n\n" % classname
         buff += "using namespace std;\n"
         buff += "using namespace tas;\n\n"
         buff += "int ScanChain(TChain *ch){\n\n"
@@ -74,13 +74,13 @@ if __name__ == "__main__":
         buff += "    TIter fileIter(listOfFiles);\n\n"
         buff += "    while ( (currentFile = (TFile*)fileIter.Next()) ) { \n\n"
         buff += "        TFile *file = new TFile( currentFile->GetTitle() );\n"
-        buff += "        TTree *tree = (TTree*)file->Get(\"Events\");\n"
-        buff += "        cms3.Init(tree);\n\n"
+        buff += "        TTree *tree = (TTree*)file->Get(\"%s\");\n" % treename
+        buff += "        %s.Init(tree);\n\n" % objectname
         buff += "        TString filename(currentFile->GetTitle());\n\n"
         buff += "        for( unsigned int event = 0; event < tree->GetEntriesFast(); ++event) {\n\n"
-        buff += "            cms3.GetEntry(event);\n"
+        buff += "            %s.GetEntry(event);\n" % objectname
         buff += "            nEventsTotal++;\n\n"
-        buff += "            CMS3::progress(nEventsTotal, nEventsChain);\n\n"
+        buff += "            %s::progress(nEventsTotal, nEventsChain);\n\n" % classname
         buff += "            h_met->Fill(evt_pfmet());\n\n"
         buff += "        }//event loop\n\n"
         buff += "        delete file;\n"
@@ -117,6 +117,10 @@ if __name__ == "__main__":
             elif btitle.endswith("/D"): cname = "double"
 
         typ = cname[:]
+
+        if "edm::TriggerResults" in cname:
+            continue
+
         if "edm::Wrapper" in cname:
             isCMS3 = True
             typ = cname.replace("edm::Wrapper<","")[:-1]
@@ -206,9 +210,27 @@ if __name__ == "__main__":
     buff += '#include "%s.h"\n' % classname
     buff += "%s %s;\n\n" % (classname, objectname)
     buff += "void %s::Init(TTree *tree) {\n" % (classname)
+
+    ## NOTE Do this twice. First time we consider branches for which we don't want to have SetMakeClass of 1
+    for bname in d_bname_to_info:
+        alias = d_bname_to_info[bname]["alias"]
+        cname = d_bname_to_info[bname]["class"]
+        if not("TBits" in cname or "LorentzVector" in cname): continue # NOTE
+        buff += '\t%s_branch = 0;\n' % (alias)
+        if have_aliases:
+            buff += '\tif (tree->GetAlias("%s") != 0) {\n' % (alias)
+            buff += '\t\t%s_branch = tree->GetBranch(tree->GetAlias("%s"));\n' % (alias, alias)
+        else:
+            buff += '\tif (tree->GetBranch("%s") != 0) {\n' % (alias)
+            buff += '\t\t%s_branch = tree->GetBranch("%s");\n' % (alias, alias)
+        buff += '\t\tif (%s_branch) { %s_branch->SetAddress(&%s_); }\n' % (alias, alias, alias)
+        buff += '\t}\n'
+
     buff += "\ttree->SetMakeClass(1);\n"
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
+        cname = d_bname_to_info[bname]["class"]
+        if "TBits" in cname or "LorentzVector" in cname: continue # NOTE
         buff += '\t%s_branch = 0;\n' % (alias)
         if have_aliases:
             buff += '\tif (tree->GetAlias("%s") != 0) {\n' % (alias)
