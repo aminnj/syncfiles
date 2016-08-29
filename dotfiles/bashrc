@@ -74,6 +74,7 @@ alias l='ls -lG'
 alias ll='ls -lG'
 alias lsa='/bin/ls --color=auto'
 alias lk='ls -lthrG'
+alias lka='/bin/ls -lthrG --color=auto'
 alias lo='ls --group-directories-first -la --sort=extension'
 alias afswork='cd /afs/cern.ch/work/n/namin/public/'
 alias hdp='cd /hadoop/cms/store/user/namin/ && ls -l'
@@ -103,12 +104,17 @@ alias usa='source ~/syncfiles/miscfiles/usa.sh'
 alias cond='condor_q $USER'
 alias conda='condor_q'
 alias condt='condor_q $USER -total'
+alias condm='condor_q mderdzinski'
+alias cstat='condor_q $USER | col 6 | drop 4 | head -n -2 | stats'
+alias cstata='condor_q | col 6 | drop 4 | head -n -2 | stats'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
     alias fullfast="cd ~/sandbox/fullfastjets/"
-    alias lumi="cd ~/dataTuple/2016D/NtupleTools/dataTuple/  ; cd cms3withCondor/CMSSW*/ ; cmsenv; crabenv; cd -; python findMissingLumis.py | tee lumiSummary.txt"
-    alias dt="cd ~/dataTuple/2016D/NtupleTools/dataTuple/"
+    # alias lumi="cd ~/dataTuple/2016D/NtupleTools/dataTuple/  ; cd cms3withCondor/CMSSW*/ ; cmsenv; crabenv; cd -; python findMissingLumis.py | tee lumiSummary.txt"
+    alias dt="cd ~/dataTuple/2016G/NtupleTools/dataTuple/"
+    alias vdl="vim /nfs-7/userdata/dataTuple/nick/dataTuple.log"
+    alias lumi="ev; crabenv; dt; python findMissingLumis.py | tee lumiSummary.txt"
     alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/CMSSW_8_0_11/; cmsenv; cd -"
     alias ev74="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/; cmsenv; cd -"
     alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
@@ -304,6 +310,13 @@ if [ ! -z "$inpName" ]; then
     screen -S $inpName
 fi
 }
+# and also do the autocompletions for screens! :)
+_screenscomp() {
+    screennames=$(screens | grep ":" | cut -d ' ' -f2)
+    COMPREPLY=( $(compgen -W "${screennames}" -- ${COMP_WORDS[COMP_CWORD]}) )
+}
+complete -F _screenscomp screens
+
 
 function clog {
     if [ $# -gt 0 ]; then
@@ -415,14 +428,16 @@ git push
 }
 
 function nevts {
+fpatt=$1
+[[ $fpatt == /store/* ]] && fpatt="root://cmsxrootd.fnal.gov//$fpatt"
 if [ $# -gt 1 ]; then
     if [ $# -gt 2 ]; then
-        stuff='("'$1'","'$2'","'$3'")'
+        stuff='("'$fpatt'","'$2'","'$3'")'
     else
-        stuff='("'$1'","'$2'")'
+        stuff='("'$fpatt'","'$2'")'
     fi
 else
-    stuff='("'$1'")'
+    stuff='("'$fpatt'")'
 fi
 eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' 2>&1 | grep Events | cut -d ' ' -f2"
 }
