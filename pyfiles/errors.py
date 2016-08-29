@@ -2,8 +2,10 @@ class E:
     """
     Properly propagates errors using all standard operations
     """
-    def __init__(self, val, err=0.0):
-        self.val, self.err = val, err
+    def __init__(self, val, err=None):
+        # assume poisson
+        if err is None: err = abs(1.0*val)**0.5
+        self.val, self.err = 1.0*val, 1.0*err
 
     def __add__(self, other):
         other_val, other_err = self.get_val(other)
