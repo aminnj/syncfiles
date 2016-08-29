@@ -14,12 +14,13 @@ if [ $# -gt 1 ]; then
     outdir=$2;
 fi
 
-for i in $(ls -1 $dir/*.pdf); do
-    pdftopng $i &
-    sleep 0.2
-done
+ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 9 sh -c "pdftopng %;"
 
-wait
+# for i in $(ls -1 $dir/*.pdf); do
+#     pdftopng $i &
+#     sleep 0.2
+# done
+# wait
 
 index=$HOME/syncfiles/miscfiles/index.php
 
