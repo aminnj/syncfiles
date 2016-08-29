@@ -78,6 +78,14 @@ $(function() {
             elems.show();
         }
     });
+
+    // if page was loaded with a parameter for search, then simulate a search
+    // ex: http://uaf-6.t2.ucsd.edu/~namin/dump/plots_isfr_Aug26/?HH$
+    if(window.location.href.indexOf("?") != -1) {
+        var search = window.location.href.split("?")[1];
+        $("#filter").val(search);
+        $("#filter").trigger("keyup");
+    }
 });
 
 // vimlike: press / to focus on search box
