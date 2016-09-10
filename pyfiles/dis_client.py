@@ -140,7 +140,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     
-    if args.dev: BASE_URL_PATTERN = BASE_URL_PATTERN.replace("handler.py","test/handler.py")
+    if args.dev: 
+        print ">>> Using dev instance"
+        BASE_URL_PATTERN = BASE_URL_PATTERN.replace("handler.py","test/handler.py")
 
     if not args.type: args.type = "basic"
 
