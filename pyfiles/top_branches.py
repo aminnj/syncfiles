@@ -2,10 +2,56 @@
 
 import ROOT as r
 import argparse
-from cStringIO import StringIO
-import commands
-
 import sys
+
+
+def get_total_size(br):
+    f = r.TMemFile("buffer","CREATE")
+    if br.GetTree().GetCurrentFile():
+        f.SetCompressionSettings(br.GetTree().GetCurrentFile().GetCompressionSettings())
+    f.WriteObject(br,"thisbranch")
+    key = f.GetKey("thisbranch");
+    basket_size_zip, basket_size_tot = get_basket_size(br)
+    return [int(basket_size_zip + key.GetNbytes()), int(basket_size_tot + key.GetNbytes())]
+
+def get_basket_size(br):
+    brs = [br]
+    subbrs = br.GetListOfBranches()
+    if subbrs: brs += subbrs
+
+    ret_zip, ret_tot = 0, 0
+    for br in brs:
+        ret_zip += br.GetZipBytes()
+        ret_tot += br.GetTotBytes()
+
+    return ret_zip, ret_tot
+
+def main(fname_in, treename, maxnum):
+
+    f = r.TFile(fname_in)
+    tree = f.Get(treename)
+
+    info = []
+    for br in tree.GetListOfBranches():
+        z,uz = get_total_size(br) # zipped and unzipped sizes
+        info.append([br.GetName(), z, uz])
+
+    tot_z = sum(x[1] for x in info)
+    tot_uz = sum(x[2] for x in info)
+    branches = []
+    for n,z,uz in info:
+        branches.append({"bname": n, "frac": 1.0*z/tot_z, "uncompBytes": uz, "compBytes": z})
+
+    print
+    print " Tree name: %s" % tree.GetName()
+    print "      nevents: %i" % tree.GetEntries()
+    print
+    top_branches = sorted(branches, key=lambda x: x.get("frac",-1), reverse=True)[:maxnum]
+    maxcols = max([len(b["bname"]) for b in top_branches[:maxnum]])+4
+    print ("%-{0}s %s".format(maxcols)) % ("branchname", "size (%) [compression factor]")
+    print "-" * (maxcols+15)
+    for b in top_branches:
+        print ("%-{0}s %2.1f [%03.1f]".format(maxcols)) % (b["bname"], 100.0*b["frac"], 1.0*b["uncompBytes"]/b["compBytes"])
 
 if __name__ == "__main__":
 
@@ -18,102 +64,4 @@ if __name__ == "__main__":
     treename = args.tree
     maxnum = int(args.num)
 
-    # fname_in = "/home/users/namin/2016/ss/80x/SSAnalysis/batch/tzq_10.root"
-    # treename = "t"
-
-    f = r.TFile(fname_in)
-    tree = f.Get(treename)
-
-    with open("tmp_top_branches.C","w") as fhout:
-        
-        fhout.write('{\n');
-        fhout.write('   TChain *ch = new TChain("%s");\n' % treename);
-        fhout.write('   ch->Add("%s");\n' % fname_in);
-        fhout.write('   ch->Print();\n');
-        fhout.write('}\n');
-
-    stat, out = commands.getstatusoutput("root -b -q -l -n tmp_top_branches.C")
-
-    lines = []
-    info = []
-
-    iline = 0
-    tmp = []
-    out = out[1:]
-    for line in out.splitlines():
-        iline += 1
-        line = line.strip()
-        if "***" in line or "..." in line:
-            info.append(" ".join("\n".join(tmp[:]).split()))
-            tmp = []
-            continue
-        tmp.append(line)
-
-    branchInfo = []
-    ibranch = 0
-    while ibranch < len(info):
-        bStr = info[ibranch]
-        if "see below" in bStr:
-            tmp = info[ibranch:ibranch+6]
-            tmp[1] = ""
-            bStr = " ".join(tmp)
-            ibranch += 5
-        branchInfo.append(bStr)
-        ibranch += 1
-
-    tree = {}
-    branches = []
-    treeSize = -999
-    for bStr in branchInfo:
-        try:
-            parts = bStr.replace("*",":").split(":")
-            parts = map(lambda x: x.strip(), parts)
-            if "*Tree" in bStr:
-                treename = parts[2]
-                nevents = int(parts[parts.index("Entries")+1])
-
-                sizeStr = parts[parts.index("Entries")+2]
-                sizeParts = sizeStr.replace("bytes","=").split("=")
-
-                uncompFileBytes = int(sizeParts[1])
-                compFileBytes = int(sizeParts[3])
-
-                compFactor = 1.0*uncompFileBytes/compFileBytes
-
-
-                tree["name"] = treename
-                tree["nevents"] = nevents
-                tree["uncompBytes"] = uncompFileBytes
-                tree["compBytes"] = compFileBytes
-                treeSize = compFileBytes
-
-            elif "*Br" in bStr:
-                # print parts
-                bname = parts[2]
-                things = [thing.replace("bytes", "=").split("=") for thing in parts if "Total Size" in thing]
-                uncompBytes = sum([int(thing[1]) for thing in things])
-                compBytes = sum([int(thing[3]) for thing in things])
-                # compFactor = 1.0*uncompBytes/compBytes
-                d = {"bname": bname, "uncompBytes": uncompBytes, "compBytes": compBytes, "frac": 1.0*compBytes/treeSize}
-                branches.append(d.copy())
-        except:
-            pass
-
-    totFrac = sum([b.get("frac",0) for b in branches])
-
-    print
-    print " Tree name: %s" % tree["name"]
-    print "      nevents: %i" % tree["nevents"]
-    print "      file size (GB): %.2f" % (tree["compBytes"]/1.0e9)
-    print "      compression factor: %.2f" % (1.0*tree["uncompBytes"]/tree["compBytes"])
-    print "      parsed %.2f%% of the filesize" % (100.0*totFrac)
-    print
-
-
-    print "%-85s %s" % ("branchname", "size (%) [compression factor]")
-    print "-" * 90
-    top_branches = sorted(branches, key=lambda x: x.get("frac", 0.0), reverse=True)[:maxnum]
-    maxcols = max([len(b["bname"]) for b in top_branches[:maxnum]])+4
-    for b in top_branches:
-        print ("%-{0}s %2.1f [%03.1f]".format(maxcols)) % (b["bname"], 100.0*b["frac"], 1.0*b["uncompBytes"]/b["compBytes"])
-
+    main(fname_in, treename, maxnum)
