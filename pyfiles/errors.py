@@ -67,6 +67,11 @@ class E:
     def __repr__(self):
         return "%s +- %s" % (str(self.val), str(self.err))
 
+    def __getitem__(self, idx):
+        if idx==0: return self.val
+        elif idx==1: return self.err
+        else: raise IndexError
+
 if __name__ == "__main__":
     v1 = E(10.0,1.0)
     v2 = E(10.0,1.0)
@@ -85,3 +90,4 @@ if __name__ == "__main__":
     print 1.0/v1
     print v1/1.0
     print v1**2
+    print (v1+v2)[0], (v1+v2)[1]
