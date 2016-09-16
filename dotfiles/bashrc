@@ -115,6 +115,7 @@ if [[ $HOST == *uaf-* ]]; then
     alias dt="cd ~/dataTuple/2016G/NtupleTools/dataTuple/"
     alias remerge="cd ~/dataTuple/2016D/NtupleTools/dataTuple/remerge/"
     alias vdl="vim /nfs-7/userdata/dataTuple/nick/dataTuple.log"
+    alias vdr="rm /nfs-7/userdata/dataTuple/nick/running.pid"
     alias lumi="ev; crabenv; dt; python findMissingLumis.py | tee lumiSummary.txt"
     alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/CMSSW_8_0_11/; cmsenv; cd -"
     alias ev74="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/; cmsenv; cd -"
@@ -223,7 +224,7 @@ cl() {
 kajobs() {
     local pid=$(jobs -p)
     if [ -n "${pid}" ]; then
-        kill $pid
+        kill -9 $pid
     fi
 }
 
