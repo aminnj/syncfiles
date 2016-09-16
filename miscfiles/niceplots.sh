@@ -8,13 +8,12 @@ fi
 dir=$1
 outdir=$1
 
-echo "$# args"
 if [ $# -gt 1 ]; then 
     echo "Will put the stuff in $outdir instead"
     outdir=$2;
 fi
 
-ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 9 sh -c "pdftopng %;"
+ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 50;"
 
 # for i in $(ls -1 $dir/*.pdf); do
 #     pdftopng $i &
