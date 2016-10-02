@@ -54,6 +54,7 @@ map <leader>ww :set nowrap!<cr>
 map <leader>nn :set nu!<cr>
 map <leader>qq :wq<cr>
 map <leader>ff :vertical wincmd f<CR>
+map <leader>nc :NeoComplCacheEnable<CR>
 
 " table delimited by space for whole document
 map <leader>ts ggVG:Tab / <cr>:set nohl<cr>
@@ -182,6 +183,7 @@ let &t_te.="\e[0 q"
 
 " easymotion
 nmap s <Plug>(easymotion-overwin-f2)
+
 
 " NERDTree {
     map <C-n> :NERDTreeToggle<CR>

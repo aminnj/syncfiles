@@ -53,6 +53,7 @@ if [[ ${HOST} == *uaf-* ]]; then
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
     unset SSH_ASKPASS
     export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
+    export PATH=/home/users/namin/.local/bin:$PATH # for vim 8
     export PYTHONPATH=$PYTHONPATH:/home/users/namin/Software/slideMaker
     export UCSD="true"
     # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
@@ -107,14 +108,18 @@ alias condt='condor_q $USER -total'
 alias condm='condor_q mderdzinski'
 alias cstat='condor_q $USER | col 6 | drop 4 | head -n -2 | stats'
 alias cstata='condor_q | col 6 | drop 4 | head -n -2 | stats'
+alias pt='ptpython'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
     alias fullfast="cd ~/sandbox/fullfastjets/"
     # alias lumi="cd ~/dataTuple/2016D/NtupleTools/dataTuple/  ; cd cms3withCondor/CMSSW*/ ; cmsenv; crabenv; cd -; python findMissingLumis.py | tee lumiSummary.txt"
     alias dt="cd ~/dataTuple/2016G/NtupleTools/dataTuple/"
+    alias higgs="cd ~/2016/higgs/CMSSW_7_1_12/prod/GenLHEfiles/Run2Mechanism; cmsenv;"
+    alias jsroot="cd ~/public_html/dump/jsroot"
     alias remerge="cd ~/dataTuple/2016D/NtupleTools/dataTuple/remerge/"
     alias vdl="vim /nfs-7/userdata/dataTuple/nick/dataTuple.log"
+    alias em="/home/users/namin/sandbox/emacs-25.1/src/emacs -nw"
     alias vdr="rm /nfs-7/userdata/dataTuple/nick/running.pid"
     alias lumi="ev; crabenv; dt; python findMissingLumis.py | tee lumiSummary.txt"
     alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/CMSSW_8_0_11/; cmsenv; cd -"
@@ -287,7 +292,7 @@ else
 fi
 }
 
-function screens {
+function sc {
 inpName=$1
 for att in $(screen -ls | grep Attached | awk '{print $1}'); do
     id=$att
@@ -314,10 +319,10 @@ fi
 }
 # and also do the autocompletions for screens! :)
 _screenscomp() {
-    screennames=$(screens | grep ":" | cut -d ' ' -f2)
+    screennames=$(sc | grep ":" | cut -d ' ' -f2)
     COMPREPLY=( $(compgen -W "${screennames}" -- ${COMP_WORDS[COMP_CWORD]}) )
 }
-complete -F _screenscomp screens
+complete -F _screenscomp sc
 
 
 function clog {
@@ -489,6 +494,7 @@ if [ -f $1 ] ; then
     case $1 in
         *.tar.bz2)   tar xvjf $1    ;;
         *.tar.gz)    tar xvzf $1    ;;
+        *.tar.xz)    tar xvf $1    ;;
         *.bz2)       bunzip2 $1     ;;
         *.rar)       unrar x $1       ;;
         *.gz)        gunzip $1      ;;

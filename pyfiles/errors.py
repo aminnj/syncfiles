@@ -75,6 +75,8 @@ class E:
 if __name__ == "__main__":
     v1 = E(10.0,1.0)
     v2 = E(10.0,1.0)
+    v3 = E(10.0,2.0)
+    v4 = E(20.0,1.0)
 
     print v1+v2
     print v1+1.0
@@ -91,3 +93,6 @@ if __name__ == "__main__":
     print v1/1.0
     print v1**2
     print (v1+v2)[0], (v1+v2)[1]
+    print v3/v4
+    val, err = v4/v3
+    print 
