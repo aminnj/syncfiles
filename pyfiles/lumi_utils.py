@@ -75,7 +75,9 @@ class RunLumis():
         return False
 
     def pairsToRunLumis(self, pairs):
-        # takes set( (275103,1), (275103,2), (275999, 1) ) and makes RunLumis object
+        """
+        takes set( (275103,1), (275103,2), (275999, 1) ) and makes RunLumis object
+        """
         d_runlumis = {}
         for run, lumi in pairs:
             if run not in d_runlumis: d_runlumis[run] = []

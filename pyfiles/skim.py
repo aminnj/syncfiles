@@ -13,7 +13,13 @@ CLI usage can be found with `python skim.py -h`
 Of course, a python API is provided:
 >>> import skim
 >>> help(skim.skim_tree)
->>> skim.skim_tree(<filename_pattern>, <list_of_branches_to_keep>, treename="t", fname_out="skim.root", cut_str="")
+>>> skim.skim_tree(<list_of_filename_patterns>, <list_of_branches_to_keep>, treename="t", fname_out="skim.root", cut_str="")
+
+Also note that an easy way to get branches in a .so file is:
+```
+nm -gC ScanChain_C.so | grep ss:: | cut -d ':' -f3 | cut -d '(' -f1 | tr '\n' ','
+```
+You will need to change the grep string to work for your analysis.
 """
 
 def readable_size(size):
@@ -24,10 +30,19 @@ def readable_size(size):
 
 def get_filesizes(fnames): return sum(map(os.path.getsize, fnames))
     
-def skim_tree(fname_patt, branches_to_keep, treename="t", fname_out="skim.root", cut_str=""):
+def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root", cut_str=""):
+
+    # This stuff is super necessary or else we all die
+    from ROOT import TChain, TFile, gSystem, gROOT, TTree
+    gSystem.Load("libFWCoreFWLite.so") 
+    gSystem.Load("libDataFormatsFWLite.so");
+    gROOT.ProcessLine("FWLiteEnabler::enable()")
+
     ch = TChain(treename)
-    ch.Add(fname_patt)
+    for patt in fname_patts:
+        ch.Add(patt)
     nevents = ch.GetEntries()
+    branches_to_keep = [b for b in branches_to_keep if b] # remove empty strings
 
     if len(cut_str) > 0:
         print ">>> [!] You specified a cut string of: %s" % cut_str
@@ -55,19 +70,28 @@ def skim_tree(fname_patt, branches_to_keep, treename="t", fname_out="skim.root",
         else:
             print ">>> [!] You specified 0 branches to keep, but you gave me a cut string, so keeping ALL branches."
             branches_to_keep = branches[:]
+    else:
 
-    # whitelist the ones to copy
-    ch.SetBranchStatus("*",0)
-    for bname in branches_to_keep:
-        ch.SetBranchStatus(bname,1)
+        # whitelist the ones to copy
+        ch.SetBranchStatus("*",0)
+        for bname in branches_to_keep:
+            ch.SetBranchStatus(bname,1)
 
-    # need this to actually copy over any 4vectors. WTF.
-    # https://root.cern.ch/phpBB3/viewtopic.php?t=10725
-    ch.SetBranchStatus("fCoordinates*",1);
+        # need this to actually copy over any 4vectors. WTF.
+        # https://root.cern.ch/phpBB3/viewtopic.php?t=10725
+        ch.SetBranchStatus("fCoordinates*",1);
 
     # actually do the skim and save the file
     t0 = time.time()
     new_file = TFile(fname_out,"RECREATE") 
+
+    # copy over all the histograms too - note that this only takes the first file (TODO is to actually add multiples, but this is not a use case for me right now)
+    for key in f1.GetListOfKeys():
+        if key.ReadObj().InheritsFrom(TTree.Class()): continue
+        name = key.GetName()
+        print name
+        f1.Get(name).Write()
+
     print ">>> Started skimming tree %s with %i events: %i --> %i branches" % (treename, nevents, len(branches), len(branches_to_keep))
     ch_new = ch.CopyTree(cut_str)
     print ">>> Finished skim in %.2f seconds" % (time.time()-t0)
@@ -83,7 +107,7 @@ def skim_tree(fname_patt, branches_to_keep, treename="t", fname_out="skim.root",
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("files", help="E.g., \"stuff/WJets*.root\". Use quotes to suppress wildcard expansion")
+    parser.add_argument("files", help="E.g., \"stuff/WJets*.root\". Use quotes to suppress wildcard expansion", nargs="*")
     parser.add_argument("-t", "--treename", help="Name of TTree", default="t")
     parser.add_argument("-o", "--output", help="Name of output skim file", default="skim.root")
     parser.add_argument("-b", "--branches", help="Comma-delimited list of branches to keep", default="")
@@ -94,26 +118,21 @@ if __name__ == "__main__":
 
     print "-"*30
     print "Args:"
-    print " "*4, "Files:", args.files
+    print " "*4, "File patterns:", args.files
     print " "*4, "Treename:", args.treename
     print " "*4, "Output file:", args.output
     print " "*4, "Branches to keep:", args.branches
     print " "*4, "Cut string:", args.cut
     print "-"*30
 
-    # This stuff is super necessary or else we all die
-    from ROOT import TChain, TFile, gSystem, gROOT
-    gSystem.Load("libFWCoreFWLite.so") 
-    gSystem.Load("libDataFormatsFWLite.so");
-    gROOT.ProcessLine("FWLiteEnabler::enable()")
 
     skim_tree(args.files, args.branches, args.treename, args.output, args.cut)
 
-    # fname_patt = "/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*.root"
+    # fname_patts = "/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*.root"
     # treename = "t"
     # fname_out = "skim.root"
     # # cut_str = ""
     # cut_str = "lep1_p4.pt()>300"
     # branches_to_keep = ['is_real_data', 'scale1fb', 'lep1_id', 'lep1_p4', 'ht']
-    # skim_tree(fname_patt, branches_to_keep, treename, fname_out, cut_str)
+    # skim_tree(fname_patts, branches_to_keep, treename, fname_out, cut_str)
 
