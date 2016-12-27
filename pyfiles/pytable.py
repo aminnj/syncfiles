@@ -170,7 +170,16 @@ if __name__ == "__main__":
 
     else:
 
-        first_row_colnames = True
+        import argparse
+
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument("-f", "--first", help="first line is heading", action="store_true", default=False)
+        parser.add_argument("-a", "--alternating", help="don't highlight alternating lines", action="store_true", default=False)
+        parser.add_argument("-s", "--separators", help="show row separators", action="store_true", default=False)
+        args = parser.parse_args()
+
+        first_row_colnames = args.first
         rows = []
         maxcols = -1
         for row in sys.stdin: 
@@ -186,5 +195,5 @@ if __name__ == "__main__":
                 else: tab.add_row(parts)
             else:
                 tab.add_row(parts)
-        tab.print_table(show_row_separators=False,show_alternating=True)
+        tab.print_table(show_row_separators=args.separators,show_alternating=(not args.alternating))
 
