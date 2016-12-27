@@ -99,7 +99,10 @@ nnoremap <leader>pp "+p
 " std::cout << " 1 " << 1 << " 2 " << 2 << " 3 " << 3 << std::endl;
 nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr> ==
 
-nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
+" nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
+" calculate quantity in Word
+nnoremap <leader>cc ciW<C-r>=<C-r>"<CR><Esc>
+nnoremap <leader><space> :noh<cr>
 
 " maintain line joining even though J remapped below
 nnoremap <leader>j J

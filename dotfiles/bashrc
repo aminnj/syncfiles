@@ -58,9 +58,16 @@ if [[ ${HOST} == *uaf-* ]]; then
     export UCSD="true"
     # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
-if [[ ${HOST} == *squark* ]]; then 
-    source ~/root/bin/thisroot.sh
+if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+    if [[ ${HOST} == *squark* ]]; then 
+        source ~/root/bin/thisroot.sh
+    fi
+    if [[ ${HOST} == *laptop* ]]; then 
+        source /Applications/root_v6.08.00/bin/thisroot.sh
+    fi
     alias webd='web $(ls -1rtd ~/Downloads/* | tail -n 1)'
+    # alias temp="istats cpu temp --no-graphs | cut -d'°' -f1 | cut -d' ' -f3"
+    alias temp="~/syncfiles/miscfiles/osx-cpu-temp"
 fi
 if [[ ${HOST} == *Nick* ]]; then 
     alias python0='/cygdrive/c/Python27/python'
@@ -157,7 +164,7 @@ if [[ $HOST == *uaf-* ]]; then
 
 fi
 
-if [[ $HOST == *squark* ]]; then 
+if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     alias mks="cd ~/sandbox/makers; ls -lrth"
 fi
 
@@ -251,7 +258,7 @@ str=$(echo $str | sed 's/:/./g')
 echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
 }
 function utc {
-    if [[ ${HOST} == *squark* ]]; then 
+    if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
         date -r $1
     else
         date -d "1970-01-01 $1 sec UTC"
@@ -282,14 +289,14 @@ PWD1=`pwd`
 PWD2=$1
 if [ -e $PWD1/$PWD2 ] ; then
   blah=$PWD1/$PWD2
-  if [[ $HOST == *squark* ]]; then 
+  if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     echo `greadlink -f $blah`
   else
     echo `readlink -f $blah`
   fi
 else
   if [ -e $PWD2 ]; then 
-      if [[ $HOST == *squark* ]]; then 
+      if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
       echo `greadlink -f $PWD2`
     else
       echo `readlink -f $PWD2`
@@ -492,7 +499,8 @@ function ucsd {
 if [ $# -lt 1 ]; then
     # xwin
     # ssh -X namin@uaf-10.t2.ucsd.edu
-    ssh -X namin@uaf-10.t2.ucsd.edu
+    # ssh -X namin@uaf-10.t2.ucsd.edu
+    ssh namin@uaf-10.t2.ucsd.edu
 else
     ssh namin@uaf-${1}.t2.ucsd.edu
 fi
