@@ -11,7 +11,7 @@ beginStr = """
 \\newcommand{\\mt}{m_\\mathrm{T}}
 \\newcommand{\\pt}{p_\\mathrm{T}}
 \\newcommand{\\mtmin}{m_{T}^\\mathrm{min}}
-\\newcommand{\\Ht}{h_{T}}
+\\newcommand{\\Ht}{H_\\mathrm{T}}
 \\renewcommand{\\arraystretch}{1.2}
 \\begin{document}
 \\pagenumbering{gobble}% remove (eat) page numbers
