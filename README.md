@@ -189,6 +189,16 @@ produces
        0         5000       10000      15000      20000       25000      30000
 ```
 
+# MISCFILES
+# progress
+https://github.com/Xfennec/progress
+
+# ic
+imgcat for iTerm
+
+# tree
+
+
 # TIPS & TRICKS
 You can pipe into vim with "vim -" which reads from STDIN.
 ```
