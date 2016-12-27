@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 __all__ = ['tqdm', 'trange']
 
 import sys
@@ -7,6 +9,17 @@ GREEN = '\033[92m'
 YELLOW = '\033[93m'
 RED = '\033[91m'
 ENDC = '\033[0m'
+
+def hsv_to_rgb(h, s, v):
+    if s == 0.0: v*=255; return [v, v, v]
+    i = int(h*6.) # XXX assume int() truncates!
+    f = (h*6.)-i; p,q,t = int(255*(v*(1.-s))), int(255*(v*(1.-s*f))), int(255*(v*(1.-s*(1.-f)))); v*=255; i%=6
+    if i == 0: return [v, t, p]
+    if i == 1: return [q, v, p]
+    if i == 2: return [p, v, t]
+    if i == 3: return [p, q, v]
+    if i == 4: return [t, p, v]
+    if i == 5: return [v, p, q]
 
 
 def format_interval(t):
@@ -31,25 +44,58 @@ def format_meter(n, total, elapsed):
     if total:
         frac = float(n) / total
         
-        N_BARS = 25
-        bar_length = int(frac*N_BARS)
-        bar = '#'*bar_length + '-'*(N_BARS-bar_length)
-        
+        # N_BARS = 25
+        N_BARS = 75
+        # bar_length = int(frac*N_BARS)
+        # bar = '#'*bar_length + '-'*(N_BARS-bar_length)
         percentage = '%3d%%' % (frac * 100)
-        if frac < 0.3:
-            bar = RED+bar+ENDC
-        elif frac < 0.8:
-            bar = YELLOW+bar+ENDC
+
+        # if frac < 0.3:
+        #     bar = RED+bar+ENDC
+        # elif frac < 0.8:
+        #     bar = YELLOW+bar+ENDC
+        # else:
+        #     bar = GREEN+bar+ENDC
+
+        # bar = ""
+        # for i in range(N_BARS):
+        #     rgb = hsv_to_rgb(i*(100.0/N_BARS)*1.0/360,0.9,0.9)
+        #     rgb = tuple(map(int, rgb))
+        #     # print rgb
+        #     if 1.0*i/N_BARS < frac:
+        #         bar += "\033[48;2;%i;%i;%im \033[0m" % (rgb)
+        #     else:
+        #         bar += " "
+        bar_length, frac_bar_length = divmod(int(frac * N_BARS * 8), 8)
+
+        bar = ""
+        rgb = (255,0,0)
+        for i in range(bar_length):
+            rgb = hsv_to_rgb(1.0/3.6 * frac*i/bar_length,0.9,0.9)
+            rgb = tuple(map(int, rgb))
+            if 1.0*i/N_BARS < frac:
+                bar += "\033[38;2;%i;%i;%im" % (rgb)
+                bar += "%s\033[0m" % (unichr(0x2589))
+
+        # FIXME this particular unicode character is shifted in mac terminal
+        if frac_bar_length == 4: frac_bar_length += 1
+        if frac_bar_length:
+            bar += "\033[38;2;%i;%i;%im" % (rgb)
+            bar += "%s\033[0m" % (unichr(0x2590-frac_bar_length))
         else:
-            bar = GREEN+bar+ENDC
+            bar += ' '
+
+        # whitespace padding
+        if bar_length < N_BARS: bar += ' ' * max(N_BARS - bar_length - 1, 0)
+        else: bar += ' ' * max(N_BARS - bar_length, 0)
         
         left_str = format_interval(elapsed / n * (total-n)) if n else '?'
         
-        return '|%s| %d/%d %s [elapsed: %s left: %s, %s iters/sec]' % (
+        return '|%s| %d/%d %s [elapsed: %s ETA: %s, %s Hz]' % (
             bar, n, total, percentage, elapsed_str, left_str, rate)
     
     else:
-        return '%d [elapsed: %s, %s iters/sec]' % (n, elapsed_str, rate)
+        return '%d [elapsed: %s, %s Hz]' % (n, elapsed_str, rate)
 
 
 class StatusPrinter(object):
@@ -58,13 +104,13 @@ class StatusPrinter(object):
         self.last_printed_len = 0
     
     def print_status(self, s):
-        self.file.write('\r'+s+' '*max(self.last_printed_len-len(s), 0))
+        self.file.write('\r'+s.encode('utf-8')+' '*max(self.last_printed_len-len(s), 0))
         self.file.flush()
         self.last_printed_len = len(s)
 
 
-def tqdm(iterable, desc='', total=None, leave=False, file=sys.stderr,
-         mininterval=0.5, miniters=1):
+def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
+         mininterval=0.05, miniters=1):
     """
     Get an iterable object, and return an iterator which acts exactly like the
     iterable, but prints a progress meter and updates it every time a value is
@@ -123,3 +169,13 @@ def trange(*args, **kwargs):
         f = range
     
     return tqdm(f(*args), **kwargs)
+
+def test():
+    import time
+    for i in tqdm(range(1000)):
+        time.sleep(0.01)
+
+
+if __name__ == "__main__":
+    test()
+
