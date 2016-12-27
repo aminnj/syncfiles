@@ -185,7 +185,6 @@ alias officepi='ssh pi@128.111.19.91'
 #alias eos='ssh namin@eos.tamu.edu'
 
 
-alias tree='tree -C'
 alias stats='~/syncfiles/pyfiles/stats.py'
 alias histo='~/syncfiles/pyfiles/histo.py'
 alias tabletex='~/syncfiles/pyfiles/tabletex.py'
@@ -245,6 +244,14 @@ kajobs() {
     local pid=$(jobs -p)
     if [ -n "${pid}" ]; then
         kill -9 $pid
+    fi
+}
+
+tree() {
+    if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+        tree_osx -C
+    else
+        tree -C
     fi
 }
 
