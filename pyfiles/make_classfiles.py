@@ -12,8 +12,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("filename", help="name of file to make classfile on")
     parser.add_argument("-t", "--tree", help="treename (default: Events)", default="Events")
-    parser.add_argument("-o", "--namespace", help="namespace (default: tas)", default="tas")
-    parser.add_argument("-n", "--objectname", help="objectname (default: cms3)", default="cms3")
+    parser.add_argument("-n", "--namespace", help="namespace (default: tas)", default="tas")
+    parser.add_argument("-o", "--objectname", help="objectname (default: cms3)", default="cms3")
     parser.add_argument("-c", "--classname", help="classname (default: CMS3)", default="CMS3")
     parser.add_argument("-l", "--looper", help="make a looper as well", default=False, action="store_true")
     args = parser.parse_args()
@@ -170,7 +170,8 @@ if __name__ == "__main__":
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
         typ = d_bname_to_info[bname]["type"]
-        buff += '\t%s %s_;\n' % (typ.replace("const","").strip(), alias)
+        cname = d_bname_to_info[bname]["class"]
+        buff += '\t%s %s%s_;\n' % (typ.replace("const","").strip(),"*" if "LorentzVector" in cname else "", alias) # NJA
         buff += '\tTBranch *%s_branch;\n' % (alias)
         buff += '\tbool %s_isLoaded;\n' % (alias)
     buff += 'public:\n'
@@ -211,11 +212,17 @@ if __name__ == "__main__":
     buff += "%s %s;\n\n" % (classname, objectname)
     buff += "void %s::Init(TTree *tree) {\n" % (classname)
 
+    def needs_setmakeclass(cname):
+        if "vector<vector" not in cname:
+            if "TBits" in cname or "LorentzVector" in cname or "PositionVector" in cname:
+                return False
+        return True
+
     ## NOTE Do this twice. First time we consider branches for which we don't want to have SetMakeClass of 1
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
         cname = d_bname_to_info[bname]["class"]
-        if not("TBits" in cname or "LorentzVector" in cname): continue # NOTE
+        if needs_setmakeclass(cname): continue # NOTE
         buff += '\t%s_branch = 0;\n' % (alias)
         if have_aliases:
             buff += '\tif (tree->GetAlias("%s") != 0) {\n' % (alias)
@@ -230,7 +237,7 @@ if __name__ == "__main__":
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
         cname = d_bname_to_info[bname]["class"]
-        if "TBits" in cname or "LorentzVector" in cname: continue # NOTE
+        if not needs_setmakeclass(cname): continue # NOTE
         buff += '\t%s_branch = 0;\n' % (alias)
         if have_aliases:
             buff += '\tif (tree->GetAlias("%s") != 0) {\n' % (alias)
@@ -260,6 +267,7 @@ if __name__ == "__main__":
     for bname in d_bname_to_info:
         alias = d_bname_to_info[bname]["alias"]
         typ = d_bname_to_info[bname]["type"]
+        cname = d_bname_to_info[bname]["class"]
         buff += "%s &%s::%s() {\n" % (typ, classname, alias)
         buff += "\tif (not %s_isLoaded) {\n" % (alias)
         buff += "\t\tif (%s_branch != 0) {\n" % (alias)
@@ -270,7 +278,7 @@ if __name__ == "__main__":
         buff += "\t\t}\n"
         buff += "\t\t%s_isLoaded = true;\n" % (alias)
         buff += "\t}\n"
-        buff += "\treturn %s_;\n" % (alias)
+        buff += "\treturn %s%s_;\n" % ("*" if "LorentzVector" in cname else "", alias)
         buff += "}\n"
 
     buff += "void %s::progress( int nEventsTotal, int nEventsChain ){\n" % (classname)

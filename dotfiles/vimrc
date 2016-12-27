@@ -100,7 +100,6 @@ nnoremap <leader>pp "+p
 nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr> ==
 
 nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
-nnoremap <leader><space> :noh<cr>
 
 " maintain line joining even though J remapped below
 nnoremap <leader>j J
@@ -231,25 +230,25 @@ noremap J 5<down>
 noremap <Down> gj
 noremap <Up> gk
 
-" MRU command-line completion
-function! s:MRUComplete(ArgLead, CmdLine, CursorPos)
-    return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
-endfunction
+" " MRU command-line completion
+" function! s:MRUComplete(ArgLead, CmdLine, CursorPos)
+"     return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
+" endfunction
 
-" MRU function
-function! s:MRU(command, arg)
-    if a:command == "tabedit"
-        execute a:command . " " . a:arg . "|lcd %:p:h"
-    else
-        execute a:command . " " . a:arg
-    endif
-endfunction
+" " MRU function
+" function! s:MRU(command, arg)
+"     if a:command == "tabedit"
+"         execute a:command . " " . a:arg . "|lcd %:p:h"
+"     else
+"         execute a:command . " " . a:arg
+"     endif
+" endfunction
 
-" commands
-command! -nargs=1 -complete=customlist,<sid>MRUComplete ME call <sid>MRU('edit', <f-args>)
-command! -nargs=1 -complete=customlist,<sid>MRUComplete MS call <sid>MRU('split', <f-args>)
-command! -nargs=1 -complete=customlist,<sid>MRUComplete MV call <sid>MRU('vsplit', <f-args>)
-command! -nargs=1 -complete=customlist,<sid>MRUComplete MT call <sid>MRU('tabedit', <f-args>)
+" " commands
+" command! -nargs=1 -complete=customlist,<sid>MRUComplete ME call <sid>MRU('edit', <f-args>)
+" command! -nargs=1 -complete=customlist,<sid>MRUComplete MS call <sid>MRU('split', <f-args>)
+" command! -nargs=1 -complete=customlist,<sid>MRUComplete MV call <sid>MRU('vsplit', <f-args>)
+" command! -nargs=1 -complete=customlist,<sid>MRUComplete MT call <sid>MRU('tabedit', <f-args>)
 
 
 " cnoremap <expr> <Tab>   getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"
@@ -297,7 +296,13 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=238
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=244
 let g:indent_guides_guide_size=1
 
+
 if has("autocmd")
+
+    " augroup vimrc
+    "         autocmd QuickFixCmdPost * botright copen 8
+    " augroup END
+
     augroup Group1
         autocmd!
         filetype plugin indent on
@@ -308,12 +313,18 @@ if has("autocmd")
 
         au BufNewFile,BufRead *.{p,gp} setlocal ft=gnuplot
         au BufNewFile,BufRead *.md setlocal ft=markdown
+
+        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
         " F6 executes gnuplot, python, C, C++ code by compiling and running
         " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
         au FileType crontab set nobackup nowritebackup
 
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
+        " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun!  python % <bar> <C-w><C-p><CR>
+        " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun! python %:p:h <CR>
+        " autocmd FileType python nnoremap <leader><leader> :w <CR> :AsyncRun python %<CR> :copen <CR><C-w><C-p>
         autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python27/python.exe '.shellescape('%')<CR>
         autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
         autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; cp '.shellescape('%:r').'.pdf ~/public_html/dump/'<CR>
@@ -338,8 +349,6 @@ if has("autocmd")
         " endif
 
     augroup END
-else
-    set autoindent
 endif
 
 " }}}

@@ -47,6 +47,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--drawopt", help="draw options, like 'TEXTE'")
     parser.add_argument("-s", "--nostatbox", help="don't show statbox", action="store_true")
     parser.add_argument("-l", "--log", help="logscale", action="store_true")
+    parser.add_argument("-ll", "--loglog", help="loglogscale", action="store_true")
     args = parser.parse_args()
 
     name = args.name or "hist"
@@ -92,6 +93,9 @@ if __name__ == "__main__":
             h2.Fill(row[0], row[1])
 
         if args.log: c1.SetLogz()
+        if args.loglog:
+            c1.SetLogx()
+            c1.SetLogy()
 
         h2.Draw(drawopt)
         c1.SaveAs(outname)

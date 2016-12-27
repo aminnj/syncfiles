@@ -13,7 +13,10 @@ import json
 from multiprocessing import Pool as ThreadPool 
 import ROOT as r
 import glob
-from tqdm import tqdm
+try:
+    from tqdm import tqdm
+except:
+    redirect = True
 import argparse
 
 class RunLumis():
@@ -117,11 +120,13 @@ class RunLumis():
             new_dict[run] = self.listToRanges(self.rls[run])
         return new_dict
 
-    def getIntLumi(self, typ="recorded"):
+    def getIntLumi(self, typ="recorded", first_run=None, last_run=None):
         intlumi = 0.0
         if not d_brilcalc: makeBrilcalcMap()
         # print d_brilcalc
         for pair in self.getRunLumiPairs():
+            if first_run and pair[0] < first_run: continue
+            if last_run and pair[0] > last_run: continue
             intlumi += d_brilcalc.get(pair, 0.0)
         return intlumi
 
@@ -232,6 +237,8 @@ def test():
     assert((j0+j3 != j3) == False)
     assert(j1 == RunLumis(j1.getJson()))
     assert(j1 == RunLumis(j1))
+
+    print "passed all tests!"
 
 if __name__ == '__main__':
 

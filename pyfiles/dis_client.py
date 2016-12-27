@@ -29,7 +29,7 @@ def query(q, typ="basic", detail=False):
 
     data = {}
     # try all uafs
-    for num in map(str,[8,10,6,3,4,5]):
+    for num in map(str,[10,8,6,3,4,5]):
         try:
             url = url_pattern.replace("{NUM}",num)
             content =  urllib2.urlopen(url).read() 
@@ -54,20 +54,33 @@ def listofdicts_to_table(lod):
     # sort colnames from longest string lengths to shortest
     colnames = sorted(colnames, key=d_colsize.get, reverse=True)
 
-    buff = ""
-    header = ""
-    for icol,colname in enumerate(colnames):
-        header += ("%%%s%is" % ("-" if icol==0 else "", d_colsize[colname])) % colname
-    buff += header + "\n"
-    for thing in lod:
-        line = ""
+    try:
+        from pytable import Table
+
+        tab = Table()
+        tab.set_column_names(colnames)
+
+        for row in lod:
+            tab.add_row([row.get(colname) for colname in colnames])
+        tab.sort(column=colnames[0], descending=False)
+                
+        return "".join(tab.get_table_string())
+
+    except:
+        buff = ""
+        header = ""
         for icol,colname in enumerate(colnames):
-            tmp = "%%%s%is" % ("-" if icol==0 else "", d_colsize[colname])
-            tmp = tmp % str(thing.get(colname,""))
-            line += tmp
-        buff += line + "\n"
-            
-    return buff
+            header += ("%%%s%is" % ("-" if icol==0 else "", d_colsize[colname])) % colname
+        buff += header + "\n"
+        for thing in lod:
+            line = ""
+            for icol,colname in enumerate(colnames):
+                tmp = "%%%s%is" % ("-" if icol==0 else "", d_colsize[colname])
+                tmp = tmp % str(thing.get(colname,""))
+                line += tmp
+            buff += line + "\n"
+                
+        return buff
 
         
 def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False):

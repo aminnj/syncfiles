@@ -10,9 +10,11 @@ echo $folder;
 ?>
 </title>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
 <style>
 
@@ -30,29 +32,175 @@ position:relative;
 top: 30px;
 }
 
-/* dark theme */
-/* body { */
-/* background-color: black; */
-/* color: white; */
-/* } */
+legend {
+font-weight: bold;
+}
 
 </style>
 
-<script>
+<?php
+
+// get flat list with parent references
+$data = array();
+function fillArrayWithFileNodes( DirectoryIterator $dir , $theParent="#") {
+    global $data;
+    foreach ( $dir as $node ) {
+        if (strpos($node->getFilename(), '.php') !== false) continue;
+        if( $node->isDot() ) continue;
+        if ( $node->isDir()) fillArrayWithFileNodes( new DirectoryIterator( $node->getPathname() ), $node->getPathname() );
+
+        $tmp = array(
+            "id" => $node->getPathname(),
+            "parent" => $theParent,
+            "text" => $node->getFilename(),
+        );
+        if ($node->isFile()) $tmp["icon"] = "file"; // can be path to icon file
+        $data[] = $tmp;
+    }
+}
+fillArrayWithFileNodes( new DirectoryIterator( '.' ) );
+
+// get all files in flat list
+$iter = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator('.', RecursiveDirectoryIterator::SKIP_DOTS),
+    RecursiveIteratorIterator::SELF_FIRST,
+    RecursiveIteratorIterator::CATCH_GET_CHILD
+);
+$paths = array('.');
+foreach ($iter as $path => $dir) $paths[] = $path;
+
+// get number of directories
+$num_directories = 0;
+foreach ( (new DirectoryIterator('.')) as $node ) {
+    if( $node->isDot() ) continue;
+    if ( $node->isDir()) $num_directories += 1;
+}
+?>
+
+<script type="text/javascript">
+
+function contains_any(str, substrings) {
+    for (var i = 0; i != substrings.length; i++) {
+       var substring = substrings[i];
+       if (str.indexOf(substring) != - 1) {
+         return substring;
+       }
+    }
+    return null; 
+}
+
+function draw_objects(file_objects) {
+    $("#images").html("");
+    for (var ifo = 0; ifo < file_objects.length; ifo++) {
+        var fo = file_objects[ifo];
+        var name_noext = fo["name_noext"];
+        var name = fo["name"];
+        var path = fo["path"];
+        var color = fo["color"];
+        var pdf = fo["pdf"] || fo["name"];
+        var txt_str = (fo["txt"].length > 0) ? " <a href='"+fo["txt"]+"'>[text]</a>" : "";
+        $("#images").append(
+            "<div class='box' id='"+name_noext+"'>"+
+                "    <fieldset style='border:2px solid "+color+"'>"+
+                "        <legend>"+name_noext+txt_str+"</legend>"+
+                "        <a href='"+pdf+"'>"+
+                "            <img src='"+path+"/"+name+"' height='300px' />"+
+                "        </a>"+
+                "    </fieldset>"+
+                "</div>"
+        );
+    }
+}
+
+function draw_filtered(filter_paths) {
+        var temp_filelist = filelist.filter(function(value) {
+            return contains_any(value, filter_paths);
+        });
+
+        var temp_objects = make_objects(temp_filelist);
+        draw_objects(temp_objects);
+}
+
+function make_objects(filelist) {
+    var file_objects = [];
+    for (var i = 0; i < filelist.length; i++) {
+        var f = filelist[i];
+        var ext = f.split('.').pop();
+        if (ext != "png") continue;
+        var color = "";
+        if (f.indexOf("HH") != -1) color = "#B03A2E";
+        else if (f.indexOf("HL") != -1) color = "#2874A6";
+        else if (f.indexOf("LL") != -1) color = "#32CD32";
+        var name = f.split('/').reverse()[0];
+        var path = f.replace(name, "");
+        var name_noext = name.replace("."+ext,"");
+        var pdf = (filelist.indexOf(path+name_noext + ".pdf") != -1) ? path+name_noext+".pdf" : "";
+        var txt = (filelist.indexOf(path+name_noext + ".txt") != -1) ? name_noext+".txt" : "";
+        file_objects.push({
+            "path": path,
+            "name_noext": name_noext,
+            "name":name,
+            "ext": ext,
+            "pdf": pdf,
+            "txt": txt,
+            "color": color,
+        });
+    }
+    return file_objects;
+}
+
+// ultimately this will be a master filelist with all files recursively in this directory
+// then we will filter for files we want to show
+var obj = <?php echo json_encode($data); ?>;
+var filelist = <?php echo json_encode($paths); ?>;
 
 
 $(function() {
 
+    if (<?php echo $num_directories?> > 0) {
+        $('#jstree_demo_div')
+            .on('changed.jstree', function(e,data) {
+                draw_filtered(data.selected);
+            })
+            .jstree( {
+                "core": {
+                    'multiple': true,
+                    'themes' : {
+                       'stripes' : true
+                    },
+                    "data": 
+                        obj
+                    // test_data
+                    // test_data2
+                    
+                }
+            }); 
+    }
+
+
+
+        // filelist = filelist.filter(function(value) {
+            // return value.indexOf("./plots/qcdEstimateData_2016_ICHEP_SNT/f_jets_mc/HT450to575_j2toInf_b0toInf") != -1;
+        // });
+        var file_objects = make_objects(filelist);
+        draw_objects(file_objects);
+
+
     // drag images and hover over others to overlay
+
     $( ".box" ).draggable({
-        opacity: 0.35,
+        opacity: 0.50,
         helper: "clone",
         snap: true,
         revert: true,
     });
 
-    // drag and drop to sort the images
-    // $("#images").sortable();
+    // make map from title of each plot to the html of the title
+    var titleMap = {};
+    var elems = $(".box").filter(function() {
+        var legendTitle = $(this).find("fieldset > legend");
+        titleMap[legendTitle.text()] = legendTitle.html();
+    });
 
     $( "input[id='filter']" ).on('keyup', function() {
         $("#message").html("");
@@ -63,7 +211,9 @@ $(function() {
             var matches = this.id.match(new RegExp(pattern,modifier));  
             if(matches) {
                 var legendTitle = $(this).find("fieldset > legend");
-                legendTitle.html( "<b>"+legendTitle.text().replace(matches[0],"<font style='color:#F00'>"+matches[0]+"</font>")+"</b>" );
+                var to_replace =  titleMap[legendTitle.text()];
+                to_replace = to_replace.replace(matches[0],"<font style='color:#F00'>"+matches[0]+"</font>") ;
+                legendTitle.html(to_replace);
             }
             return matches;
         });
@@ -88,7 +238,7 @@ $(function() {
     }
 });
 
-// vimlike: press / to focus on search box
+// vimlike incsearch: press / to focus on search box
 $(document).keydown(function(e) {
     if(e.keyCode == 191) {
         console.log(e.keyCode); 
@@ -103,85 +253,12 @@ $(document).keydown(function(e) {
 
 <body>
 
+  <div id="jstree_demo_div"> </div>
 
 <input type="text" class="inputbar" id="filter" placeholder="Search/wildcard filter" />
 <span id="message"></span>
+<div id="images"></div>
 
-<?php
 
-$dirname = ".";
-
-$files = scandir($dirname);
-
-echo "<div id='images'>";
-foreach($files as $curimg){
-
-    if (!(strpos($curimg,'.png') || strpos($curimg,'.jpg'))) continue;
-
-    /* $fname_no_ext = explode(".",$curimg); */
-    /* $fname_no_ext = $fname_no_ext[0]; */
-    $fname_no_ext = preg_replace('/\\.[^.\\s]{3,4}$/', '', $curimg);
-    $fname_col_no_ext = $fname_no_ext;
-
-    // find corresponding pdf and link to it if it exists
-    $same_pdf = str_replace(".png", ".pdf", $curimg);
-    $same_pdf = str_replace(".jpg", ".pdf", $same_pdf);
-    $tolink = $curimg;
-    if(in_array($same_pdf, $files)) $tolink = $same_pdf;
-
-    $color="lightgray";
-
-    $red="#B03A2E";
-    $blue="#2874A6";
-    $green="#32CD32";
-
-    // why !== false? http://stackoverflow.com/questions/4366730/check-if-string-contains-specific-words
-    // e vs mu
-    if(strpos($curimg,"_el") !== false) {
-        $color=$blue;
-        $fname_col_no_ext = str_replace("_el", "<font style='color:$color'>_el</font>", $fname_col_no_ext);
-    }
-    if(strpos($curimg,"_e_") !== false) {
-        $color=$blue;
-        $fname_col_no_ext = str_replace("_e_", "<font style='color:$color'>_e_</font>", $fname_col_no_ext);
-    }
-    if(strpos($curimg,"_mu") !== false) {
-        $color=$red;
-        $fname_col_no_ext = str_replace("_mu", "<font style='color:$color'>_mu</font>", $fname_col_no_ext);
-    }
-    if(strpos($curimg,"_m_") !== false) {
-        $color=$red;
-        $fname_col_no_ext = str_replace("_m_", "<font style='color:$color'>_m_</font>", $fname_col_no_ext);
-    }
-
-    // HH vs HL vs LL
-    if(strpos($curimg,"HH") !== false) {
-        $color=$red;
-        $fname_col_no_ext = str_replace("HH", "<font style='color:$color'>HH</font>", $fname_col_no_ext);
-    }
-    if(strpos($curimg,"HL") !== false) {
-        $color=$blue;
-        $fname_col_no_ext = str_replace("HL", "<font style='color:$color'>HL</font>", $fname_col_no_ext);
-    }
-    if(strpos($curimg,"LL") !== false) {
-        $color=$green;
-        $fname_col_no_ext = str_replace("LL", "<font style='color:$color'>LL</font>", $fname_col_no_ext);
-    }
-
-    echo "
-            <div class='box' id='$fname_no_ext'>
-                <fieldset style='border:2px solid $color'>
-                    <legend><b>$fname_col_no_ext</b></legend>
-                    <a href='$tolink'>
-                        <img src='$curimg' height='300px' />
-                    </a>
-                </fieldset>
-            </div>
-        ";
-}
-echo "\n";
-echo "</div>";
-echo "\n";
-?>
 </body>
 </html>

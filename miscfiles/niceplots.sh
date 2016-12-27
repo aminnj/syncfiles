@@ -13,7 +13,7 @@ if [ $# -gt 1 ]; then
     outdir=$2;
 fi
 
-ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 50;"
+ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 100;"
 
 # for i in $(ls -1 $dir/*.pdf); do
 #     pdftopng $i &
