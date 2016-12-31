@@ -222,6 +222,12 @@ pkldump() {
    python -c "with open('"$1"','r') as fhin: __import__('pprint').pprint(__import__('pickle').load(fhin))"
 }
 
+wifi() {
+if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+    /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
+fi
+}
+
 cl() {
     if [[ -z $1 ]]; then
         ls -ltrhG
@@ -255,7 +261,7 @@ tree() {
     fi
 }
 
-function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
+# function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 function mailme() {
 if [ $? -eq 0 ]
 then str="[UAFNotify] Command ended SUCCESSFULLY on $(date) with status code $?"
