@@ -3,6 +3,8 @@
 import urllib, urllib2, json
 import sys
 import argparse
+import socket
+import time
 
 """
 examples:
@@ -23,20 +25,48 @@ Or you can import dis_client and make a query using online syntax and get a json
 """
 
 BASE_URL_PATTERN = "http://uaf-{NUM}.t2.ucsd.edu/~namin/makers/disMaker/handler.py"
+HOST = "localhost"
+PORT = 8888
+NBYTES_HEADER = 8
 
 def query(q, typ="basic", detail=False):
-    url_pattern = '%s?%s' % (BASE_URL_PATTERN, urllib.urlencode({"query": q, "type": typ, "short": "" if detail else "short"}))
+    query_dict = {"query": q, "type": typ, "short": "" if detail else "short"}
+    url_pattern = '%s?%s' % (BASE_URL_PATTERN, urllib.urlencode(query_dict))
 
     data = {}
-    # try all uafs
-    for num in map(str,[10,8,6,3,4,5]):
-        try:
-            url = url_pattern.replace("{NUM}",num)
-            content =  urllib2.urlopen(url).read() 
-            data = json.loads(content)
-            break
-        except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
-        if "test" in BASE_URL_PATTERN: break
+
+    # try to connect via socket, and if that fails just do regular web request
+    try:
+        if "uaf-10" not in socket.gethostname():
+            # FIXME later. only hosting socket server on uaf-10,
+            # so no chance on other computers at the moment
+            raise
+        # connect to socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((HOST,PORT))
+
+        # calculate message size and send it
+        msg = json.dumps(query_dict)
+        nbytes = str(len(msg)).zfill(NBYTES_HEADER)
+        s.sendall(nbytes+msg)
+
+        # get received payload size and fetch it
+        nbytes = int(s.recv(NBYTES_HEADER))
+        data = s.recv(nbytes)
+        data = json.loads(data)
+
+        s.close()
+    except:
+
+        # try all uafs in order of decreasing reliability (subjective)
+        for num in map(str,[10,8,6,3,4,5]):
+            try:
+                url = url_pattern.replace("{NUM}",num)
+                content =  urllib2.urlopen(url).read() 
+                data = json.loads(content)
+                break
+            except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
+            if "test" in BASE_URL_PATTERN: break
 
     return data
 
@@ -120,6 +150,7 @@ def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_tabl
         for ikey,key in enumerate(data):
             buff += "%s: %s\n\n" % (key, data[key])
 
+
     # ignore whitespace at end
     buff = buff.rstrip()
     return buff
@@ -155,7 +186,7 @@ if __name__ == '__main__':
     
     if args.dev: 
         print ">>> Using dev instance"
-        BASE_URL_PATTERN = BASE_URL_PATTERN.replace("handler.py","test/handler.py")
+        BASE_URL_PATTERN = BASE_URL_PATTERN.replace("disMaker","test_disMaker")
 
     if not args.type: args.type = "basic"
 

@@ -4,6 +4,7 @@ __all__ = ['tqdm', 'trange']
 
 import sys
 import time
+import os
 
 GREEN = '\033[92m'
 YELLOW = '\033[93m'
@@ -31,7 +32,7 @@ def format_interval(t):
         return '%02d:%02d' % (m, s)
 
 
-def format_meter(n, total, elapsed):
+def format_meter(n, total, elapsed, do_rgb=True, do_ascii=False):
     # n - number of finished iterations
     # total - total number of iterations, or None
     # elapsed - number of seconds passed since start
@@ -69,19 +70,26 @@ def format_meter(n, total, elapsed):
         bar_length, frac_bar_length = divmod(int(frac * N_BARS * 8), 8)
 
         bar = ""
-        rgb = (255,0,0)
+        rgb = (0,0,0)
         for i in range(bar_length):
-            rgb = hsv_to_rgb(1.0/3.6 * frac*i/bar_length,0.9,0.9)
-            rgb = tuple(map(int, rgb))
             if 1.0*i/N_BARS < frac:
+                if do_rgb:
+                    rgb = hsv_to_rgb(1.0/3.6 * frac*i/bar_length,0.9,0.9)
+                    rgb = tuple(map(int, rgb))
                 bar += "\033[38;2;%i;%i;%im" % (rgb)
-                bar += "%s\033[0m" % (unichr(0x2589))
+                if do_ascii:
+                    bar += "%s\033[0m" % ("#")
+                else:
+                    bar += "%s\033[0m" % (unichr(0x2589))
 
         # FIXME this particular unicode character is shifted in mac terminal
         if frac_bar_length == 4: frac_bar_length += 1
         if frac_bar_length:
             bar += "\033[38;2;%i;%i;%im" % (rgb)
-            bar += "%s\033[0m" % (unichr(0x2590-frac_bar_length))
+            if do_ascii:
+                bar += "%s\033[0m" % ("#")
+            else:
+                bar += "%s\033[0m" % (unichr(0x2590-frac_bar_length))
         else:
             bar += ' '
 
@@ -132,9 +140,12 @@ def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
             total = None
     
     prefix = desc+': ' if desc else ''
+
+    do_rgb = not os.getenv("STY")
+    do_ascii = not not os.getenv("STY")
     
     sp = StatusPrinter(file)
-    sp.print_status(prefix + format_meter(0, total, 0))
+    sp.print_status(prefix + format_meter(0, total, 0, do_rgb, do_ascii))
     
     start_t = last_print_t = time.time()
     last_print_n = 0
@@ -147,7 +158,7 @@ def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
             # We check the counter first, to reduce the overhead of time.time()
             cur_t = time.time()
             if cur_t - last_print_t >= mininterval:
-                sp.print_status(prefix + format_meter(n, total, cur_t-start_t))
+                sp.print_status(prefix + format_meter(n, total, cur_t-start_t, do_rgb, do_ascii))
                 last_print_n = n
                 last_print_t = cur_t
     
@@ -157,7 +168,7 @@ def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
     else:
         if last_print_n < n:
             cur_t = time.time()
-            sp.print_status(prefix + format_meter(n, total, cur_t-start_t))
+            sp.print_status(prefix + format_meter(n, total, cur_t-start_t, do_rgb, do_ascii))
         file.write('\n')
 
 

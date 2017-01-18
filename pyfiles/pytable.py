@@ -152,7 +152,7 @@ if __name__ == "__main__":
 
         tab = Table()
         # tab.set_theme_basic()
-        # tab.set_theme_latex()
+        tab.set_theme_latex()
         tab.set_column_names(["name", "age", "blahhhhhh"])
         for row in [
                 ["Alice", 42, 4293.9923344],

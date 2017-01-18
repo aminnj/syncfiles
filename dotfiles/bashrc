@@ -115,7 +115,8 @@ alias condt='condor_q $USER -total'
 alias condm='condor_q mderdzinski'
 alias cstat='condor_q $USER | col 6 | drop 4 | head -n -2 | stats'
 alias cstata='condor_q | col 6 | drop 4 | head -n -2 | stats'
-alias pt='ptpython'
+alias dfh='df -h | grep hadoop'
+alias pt='ev; ptpython'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
@@ -152,12 +153,15 @@ if [[ $HOST == *uaf-* ]]; then
     alias fr="ssm; cd InSituFR/"
     alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
     alias mks="cd ~/public_html/makers; ls -lrth"
+    alias tdis="cd ~/public_html/makers/test_disMaker; ls -lrth"
     alias dis="cd ~/public_html/makers/disMaker; ls -lrth"
     alias 76x="cd /home/users/namin/2015/76x/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias new76x="cd /home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 80x="cd ~/2016/80x_Apr8/CMSSW_8_0_3_patch1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias duck="cd ~/duck_80x/NtupleTools/AutoTwopler"
+    alias mor="cd ~/2016/moriond/NtupleTools/AutoTwopler/"
+    alias moriond="mor"
     alias lepton="cd ~/2016/ss/master/LeptonBabyMaker/CMSSW_8_0_5_patch1; cmsenv ; cd ../"
 
     alias lu='lumi_utils.py'
@@ -267,6 +271,7 @@ if [ $? -eq 0 ]
 then str="[UAFNotify] Command ended SUCCESSFULLY on $(date) with status code $?"
 else str="[UAFNotify] Command FAILED on $(date) with return value $?"
 fi
+if [ ! -z "$1" ]; then str="[UAFNotify] $1"; fi
 str=$(echo $str | sed 's/:/./g')
 echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
 }
