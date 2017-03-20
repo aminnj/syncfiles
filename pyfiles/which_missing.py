@@ -34,10 +34,11 @@ test_fnames = [
 "merged_ntuple_9.root",
 ]
 
-
-def print_missing(fnames, quiet=False, themax=None, total=False):
+def print_missing(fnames, location=None, quiet=False, themax=None, total=False):
     # key is non-numeric prefix and values are lists of the numbers
     d = {}
+    # key is non-numeric prefix and value is sum of filesizes
+    d_sizes = {}
     for fname in fnames:
         try:
             rev = fname[::-1]
@@ -59,7 +60,11 @@ def print_missing(fnames, quiet=False, themax=None, total=False):
             num = num[::-1]
             non_num = non_num[::-1]
             if non_num not in d: d[non_num] = []
+
             d[non_num].append(int(num))
+            if location:
+                if non_num not in d_sizes: d_sizes[non_num] = 0.0
+                d_sizes[non_num] += os.path.getsize(location+"/"+fname)
 
         except:
             pass
@@ -76,7 +81,8 @@ def print_missing(fnames, quiet=False, themax=None, total=False):
             missing = sorted(list(set(range(1,tot+1))-set(d[pfx])))
             # if len(missing) == 0: print "%s %s*.root: ALL GOOD (%i) %s" % (OKGREEN, pfx, tot, ENDC)
             # else: print "%s %s*.root: MISSING %i/%i %s" % (FAIL, pfx, len(missing), tot, ENDC)
-            if len(missing) == 0: line += "%s %s*.root: ALL GOOD (%i) %s\n" % (OKGREEN, pfx, tot, ENDC)
+            if len(missing) == 0:
+                line += "%s %s*.root: ALL GOOD (%i) -> %.1fGB %s\n" % (OKGREEN, pfx, tot, d_sizes[pfx]/1.0e9, ENDC)
             else: line += "%s %s*.root: MISSING %i/%i %s\n" % (FAIL, pfx, len(missing), tot, ENDC)
 
 
@@ -116,5 +122,5 @@ if __name__ == "__main__":
     if "*" in args.location: fnames = glob.glob(args.location)
     else: fnames = os.listdir(args.location)
 
-    print_missing(fnames, args.quiet, args.max, args.total)
+    print_missing(fnames, args.location, args.quiet, args.max, args.total)
 

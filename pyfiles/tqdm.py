@@ -188,5 +188,37 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+
+
+    # can pipe two numbers (current, total) into tqdm
+    # e.g.,
+    #     for i in $(seq 1 100); do sleep 1s; echo $i 100 | tqdm.py ; done
+    if not sys.stdin.isatty():
+        content = str(sys.stdin.read()).strip()
+        curr, tot = map(int,map(float,content.split()))
+        tnow = time.time()
+
+        if os.path.exists(".for_tqdm"):
+            with open(".for_tqdm","r") as fhin:
+                cthen, tthen = fhin.read().strip().split()
+                cthen = int(cthen)
+                tthen = float(tthen)
+        else:
+            cthen = 0
+            tthen = 0
+
+        # how much time elapsed from start
+        if curr == cthen:
+            elapsed = 999.
+        else:
+            elapsed = 1.0*curr/((curr-cthen)/(tnow-tthen))
+
+        StatusPrinter(sys.stderr).print_status(format_meter(curr, tot, elapsed, True, False))
+        sys.stdout.write('\r')
+
+        with open(".for_tqdm","w") as fhout:
+            fhout.write("{0} {1}".format(curr, tnow))
+
+    else:
+        test()
 

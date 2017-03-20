@@ -50,6 +50,9 @@ set completion-prefix-display-length 2
 "\eOH": beginning-of-line
 "\eOF": end-of-line
 
+# # Will let you just put the first completion if you don't care
+# "\C-i": menu-complete
+
 
 
 # Be more intelligent when autocompleting by also looking at the text after

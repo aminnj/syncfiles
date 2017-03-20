@@ -1,3 +1,6 @@
+
+# -*- coding: UTF-8 -*-
+
 class E:
     """
     Properly propagates errors using all standard operations
@@ -60,17 +63,39 @@ class E:
             other_val, other_err = other.val, other.err
         return other_val, other_err
 
-    def __str__(self):
-        # why use strings? I want python to choose ndecimal places for me
-        return "%s +- %s" % (str(self.val), str(self.err))
+    def round(self, ndec):
+        if ndec == 0:
+            self.val = int(self.val)
+        else:
+            self.val = round(self.val,ndec)
+        self.err = round(self.err,ndec)
+        return self
 
-    def __repr__(self):
-        return "%s +- %s" % (str(self.val), str(self.err))
+    def rep(self):
+        use_ascii = False
+        if use_ascii:
+            sep = "+-"
+        else:
+            sep = u"\u00B1".encode("utf-8")
+        return "%s %s %s" % (str(self.val), sep, str(self.err))
+
+    __str__ = rep
+
+    __repr__ = rep
 
     def __getitem__(self, idx):
         if idx==0: return self.val
         elif idx==1: return self.err
         else: raise IndexError
+
+r = None
+def get_significance(exp,obs):
+    """
+    https://root.cern.ch/root/html526/RooStats__NumberCountingUtils.html
+    """
+    global r
+    if not r: import ROOT as r
+    return r.RooStats.NumberCountingUtils.BinomialObsZ(obs[0], exp[0], exp[1]/exp[0])
 
 if __name__ == "__main__":
     v1 = E(10.0,1.0)

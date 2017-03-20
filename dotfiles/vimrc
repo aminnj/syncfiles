@@ -29,15 +29,27 @@ endif
 
 inoremap kj <Esc>
 inoremap kJ <Esc>
+inoremap KJ <Esc>
 " Type kj to get out of insert or visual mode!
 " virtual lag caused by the below mapping in visual mode!
 " vnoremap kj <Esc>
+"
+if exists('$CMSSW_BASE')
+    " search CMS3 first, then local CMSSW, then central CMSSW
+    set path+=$CMSSW_BASE/src/CMS3/NtupleMaker/src
+    set path+=$CMSSW_BASE/src
+    set path+=$CMSSW_RELEASE_BASE/src
+    " remove includes from autocomplete search list, otherwise slow
+    set complete-=i 
+endif
 
-" control jikl (akin to wasd) will switch panes
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-l> <C-w>l
-nnoremap <C-k> <C-w>k
+
+" " control jikl (akin to wasd) will switch panes
+" nnoremap <C-h> <C-w>h
+" nnoremap <C-j> <C-w>j
+" nnoremap <C-l> <C-w>l
+" nnoremap <C-k> <C-w>k
+
 
 vnoremap . :norm .<cr>
 
@@ -182,6 +194,7 @@ let &t_te.="\e[0 q"
 " set runtimepath^=~/.vim/bundle/ctrlp.vim
 " let g:ctrlp_map = '<c-p>'
 " let g:ctrlp_cmd = 'CtrlP'
+
 
 " easymotion
 nmap s <Plug>(easymotion-overwin-f2)
@@ -335,8 +348,9 @@ if has("autocmd")
         autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>
         autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
         " autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-        autocmd FileType cpp nnoremap <leader><leader> :w <bar> exec '!root -b -q -l -n'.shellescape('%')<CR>
+        autocmd FileType cpp nnoremap <leader><leader> :w <bar> exec '!root -b -q -l -n '.shellescape('%')<CR>
         autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>
+        autocmd FileType sh nnoremap <leader><leader> :w <bar> exec '!./'.shellescape('%')<CR>
         " put printf template into code if using c++ and type PF in insert mode
         " autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
         autocmd FileType markdown nnoremap <F6> :w <bar> exec "!'/cygdrive/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' ".shellescape('%')<CR>

@@ -3,6 +3,10 @@
 
 import sys
 
+def round_sig(x, sig=2):
+    if x < 0.001: return x
+    return round(x, sig-int(math.floor(math.log10(x)))-1)
+
 class Table():
 
     def __init__(self):
@@ -12,12 +16,18 @@ class Table():
         self.extra_padding = 1
         self.d_style = {}
         self.set_theme_fancy()
+        self.use_color = True
 
     def shorten_string(self, val, length):
         return val[:length//2-1] + "..." + val[-length//2+2:]
     def fmt_string(self, val, length, fill_char=" ", justify="c", bold=False, offcolor=False):
         ret = ""
         val = str(val)
+        if u"\u00B1".encode("utf-8") in val:
+            # unicode plus or minus symbol forces us to add another
+            # space, but I don't know why. whatever, just do it
+            length += 1
+            
         if len(val) > length: val = self.shorten_string(val, length)
         if justify == "l": 
             ret = " "+val.ljust(length-1, fill_char)
@@ -26,9 +36,9 @@ class Table():
             nl = (length-len(val))//2
             nr = (length-len(val))-(length-len(val))//2
             ret = fill_char*nl + val + fill_char*nr
-        if bold:
+        if bold and self.use_color:
             ret = '\033[1m' + ret + '\033[0m'
-        if offcolor:
+        if offcolor and self.use_color:
             ret = '\033[2m' + ret + '\033[0m'
         return ret
 
@@ -50,6 +60,8 @@ class Table():
         self.d_style["OUTER_TOP_RIGHT"] = '\033(0\x6b\033(B'
 
     def set_theme_basic(self):
+        self.use_color = False
+
         self.d_style["INNER_HORIZONTAL"] = '-'
         self.d_style["INNER_INTERSECT"] = '+'
         self.d_style["INNER_VERTICAL"] = '|'
@@ -113,6 +125,23 @@ class Table():
     def get_table_string(self, bold_title=True, show_row_separators=False, show_alternating=False):
         self.update()
         nrows = len(self.matrix) + 1
+
+
+        # # line at very top
+        # yield self.d_style["OUTER_TOP_LEFT"]
+        # yield self.d_style["OUTER_TOP_HORIZONTAL"]*(10)
+        # yield self.d_style["OUTER_TOP_RIGHT"]+"\n"
+        # # lines separating columns
+        # yield self.d_style["OUTER_LEFT_VERTICAL"]
+        # yield " "*10
+        # yield self.d_style["OUTER_RIGHT_VERTICAL"]+"\n"
+        # # lines separating rows
+        # yield self.d_style["OUTER_LEFT_INTERSECT"]
+        # yield self.d_style["INNER_HORIZONTAL"]*(10)
+        # yield self.d_style["OUTER_RIGHT_INTERSECT"]+"\n"
+
+
+
         for irow,row in enumerate([self.colnames]+self.matrix):
             if irow == 0:
             # line at very top

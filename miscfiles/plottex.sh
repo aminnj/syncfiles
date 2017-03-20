@@ -16,6 +16,7 @@ echo "\\usepackage{tikz}" >> temp_$1
 echo "\\usetikzlibrary{patterns}" >> temp_$1
 echo "\\usetikzlibrary{plotmarks}" >> temp_$1
 echo "\\begin{document}" >> temp_$1
+echo "\\pagenumbering{gobble}" >> temp_$1
 echo "\\par" >> temp_$1
 echo "\\begin{figure}[htbp]" >> temp_$1
 echo "\\scalebox{0.7}{\input{$1}}" >> temp_$1

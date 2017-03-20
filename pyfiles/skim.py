@@ -34,6 +34,8 @@ def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root"
 
     # This stuff is super necessary or else we all die
     from ROOT import TChain, TFile, gSystem, gROOT, TTree
+    import ROOT as r
+    r.v5.TFormula.SetMaxima(5000000)
     gSystem.Load("libFWCoreFWLite.so") 
     gSystem.Load("libDataFormatsFWLite.so");
     gROOT.ProcessLine("FWLiteEnabler::enable()")
