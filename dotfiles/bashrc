@@ -27,6 +27,11 @@ HOST=$(hostname)
 echo -ne "\033]0;${USER}@${HOST}\007"
 
 PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\]"
+if [ ! -z $CMSSW_VERSION ]; then
+    short=${CMSSW_VERSION#$"CMSSW_"}
+    short=${short/patch/p}
+    PS+=" \[\033[00;38;5;1m\][${short}]\[\e[0m\]"
+fi
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
@@ -70,13 +75,6 @@ if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then
     # alias temp="istats cpu temp --no-graphs | cut -d'°' -f1 | cut -d' ' -f3"
     alias temp="~/syncfiles/miscfiles/osx-cpu-temp"
 fi
-if [[ ${HOST} == *Nick* ]]; then 
-    alias python0='/cygdrive/c/Python27/python'
-    export PATH=${PATH}:/cygdrive/d/Mathematica
-    export PATH=${PATH}:/cygdrive/c/Program\ Files/Wolfram\ Research/Mathematica/10.0
-    # source ~/root/bin/thisroot.sh
-    export DISPLAY=:0.0
-fi
 export PATH=${PATH}:~/syncfiles/miscfiles/
 
 alias l='ls -lG'
@@ -102,7 +100,7 @@ alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias vrc='vim ~/.vimrc'
 alias em='emacs'
 alias gam='git commit -a -m'
-alias gd='git diff'
+alias gd='git diff --color | ~/sandbox/diff-so-fancy/diff-so-fancy'
 alias gp='git push'
 # alias gs='git status'
 alias gsu='git status --untracked-files=no'
@@ -117,6 +115,7 @@ alias cstat='condor_q $USER | col 6 | drop 4 | head -n -2 | stats'
 alias cstata='condor_q | col 6 | drop 4 | head -n -2 | stats'
 alias dfh='df -h | grep hadoop'
 alias pt='ev; ptpython'
+alias xb='xargs -n 1 -I {} sh -c'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
@@ -152,8 +151,14 @@ if [[ $HOST == *uaf-* ]]; then
     alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
     alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
     alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
+    # alias hlt="cd /home/users/namin/2017/hlt/CMSSW_9_0_0_pre6/src/HLTrigger/Configuration/test; cmsenv"
+    alias hlt="cd /home/users/namin/2017/hlt/cms3/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
+    alias four="ssm; cd ~/2016/ss/master/SSAnalysis/yieldsAndSRs/numericYields/tttt/baby;"
     alias halo="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
+    alias jets="cd ~/2017/jets/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv "
     alias slim="cd /home/users/namin/2017/slimming/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
+    alias slimr="cd /home/users/namin/2017/slimming/retry/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
+    alias slimold="cd /home/users/namin/2017/slimming/old/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
     alias aging="cd ~/2017/csc/aging/CMSSW_8_1_0/src/DPGAnalysis/MuonSysAging/test; cmsenv"
     alias sm="cd ~/Software/slideMaker/; ls -lrth"
     alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
@@ -168,9 +173,10 @@ if [[ $HOST == *uaf-* ]]; then
     alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 80x="cd ~/2016/80x_Apr8/CMSSW_8_0_3_patch1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias duck="cd ~/duck_80x/NtupleTools/AutoTwopler"
-    alias mor="cd ~/2016/moriond/NtupleTools/AutoTwopler/"
+    alias moriond="cd ~/2016/moriond/NtupleTools/AutoTwopler/"
     alias ichep="cd /home/users/namin/2016/ichep/NtupleTools/AutoTwopler/"
-    alias moriond="mor"
+    alias cms4="cd /home/users/namin/2017/cms4/NtupleTools/AutoTwopler"
+
     alias metis="cd ~/2017/ProjectMetis"
     alias lepton="cd ~/2016/ss/master/LeptonBabyMaker/CMSSW_8_0_5_patch1; cmsenv ; cd ../"
 
@@ -178,7 +184,10 @@ if [[ $HOST == *uaf-* ]]; then
     alias sb='cmsenv; cd $CMSSW_BASE ; scram b -j10; cd -'
     alias sbf='cmsenv; cd $CMSSW_BASE ; scram b -f -j10 ; cd -'
 
+    alias mp="./make | tee temp.txt ; cat temp.txt | grep 'PDF Output file:' | cut -d: -f2 | xargs -n 1 -I {} sh -c 'web {}'";
+
 fi
+
 
 if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     alias mks="cd ~/sandbox/makers; ls -lrth"
@@ -223,10 +232,7 @@ shopt -s cdspell
 # git config --global alias.ci 'commit -a -m'
 # Disable annoying mail messages
 unset MAILCHECK
-# if [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
-#alias desktop='cd /cygdrive/c/Users/Nick/Desktop'
 alias d='cd ~/desktop/'
-alias db='cd /cygdrive/d/dropbox/'
 
 #Add path - stolen from Alex
 pathadd(){
@@ -234,9 +240,6 @@ pathadd(){
     if [ -d "$1" ] && [[ ":$PYTHONPATH:" != *":$1:"* ]]; then PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$1"; fi
     if [ -d "$1" ] && [[ ":$LD_LIBRARY_PATH:" != *":$1:"* ]]; then LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"$LD_LIBRARY_PATH:"}$1"; fi
 }
-
-# hack for expect
-pathadd /home/users/namin/sandbox/expect/expect5.45
 
 pkldump() {
    python -c "with open('"$1"','r') as fhin: __import__('pprint').pprint(__import__('pickle').load(fhin))"
@@ -393,10 +396,16 @@ complete -F _screenscomp sc
 
 function clog {
     num=20
-    if [ $# -gt 0 ]; then
+    # if number is less than 10k, then it can't be a condor_id, so
+    # use it as the number of entries to show, otherwise use it
+    # as condor_id
+    if [ $# -gt 0 ]; then 
+        num=$(echo $1 | sed 's/\.0//')
+    fi
+    if  [[ $# -gt 0 && "$num" -gt 10000 ]]; then
         temp_file=$(mktemp)
         jobid=$1
-        condor_history $USER -limit $num | grep $jobid
+        # condor_history $USER -limit $num | grep $jobid
         # condor_history $USER -limit 100 | grep $jobid
         condor_history -l $jobid -limit 1 > $temp_file
         iwd=$(cat $temp_file | grep "^Iwd" | cut -d\" -f2)
@@ -418,28 +427,6 @@ function condh {
     condor_q -l $1 | grep -i "hold"
 }
 
-
-function pdftopng {
-#sharpen not really necessary
-#convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
-if [ $# -gt 0 ]; then
-    echo "$1 ==> ${1%%.pdf}.png" 
-    # if [[ $HOST == *uaf-* ]]; then 
-    #     gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
-    # else
-
-    density=150
-    if [ $# -gt 1 ]; then
-        density=$2
-    fi
-    convert -density ${density} -trim $1 -fuzz 1% ${1%%.pdf}.png
-
-    # fi
-else
-    echo "Usage: pdftopng <pdf name> [optional density]"
-fi
-}
-export -f pdftopng
 
 function pdftoppt {
 if [[ $* == *-h* ]]; then
@@ -569,6 +556,7 @@ if [ -f $1 ] ; then
         *.tar.xz)    tar xvf $1    ;;
         *.bz2)       bunzip2 $1     ;;
         *.rar)       unrar x $1       ;;
+        *.xz)        unxz x $1       ;;
         *.gz)        gunzip $1      ;;
         *.tar)       tar xvf $1     ;;
         *.tbz2)      tar xvjf $1    ;;
@@ -694,6 +682,22 @@ function myip {
 function remove_preliminary() {
     oldtext=Preliminary
     newtext=
+    for pdffile in $@; do
+        echo "Processing $pdffile..."
+        cp $pdffile $pdffile.bak
+        pdftk $pdffile output $pdffile.tmp uncompress
+        rm $pdffile
+        # the LANG=C hack may or may not be needed
+        LANG=C && sed -i -e "s/$oldtext/$newtext/g" $pdffile.tmp
+        pdftk $pdffile.tmp output $pdffile compress
+        rm -f $pdffile.tmp
+        rm -f $pdffile.tmp-e
+    done
+}
+
+function simulation_to_sp() {
+    oldtext=Simulation
+    newtext="Simulation Preliminary"
     for pdffile in $@; do
         echo "Processing $pdffile..."
         cp $pdffile $pdffile.bak

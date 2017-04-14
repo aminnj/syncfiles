@@ -50,17 +50,24 @@ if __name__ == "__main__":
         temp_aliases = trees[-1].GetListOfAliases()
         temp_branches = trees[-1].GetListOfBranches()
         
-        for ala in temp_aliases:
-            alias = ala.GetName()
-            if alias not in names:                
-                names.add(alias)
-                aliases.Add(ala)
-                branches.Add(trees[-1].GetBranch(trees[-1].GetAlias(alias)))
-            if "hlt_trigNames" in alias: haveHLTInfo = True
-            if "hlt8e29_trigNames" in alias: haveHLT8E29Info = True
-            if "l1_trigNames" in alias: haveL1Info = True
-            if "taus_pf_IDnames" in alias: haveTauIDInfo = True
-            if "pfjets_bDiscriminatorNames" in alias: haveBtagInfo = True
+        if not not temp_aliases:
+            for ala in temp_aliases:
+                alias = ala.GetName()
+                if alias not in names:                
+                    names.add(alias)
+                    aliases.Add(ala)
+                    branches.Add(trees[-1].GetBranch(trees[-1].GetAlias(alias)))
+                if "hlt_trigNames" in alias: haveHLTInfo = True
+                if "hlt8e29_trigNames" in alias: haveHLT8E29Info = True
+                if "l1_trigNames" in alias: haveL1Info = True
+                if "taus_pf_IDnames" in alias: haveTauIDInfo = True
+                if "pfjets_bDiscriminatorNames" in alias: haveBtagInfo = True
+        else:
+            for br in temp_branches:
+                alias = br.GetName()
+                if alias not in names:                
+                    names.add(alias)
+                    branches.Add(br)
             
     if os.path.isfile("ScanChain.C") or os.path.isfile("doAll.C"):
         print ">>> Hey, you already have a looper here! I will be a bro and not overwrite them. Delete 'em if you want to regenerate 'em."
@@ -137,7 +144,7 @@ if __name__ == "__main__":
         bname = branch.GetName()
         cname = branch.GetClassName()
         btitle = branch.GetTitle()
-        
+
         if bname in ["EventSelections", "BranchListIndexes", "EventAuxiliary", "EventProductProvenance"]: continue
         # if not any([cut in bname for cut in cuts]): continue
 
@@ -160,8 +167,6 @@ if __name__ == "__main__":
             typ = cname.replace("edm::Wrapper<","")[:-1]
         typ = classname_to_type(typ)
 
-        if "musp4" in bname: print bname
-        
         d_bname_to_info[bname] = {
                 "class": cname,
                 "alias": bname.replace(".",""),
@@ -181,11 +186,10 @@ if __name__ == "__main__":
             if branchname not in d_bname_to_info: continue
             d_bname_to_info[branchname]["alias"] = alias.replace(".","")
 
-    if filter_branches:
+    if len(filter_branches)>1:
         for bname in d_bname_to_info.keys():
             if d_bname_to_info[bname]["alias"] not in filter_branches:
                 del d_bname_to_info[bname]
-
 
     buff = ""
 
