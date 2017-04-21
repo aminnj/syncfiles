@@ -86,6 +86,8 @@ def listofdicts_to_table(lod):
 
     try:
         from pytable import Table
+        if not sys.stdout.isatty():
+            raise Exception
 
         tab = Table()
         tab.set_column_names(colnames)

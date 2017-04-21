@@ -36,7 +36,7 @@ def main(fname_in, treename, maxnum, precision, groupmakers):
 
 
     use_edm_tool = True
-    use_aliases = True
+    use_aliases = False
 
     d_bname_to_alias = {}
     if use_aliases:

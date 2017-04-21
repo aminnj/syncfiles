@@ -1,5 +1,4 @@
 import os
-from math import sqrt
 import ROOT as r
 
 c1 = None
@@ -20,7 +19,7 @@ class Label(object):
         self.y1 = y
 
     def transform_text(self,text):
-        # latex needs one of these characters to put in a $ and go into mathmode
+        # ROOT needs one of these characters to put in a $ and go into mathmode
         # otherwise we do it explicitly
         if self.roman or any([x in text for x in "#{}^"]): return text
         text = "${0}$".format(text)
@@ -47,7 +46,6 @@ class Vertex(object):
         self.label.draw()
 
 
-
 class Propagator(object):
     def __init__(self,  v1,v2, typ="line", label=Label(), autolabel=True, \
             linewidth=1, linecolor=r.kBlack, fliparrow=False):
@@ -70,42 +68,33 @@ class Propagator(object):
 
         prop1, prop2 = None, None
         if self.typ == "line":
-            prop1 = r.TLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop1 = r.TLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
         if self.typ == "dashedline":
-            prop1 = r.TLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop1 = r.TLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
             prop1.SetLineStyle(7)
         if self.typ == "dottedline":
-            prop1 = r.TLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop1 = r.TLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
             prop1.SetLineStyle(3)
         elif self.typ == "curlyline":
-            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
             prop1.SetWaveLength(prop1.GetWaveLength()*1.4)
             prop1.SetAmplitude(prop1.GetAmplitude()*1.4)
         elif self.typ == "wavyline":
-            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
             prop1.SetWavy()
             prop1.SetWaveLength(prop1.GetWaveLength()*1.4)
             prop1.SetAmplitude(prop1.GetAmplitude()*1.4)
         elif self.typ == "wavystraightline":
-            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
             prop1.SetWavy()
             prop1.SetWaveLength(prop1.GetWaveLength()*1.4)
             prop1.SetAmplitude(prop1.GetAmplitude()*1.4)
-            prop2 = r.TLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop2 = r.TLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
         elif self.typ == "curlystraightline":
-            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop1 = r.TCurlyLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
             prop1.SetWaveLength(prop1.GetWaveLength()*1.4)
             prop1.SetAmplitude(prop1.GetAmplitude()*1.4)
-            prop2 = r.TLine(self.v1.x1, self.v1.y1, \
-                                self.v2.x1, self.v2.y1)
+            prop2 = r.TLine(self.v1.x1, self.v1.y1, self.v2.x1, self.v2.y1)
 
 
         prop1.SetLineColor(self.linecolor)
@@ -114,8 +103,6 @@ class Propagator(object):
         if prop2:
             prop2.SetLineColor(self.linecolor)
             prop2.SetLineWidth(self.linewidth)
-        # print self.v1.x1,self.v1.y1,self.v2.x1,self.v2.y1, self.linecolor, self.linewidth
-        # print prop1
 
         if prop1: prop1.Draw()
         if prop2: prop2.Draw()
@@ -124,15 +111,16 @@ class Propagator(object):
         if prop1: _nodelete.append(prop1)
         if prop2: _nodelete.append(prop2)
 
-        if self.typ in ["line"]:
+        if self.typ in ["line", "dashedline"]:
             c1 = self.v1.x1,self.v1.y1
             c2 = self.v2.x1,self.v2.y1
-            if self.fliparrow:
-                c1, c2 = c2, c1
-            mult = 0.54
-            a1 = r.TArrow(c1[0],c1[1],(1.-mult)*c1[0]+mult*c2[0],(1.-mult)*c1[1]+mult*c2[1], 0.02*self.linewidth,"|>")
+            if self.fliparrow: c1, c2 = c2, c1
+            mult = 0.57
+            awidth = 0.025
+            a1 = r.TArrow(c1[0],c1[1],(1.-mult)*c1[0]+mult*c2[0],(1.-mult)*c1[1]+mult*c2[1], awidth,"|>")
             a1.SetLineWidth(0)
             a1.SetFillColor(self.linecolor)
+            a1.SetAngle(40)
             a1.Draw()
             _nodelete.append(a1)
 
@@ -146,8 +134,6 @@ def draw_grid(_nodelete=[]):
         yline = r.TLine(0,10*i,100,10*i)
         xline.SetLineColor(r.kGray)
         yline.SetLineColor(r.kGray)
-        # xlab = r.TLatex(10*i-3,-3,str(10*i))
-        # ylab = r.TLatex(-6,10*i-2,str(10*i))
         xlab = r.TLatex(10*i,0,str(10*i))
         ylab = r.TLatex(0,10*i,str(10*i))
         xlab.SetTextAlign(23)
@@ -198,7 +184,6 @@ def save_diagram(fname):
     web(fname)
 
 def tex_to_pdf(fname):
-    # os.system("pdflatex {0} >& /dev/null".format(fname))
     os.system("pdflatex -interaction=nonstopmode -q {0} >& /dev/null ".format(fname))
 
 def crop_pdf(fname):
@@ -225,7 +210,12 @@ if __name__ == "__main__":
     pqp = Propagator(vqp,veebr,typ="line")
     pqm = Propagator(vqm,veebr,typ="line",fliparrow=True)
 
-    Label("e^+e^-\\rightarrow q\\bar{q}", 50,30,  textsize=0.07).draw()
+    vgluonl = Vertex(65+7.5,50+7.5)
+    vgluonr = Vertex(65+7.5+7.5+4,50-4, Label("g", offsetx=2,offsety=2))
+
+    pglu = Propagator(vgluonl, vgluonr, typ="curlyline")
+
+    lab = Label("e^+e^-\\rightarrow q\\bar{q}g", 50,30,  textsize=0.07)
 
     init_diagram()
     draw_grid()
@@ -235,5 +225,39 @@ if __name__ == "__main__":
     pboson.draw()
     pqp.draw()
     pqm.draw()
+    pglu.draw()
+    lab.draw()
 
     save_diagram("eetoqq.pdf")
+
+    ### gg->ttH/A
+
+    vg1 = Vertex(20,60, Label("g",offsetx=-2))
+    vg2 = Vertex(20,30, Label("g",offsetx=-2))
+    vg1t = Vertex(45,60)
+    vg2t = Vertex(45,30)
+    vg1t_right = Vertex(70,60, Label("t",offsetx=2))
+    vg2t_right = Vertex(70,30, Label("t",offsetx=2))
+    vtth = Vertex(45,45)
+    vh_right = Vertex(70,45, Label("H(A)",offsetx=5))
+    lw = 2
+    pg1 = Propagator(vg1,vg1t,typ="curlyline",linewidth=lw)
+    pg2 = Propagator(vg2,vg2t,typ="curlyline",linewidth=lw)
+    ptth_midtop = Propagator(vtth,vg1t,typ="line",label=Label("t",offsetx=-2),linecolor=r.kRed-4,linewidth=lw)
+    ptth_midbot = Propagator(vtth,vg2t,typ="line",label=Label("t",offsetx=-2),linecolor=r.kRed-4,linewidth=lw, fliparrow=True)
+    ptth_top = Propagator(vg1t,vg1t_right,typ="line",linecolor=r.kRed-4,linewidth=lw)
+    ptth_bot = Propagator(vg2t,vg2t_right,typ="line",linecolor=r.kRed-4,linewidth=lw, fliparrow=True)
+    ptth_mid = Propagator(vtth,vh_right,typ="dashedline",linecolor=r.kAzure-6,linewidth=lw)
+
+    init_diagram()
+    draw_grid()
+
+    pg1.draw()
+    pg2.draw()
+    ptth_midtop.draw()
+    ptth_midbot.draw()
+    ptth_top.draw()
+    ptth_bot.draw()
+    ptth_mid.draw()
+
+    save_diagram("tth.pdf")

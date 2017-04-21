@@ -25,6 +25,43 @@ body {
 .box {
 float:left;
 padding: 5px; /* space between image and border */
+border-radius: 5px;
+}
+
+/* /1* can remove if you don't want hover zoom *1/ */
+/* .box:hover */
+/* { */
+/*     box-shadow: 0px 0px 50px #000; */
+/*     z-index: 2; */
+/*     background-color: #fff; */
+/*     transition: all 200ms ease-in; */
+/*     -webkit-transition-delay: 800ms; */
+/*     -moz-transition-delay: 800ms; */
+/*     -o-transition-delay: 800ms; */
+/*     transition-delay: 800ms; */
+/*     transform: scale(2.1); */
+/* } */
+
+/* can remove if you don't want hover zoom */
+.box:hover
+{
+    box-shadow: 0px 0px 50px #000;
+    z-index: 2;
+    background-color: #fff;
+    -moz-transition:-moz-transform 0.5s ease-out; 
+    -webkit-transition:-webkit-transform 0.5s ease-out; 
+    -o-transition:-o-transform 0.5s ease-out;
+    transition:transform 0.5s ease-out;
+    -webkit-transition-delay: 1.0s;
+    -moz-transition-delay: 1.0s;
+    -o-transition-delay: 1.0s;
+    transition-delay: 1.0s;
+    transform: scale(2.3);
+    /* transform: scale(1.0); */
+    -moz-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    transform-origin: 0 0;
 }
 
 #images {
@@ -99,10 +136,11 @@ function draw_objects(file_objects) {
         var color = fo["color"];
         var pdf = fo["pdf"] || fo["name"];
         var txt_str = (fo["txt"].length > 0) ? " <a href='"+fo["txt"]+"'>[text]</a>" : "";
+        var extra_str = (fo["extra"].length > 0) ? " <a href='"+fo["extra"]+"'>[extra]</a>" : "";
         $("#images").append(
             "<div class='box' id='"+name_noext+"'>"+
                 "    <fieldset style='border:2px solid "+color+"'>"+
-                "        <legend>"+name_noext+txt_str+"</legend>"+
+                "        <legend>"+name_noext+txt_str+extra_str+"</legend>"+
                 "        <a href='"+pdf+"'>"+
                 "            <img src='"+path+"/"+name+"' height='300px' />"+
                 "        </a>"+
@@ -136,6 +174,7 @@ function make_objects(filelist) {
         var name_noext = name.replace("."+ext,"");
         var pdf = (filelist.indexOf(path+name_noext + ".pdf") != -1) ? path+name_noext+".pdf" : "";
         var txt = (filelist.indexOf(path+name_noext + ".txt") != -1) ? name_noext+".txt" : "";
+        var extra = (filelist.indexOf(path+name_noext + ".extra") != -1) ? name_noext+".extra" : "";
         file_objects.push({
             "path": path,
             "name_noext": name_noext,
@@ -143,6 +182,7 @@ function make_objects(filelist) {
             "ext": ext,
             "pdf": pdf,
             "txt": txt,
+            "extra": extra,
             "color": color,
         });
     }
@@ -208,7 +248,12 @@ $(function() {
         var modifier = "";
         if(pattern.toLowerCase() == pattern) modifier = "i"; // like :set smartcase in vim (case-sensitive if there's an uppercase char)
         var elems = $(".box").filter(function() {
-            var matches = this.id.match(new RegExp(pattern,modifier));  
+            try {
+            var regex = new RegExp(pattern,modifier);
+            } catch(e) {
+                return [];
+            }
+            var matches = this.id.match(regex);  
             if(matches) {
                 var legendTitle = $(this).find("fieldset > legend");
                 var to_replace =  titleMap[legendTitle.text()];
@@ -232,7 +277,7 @@ $(function() {
     // if page was loaded with a parameter for search, then simulate a search
     // ex: http://uaf-6.t2.ucsd.edu/~namin/dump/plots_isfr_Aug26/?HH$
     if(window.location.href.indexOf("?") != -1) {
-        var search = window.location.href.split("?")[1];
+        var search = unescape(window.location.href.split("?")[1]);
         $("#filter").val(search);
         $("#filter").trigger("keyup");
     }
@@ -247,6 +292,21 @@ $(document).keydown(function(e) {
     }
 });
 
+function copyToClipboard(text) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(text).select();
+    document.execCommand("copy");
+    $temp.remove();
+}
+
+function getQueryURL() {
+    var query = escape($('#filter').val());
+    var queryURL = "http://"+location.hostname+location.pathname+"?"+query;
+    console.log(queryURL);
+    copyToClipboard(queryURL)
+}
+
 </script>
 
 </head>
@@ -256,6 +316,7 @@ $(document).keydown(function(e) {
   <div id="jstree_demo_div"> </div>
 
 <input type="text" class="inputbar" id="filter" placeholder="Search/wildcard filter" />
+<a href="javascript:;" onClick="getQueryURL();">copy as URL</a>
 <span id="message"></span>
 <div id="images"></div>
 
