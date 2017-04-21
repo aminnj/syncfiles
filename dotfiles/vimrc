@@ -44,11 +44,11 @@ if exists('$CMSSW_BASE')
 endif
 
 
-" " control jikl (akin to wasd) will switch panes
-" nnoremap <C-h> <C-w>h
-" nnoremap <C-j> <C-w>j
-" nnoremap <C-l> <C-w>l
-" nnoremap <C-k> <C-w>k
+" control jikl (akin to wasd) will switch panes
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
 
 
 vnoremap . :norm .<cr>
@@ -135,6 +135,8 @@ set pastetoggle=<F12>
 
 nnoremap <leader>n :NeoCompleteToggle<CR>
 
+nnoremap <leader>fv <C-w>f<C-w>L
+
 " }}}
 
 " o and O will put newlines below and above cursor
@@ -186,10 +188,14 @@ set nocp
 execute pathogen#infect()
 
 
-let &t_ti.="\e[1 q"
-let &t_SI.="\e[5 q"
-let &t_EI.="\e[1 q"
-let &t_te.="\e[0 q"
+" let &t_ti.="\e[1 q"
+" let &t_SI.="\e[5 q"
+" let &t_EI.="\e[1 q"
+" let &t_te.="\e[0 q"
+
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
 " set runtimepath^=~/.vim/bundle/ctrlp.vim
 " let g:ctrlp_map = '<c-p>'
@@ -338,6 +344,7 @@ if has("autocmd")
 
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
+        " autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!/usr/bin/python '.shellescape('%')<CR>
         " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun!  python % <bar> <C-w><C-p><CR>
         " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun! python %:p:h <CR>
         " autocmd FileType python nnoremap <leader><leader> :w <CR> :AsyncRun python %<CR> :copen <CR><C-w><C-p>

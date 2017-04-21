@@ -113,6 +113,7 @@ class StatusPrinter(object):
     
     def print_status(self, s):
         self.file.write('\r'+s.encode('utf-8')+' '*max(self.last_printed_len-len(s), 0))
+        # os.system('echo "\\033]1337;SetKeyLabel=F1=%s\\a"' % s.encode('utf-8').split("%")[-1])
         self.file.flush()
         self.last_printed_len = len(s)
 
@@ -184,7 +185,7 @@ def trange(*args, **kwargs):
 def test():
     import time
     for i in tqdm(range(1000)):
-        time.sleep(0.01)
+        time.sleep(0.10)
 
 
 if __name__ == "__main__":
