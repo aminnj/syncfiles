@@ -36,8 +36,8 @@ fi
 }
 export -f pdftopng
 
-ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 10 sh -c "pdftopng % 100;"
-ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 10 sh -c "pdftopng % 100;"
+ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 150;"
+ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 150;"
 
 # for i in $(ls -1 $dir/*.pdf); do
 #     pdftopng $i &

@@ -27,14 +27,19 @@ HOST=$(hostname)
 echo -ne "\033]0;${USER}@${HOST}\007"
 
 PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\]"
-if [ ! -z $CMSSW_VERSION ]; then
-    short=${CMSSW_VERSION#$"CMSSW_"}
-    short=${short/patch/p}
-    PS+=" \[\033[00;38;5;1m\][${short}]\[\e[0m\]"
-fi
+function cmsswprompt {
+    cmsswpromptstr=""
+    if [ ! -z $CMSSW_VERSION ]; then
+        short=${CMSSW_VERSION#$"CMSSW_"}
+        short=${short/patch/p}
+        cmsswpromptstr=" \033[00;38;5;1m[${short}]\e[0m"
+    fi
+    echo -e $cmsswpromptstr
+}
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
+# PS+=" \[\$(cmsswprompt)\] \w \[\033[01;32m\]> "
 PS+=" \w \[\033[01;32m\]> "
 PS+="\[\e[0m\]"
 # PS+=" \w > "
@@ -152,7 +157,8 @@ if [[ $HOST == *uaf-* ]]; then
     alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
     alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     # alias hlt="cd /home/users/namin/2017/hlt/CMSSW_9_0_0_pre6/src/HLTrigger/Configuration/test; cmsenv"
-    alias hlt="cd /home/users/namin/2017/hlt/cms3/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
+    # alias hlt="cd /home/users/namin/2017/hlt/cms3/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
+    alias hlt="cd ~/2017/hlt/CMSSW_8_0_24/src/HLTAnalysis/TriggerAnalyzer/python ;  cmsenv"
     alias four="ssm; cd ~/2016/ss/master/SSAnalysis/yieldsAndSRs/numericYields/tttt/baby;"
     alias halo="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     alias jets="cd ~/2017/jets/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv "
@@ -678,26 +684,14 @@ function myip {
     curl "http://icanhazip.com/"
 }
 
-
 function remove_preliminary() {
-    oldtext=Preliminary
-    newtext=
-    for pdffile in $@; do
-        echo "Processing $pdffile..."
-        cp $pdffile $pdffile.bak
-        pdftk $pdffile output $pdffile.tmp uncompress
-        rm $pdffile
-        # the LANG=C hack may or may not be needed
-        LANG=C && sed -i -e "s/$oldtext/$newtext/g" $pdffile.tmp
-        pdftk $pdffile.tmp output $pdffile compress
-        rm -f $pdffile.tmp
-        rm -f $pdffile.tmp-e
-    done
+    rename_pdf "Preliminary" "" $@
 }
-
-function simulation_to_sp() {
-    oldtext=Simulation
-    newtext="Simulation Preliminary"
+function rename_pdf() {
+    oldtext="$1"
+    newtext="$2"
+    shift
+    shift
     for pdffile in $@; do
         echo "Processing $pdffile..."
         cp $pdffile $pdffile.bak

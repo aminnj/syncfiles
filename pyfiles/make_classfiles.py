@@ -103,7 +103,7 @@ if __name__ == "__main__":
         buff += "#include \"TChain.h\"\n\n"
         buff += "#include \"%s.h\"\n\n" % classname
         buff += "using namespace std;\n"
-        buff += "using namespace tas;\n\n"
+        buff += "using namespace %s;\n\n" % namespace
         buff += "int ScanChain(TChain *ch){\n\n"
         buff += "    TH1F * h_met = new TH1F(\"met\", \"met\", 50, 0, 300);\n\n"
         buff += "    int nEventsTotal = 0;\n"
@@ -173,10 +173,11 @@ if __name__ == "__main__":
                 "type": typ,
                 }        
         
-    if aliases:
+    if list(aliases):
         have_aliases = True
         for iala, ala in enumerate(aliases):
             alias = ala.GetName()
+            print alias
             for tree in trees:
                 if tree.GetBranch(tree.GetAlias(alias)):
                     branch = tree.GetBranch(tree.GetAlias(alias))

@@ -22,6 +22,24 @@ body {
     font-family: sans-serif;
 }
 
+#custom-handle {
+    width: 3em;
+    font-family: sans-serif;
+
+    /* height: 1.6em; */
+    /* top: 50%; */
+    /* margin-top: -.8em; */
+    text-align: center;
+    /* line-height: 1.6em; */
+  }
+
+#slider {
+display:inline-block;
+width: 200px;
+top: 5px;
+}
+
+
 .box {
 float:left;
 padding: 5px; /* space between image and border */
@@ -45,7 +63,7 @@ border-radius: 5px;
 /* can remove if you don't want hover zoom */
 .box:hover
 {
-    box-shadow: 0px 0px 50px #000;
+    box-shadow: 0px 0px 25px #555;
     z-index: 2;
     background-color: #fff;
     -moz-transition:-moz-transform 0.5s ease-out; 
@@ -217,6 +235,21 @@ $(function() {
             }); 
     }
 
+    var handle = $( "#custom-handle" );
+    $( "#slider" ).slider({
+    value: 100,
+        range: "min",
+    min: 20,
+    max: 250,
+    create: function() {
+        /* handle.text( $( this ).slider( "value" ) ); */
+        handle.text( "100%" );
+    },
+        slide: function( event, ui ) {
+            handle.text( ui.value + "%" );
+            $("img").attr("height",300*ui.value/100);
+        }
+    });
 
 
         // filelist = filelist.filter(function(value) {
@@ -316,7 +349,8 @@ function getQueryURL() {
   <div id="jstree_demo_div"> </div>
 
 <input type="text" class="inputbar" id="filter" placeholder="Search/wildcard filter" />
-<a href="javascript:;" onClick="getQueryURL();">copy as URL</a>
+<a href="javascript:;" onClick="getQueryURL();">copy as URL</a> &nbsp; &nbsp; 
+<div id="slider"><div id="custom-handle" class="ui-slider-handle"></div></div>
 <span id="message"></span>
 <div id="images"></div>
 
