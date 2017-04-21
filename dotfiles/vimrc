@@ -44,11 +44,11 @@ if exists('$CMSSW_BASE')
 endif
 
 
-" " control jikl (akin to wasd) will switch panes
-" nnoremap <C-h> <C-w>h
-" nnoremap <C-j> <C-w>j
-" nnoremap <C-l> <C-w>l
-" nnoremap <C-k> <C-w>k
+" control jikl (akin to wasd) will switch panes
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
 
 
 vnoremap . :norm .<cr>
@@ -134,6 +134,8 @@ set pastetoggle=<F12>
 
 
 nnoremap <leader>n :NeoCompleteToggle<CR>
+
+nnoremap <leader>fv <C-w>f<C-w>L
 
 " }}}
 
@@ -351,6 +353,7 @@ if has("autocmd")
 
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
+        " autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!/usr/bin/python '.shellescape('%')<CR>
         " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun!  python % <bar> <C-w><C-p><CR>
         " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun! python %:p:h <CR>
         " autocmd FileType python nnoremap <leader><leader> :w <CR> :AsyncRun python %<CR> :copen <CR><C-w><C-p>

@@ -9,11 +9,18 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+HOST=$(hostname)
 
 if [ "$TERM" != "dumb" ]; then
     dircolors -b 1>/dev/null 2>/dev/null
+    # eval $(gdircolors ~/.dir_colors) 2>/dev/null
     if (( $? == 0 )); then
-        alias ls='ls --color=auto --ignore=*.{o,d,aux,pcm,cxx,d,nav,snm,pyc,toc} --ignore=AutoDict*'
+        # if [[ $(uname -a) == Darwin* ]]; then 
+            # alias ls='gls --color=auto --ignore=*.{o,d,aux,pcm,cxx,d,nav,snm,pyc,toc} --ignore=AutoDict*'
+        # else
+            alias ls='ls --color=auto --ignore=*.{o,d,aux,pcm,cxx,d,nav,snm,pyc,toc} --ignore=AutoDict*'
+        # fi
+
     else
         alias ls='ls -G'
     fi
@@ -21,7 +28,6 @@ fi
 
 export TERM=xterm-256color
 
-HOST=$(hostname)
 
 # set window title to user@host
 echo -ne "\033]0;${USER}@${HOST}\007"
@@ -69,11 +75,11 @@ if [[ ${HOST} == *uaf-* ]]; then
     export UCSD="true"
     # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
-if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+if [[ ${HOST} == *squark* || ${HOST} == *naminmac*  || ${HOST} == *laptop* ]]; then 
     if [[ ${HOST} == *squark* ]]; then 
         source ~/root/bin/thisroot.sh
     fi
-    if [[ ${HOST} == *laptop* ]]; then 
+    if [[ ${HOST} == *naminmac* || ${HOST} == *laptop* ]]; then 
         source /Applications/root_v6.08.00/bin/thisroot.sh
     fi
     alias webd='web $(ls -1rtd ~/Downloads/* | tail -n 1)'
@@ -96,6 +102,7 @@ alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
 alias ,,='echo "$PWD -> $OLDPWD" && cd $OLDPWD'
 alias cd..='cd ..'
 alias bc='bc -l'
+alias msquark='mosh --server=/usr/local/bin/mosh-server squark.physics.ucsb.edu --bind-server=any'
 alias iroot='command root'
 alias root='root -b -l'
 alias rot='root -b -l -q -n'
@@ -194,9 +201,18 @@ if [[ $HOST == *uaf-* ]]; then
 
 fi
 
-
-if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+if [[ ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     alias mks="cd ~/sandbox/makers; ls -lrth"
+
+    bwf() {
+        cd  ~/sandbox/bwf/ 
+        python main.py & 
+        sleep 1s
+        open -a "/Applications/Google Chrome.app" "http://127.0.0.1:5000/workout"
+        fg
+        cd -
+    }
+
 fi
 
 
@@ -211,7 +227,7 @@ alias ucsb='ssh namin@squark.physics.ucsb.edu'
 alias squark='ssh namin@squark.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias grad='ssh namin@gshell.physics.ucsb.edu'
-alias pi='ssh pi@169.231.77.67'
+alias pi='ssh pi@192.168.0.21'
 alias officepi='ssh pi@128.111.19.91'
 #alias eos='ssh namin@eos.tamu.edu'
 
@@ -252,7 +268,7 @@ pkldump() {
 }
 
 wifi() {
-if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
 fi
 }
@@ -283,7 +299,7 @@ kajobs() {
 }
 
 tree() {
-    if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+    if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
         tree_osx -C
     else
         tree -C
@@ -318,7 +334,7 @@ str=$(echo $str | sed 's/:/./g')
 echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
 }
 function utc {
-    if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+    if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
         date -r $1
     else
         date -d "1970-01-01 $1 sec UTC"
@@ -349,14 +365,14 @@ PWD1=`pwd`
 PWD2=$1
 if [ -e $PWD1/$PWD2 ] ; then
   blah=$PWD1/$PWD2
-  if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+  if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     echo `greadlink -f $blah`
   else
     echo `readlink -f $blah`
   fi
 else
   if [ -e $PWD2 ]; then 
-      if [[ ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+      if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
       echo `greadlink -f $PWD2`
     else
       echo `readlink -f $PWD2`
@@ -550,6 +566,7 @@ if [ $# -lt 1 ]; then
     # ssh -X namin@uaf-10.t2.ucsd.edu
     ssh namin@uaf-10.t2.ucsd.edu
 else
+    # ssh -X namin@uaf-${1}.t2.ucsd.edu
     ssh namin@uaf-${1}.t2.ucsd.edu
 fi
 }

@@ -73,6 +73,7 @@ def main():
         """
     else:
         status, output = commands.getstatusoutput(""" curl -s -d @temp.json -H "Content-Type: application/json" -i "https://www.googleapis.com/geolocation/v1/geolocate?key=%s" | grep "{" -A 50 """ % key)
+        os.system("rm -f temp.json")
 
 
     try:
