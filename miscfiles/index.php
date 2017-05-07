@@ -18,6 +18,20 @@ echo $folder;
 
 <style>
 
+#bintablecontainer {
+    position: fixed;
+    bottom: 0;
+    width: 97%;
+    padding: 10px; /* space between image and border */
+}
+#bintable {
+    border: 1px solid black;
+    background-color: rgba(250, 250, 250, .96);
+    font-size: 8pt;
+    font-family: monospace;
+    padding: 10px; /* space between image and border */
+}
+
 body {
     font-family: sans-serif;
 }
@@ -25,7 +39,6 @@ body {
 #custom-handle {
     width: 3em;
     font-family: sans-serif;
-
     /* height: 1.6em; */
     /* top: 50%; */
     /* margin-top: -.8em; */
@@ -48,39 +61,26 @@ border-radius: 5px;
 
 /* /1* can remove if you don't want hover zoom *1/ */
 /* .box:hover */
+/* /1* if only hovering on the inner image is what matters, do .innerimg:hover *1/ */
 /* { */
-/*     box-shadow: 0px 0px 50px #000; */
+/*     box-shadow: 0px 0px 25px #555; */
 /*     z-index: 2; */
 /*     background-color: #fff; */
-/*     transition: all 200ms ease-in; */
-/*     -webkit-transition-delay: 800ms; */
-/*     -moz-transition-delay: 800ms; */
-/*     -o-transition-delay: 800ms; */
-/*     transition-delay: 800ms; */
-/*     transform: scale(2.1); */
+/*     -moz-transition:-moz-transform 0.5s ease-out; */ 
+/*     -webkit-transition:-webkit-transform 0.5s ease-out; */ 
+/*     -o-transition:-o-transform 0.5s ease-out; */
+/*     transition:transform 0.5s ease-out; */
+/*     -webkit-transition-delay: 1.0s; */
+/*     -moz-transition-delay: 1.0s; */
+/*     -o-transition-delay: 1.0s; */
+/*     transition-delay: 1.0s; */
+/*     transform: scale(2.3); */
+/*     /1* transform: scale(1.0); *1/ */
+/*     -moz-transform-origin: 0 0; */
+/*     -webkit-transform-origin: 0 0; */
+/*     -o-transform-origin: 0 0; */
+/*     transform-origin: 0 0; */
 /* } */
-
-/* can remove if you don't want hover zoom */
-.box:hover
-{
-    box-shadow: 0px 0px 25px #555;
-    z-index: 2;
-    background-color: #fff;
-    -moz-transition:-moz-transform 0.5s ease-out; 
-    -webkit-transition:-webkit-transform 0.5s ease-out; 
-    -o-transition:-o-transform 0.5s ease-out;
-    transition:transform 0.5s ease-out;
-    -webkit-transition-delay: 1.0s;
-    -moz-transition-delay: 1.0s;
-    -o-transition-delay: 1.0s;
-    transition-delay: 1.0s;
-    transform: scale(2.3);
-    /* transform: scale(1.0); */
-    -moz-transform-origin: 0 0;
-    -webkit-transform-origin: 0 0;
-    -o-transform-origin: 0 0;
-    transform-origin: 0 0;
-}
 
 #images {
 position:relative;
@@ -153,14 +153,14 @@ function draw_objects(file_objects) {
         var path = fo["path"];
         var color = fo["color"];
         var pdf = fo["pdf"] || fo["name"];
-        var txt_str = (fo["txt"].length > 0) ? " <a href='"+fo["txt"]+"'>[text]</a>" : "";
-        var extra_str = (fo["extra"].length > 0) ? " <a href='"+fo["extra"]+"'>[extra]</a>" : "";
+        var txt_str = (fo["txt"].length > 0) ? " <a href='"+fo["txt"]+"' id='"+"text_"+fo["name_noext"]+"'>[text]</a>" : "";
+        var extra_str = (fo["extra"].length > 0) ? " <a href='"+fo["extra"]+"' id='"+"extra_"+fo["name_noext"]+"'>[extra]</a>" : "";
         $("#images").append(
             "<div class='box' id='"+name_noext+"'>"+
                 "    <fieldset style='border:2px solid "+color+"'>"+
                 "        <legend>"+name_noext+txt_str+extra_str+"</legend>"+
                 "        <a href='"+pdf+"'>"+
-                "            <img src='"+path+"/"+name+"' height='300px' />"+
+                "            <img class='innerimg' src='"+path+"/"+name+"' height='300px' />"+
                 "        </a>"+
                 "    </fieldset>"+
                 "</div>"
@@ -197,6 +197,7 @@ function make_objects(filelist) {
             "path": path,
             "name_noext": name_noext,
             "name":name,
+            // "name":name+"?hash=<?php echo time(); ?>",
             "ext": ext,
             "pdf": pdf,
             "txt": txt,
@@ -205,6 +206,30 @@ function make_objects(filelist) {
         });
     }
     return file_objects;
+}
+
+function register_hover() {
+    console.log("registering hover");
+    $("[id^=text_],[id^=extra_]").hover(
+        function() {
+            console.log("fading in hover");
+            $(this).delay(1000).queue(function(){
+                $(this).addClass('hovered').siblings().removeClass('hovered');
+                var link = $(this).attr('href');
+                console.log(link);
+                $("#bintable").load(link, function() {
+                    $("#bintable").html($("#bintable").html().replace(/\n/g,"<br>\n"));
+                    $("#bintable").html($("#bintable").html().replace(/ /g,"&nbsp;"));
+                    $("#bintable").html($("#bintable").html().replace("total_bkg","<b>total_bkg</b>"));
+                });
+                console.log("fading in");
+                $("#bintable").fadeIn();
+            });
+        },function() {
+            $(this).finish();
+            $("#bintable").delay(500).fadeOut();
+        } 
+    );
 }
 
 // ultimately this will be a master filelist with all files recursively in this directory
@@ -291,6 +316,7 @@ $(function() {
                 var legendTitle = $(this).find("fieldset > legend");
                 var to_replace =  titleMap[legendTitle.text()];
                 to_replace = to_replace.replace(matches[0],"<font style='color:#F00'>"+matches[0]+"</font>") ;
+                // console.log(to_replace);
                 legendTitle.html(to_replace);
             }
             return matches;
@@ -304,6 +330,7 @@ $(function() {
             $("#message").html("No matching images!");
         } else {
             elems.show();
+            register_hover();
         }
     });
 
@@ -314,6 +341,10 @@ $(function() {
         $("#filter").val(search);
         $("#filter").trigger("keyup");
     }
+
+    register_hover();
+
+
 });
 
 // vimlike incsearch: press / to focus on search box
@@ -353,6 +384,11 @@ function getQueryURL() {
 <div id="slider"><div id="custom-handle" class="ui-slider-handle"></div></div>
 <span id="message"></span>
 <div id="images"></div>
+<div id="bintablecontainer"  style="text-align: center;">
+    <div id="bintable" style="display: inline-block; text-align: left; display: none">
+    <!-- <div id="bintable" style="display: inline-block; text-align: left;"> -->
+    </div>
+</div>
 
 
 </body>

@@ -23,7 +23,9 @@ if [ $# -gt 0 ]; then
     #     gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
     # else
 
-    density=150
+    # density=150
+    density=125
+    # density=100
     if [ $# -gt 1 ]; then
         density=$2
     fi
