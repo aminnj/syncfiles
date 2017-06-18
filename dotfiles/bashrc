@@ -727,3 +727,9 @@ function simulation_to_sp() {
         rm -f $pdffile.tmp-e
     done
 }
+
+if [ -d ~/.bash_completion.d ]; then
+  for file in ~/.bash_completion.d/*; do
+    . $file
+  done
+fi
