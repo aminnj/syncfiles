@@ -2,7 +2,7 @@
 
 # http://stackoverflow.com/questions/15760712/python-readline-module-prints-escape-character-during-import
 import os, sys
-if 'xterm' in os.environ['TERM']: os.environ['TERM'] = 'vt100'
+if 'xterm' in os.environ.get('TERM',""): os.environ['TERM'] = 'vt100'
 redirect = not sys.stdout.isatty()
 
 import commands
@@ -11,7 +11,6 @@ import glob
 import json
 # from multiprocessing.dummy import Pool as ThreadPool 
 from multiprocessing import Pool as ThreadPool 
-import ROOT as r
 import glob
 try:
     from tqdm import tqdm
@@ -130,6 +129,14 @@ class RunLumis():
             intlumi += d_brilcalc.get(pair, 0.0)
         return intlumi
 
+    def getBrilcalcMap(self, delivered=False):
+        if delivered:
+            if not d_brilcalc_delivered: makeBrilcalcMap(delivered)
+            return d_brilcalc_delivered
+        else:
+            if not d_brilcalc: makeBrilcalcMap()
+            return d_brilcalc
+
     def getSNT(self):
         buff = ""
         js = self.getJson()
@@ -149,9 +156,11 @@ class RunLumis():
             fhout.write(self.getSNT())
             print "Wrote snt format to file %s" % fname
 
-BRILCALC_FILE = "/home/users/namin/dataTuple/2016D/NtupleTools/dataTuple/lumis/lumis_skim.csv"
+# BRILCALC_FILE = "/home/users/namin/dataTuple/2016D/NtupleTools/dataTuple/lumis/lumis_skim.csv"
+BRILCALC_FILE = "/home/users/namin/luminosity/fetcher/lumis_skim.csv"
 d_brilcalc = {}
-def makeBrilcalcMap():
+d_brilcalc_delivered = {}
+def makeBrilcalcMap(delivered=False):
     dLumiMap =  {}
     with open(BRILCALC_FILE, "r") as fhin:
         for line in fhin:
@@ -160,8 +169,12 @@ def makeBrilcalcMap():
                 run,ls,ts,deliv,recorded = line.split(",")
                 run = int(run)
                 ls = int(ls)
-                recordedPB = float(recorded)
-                d_brilcalc[(run,ls)] = recordedPB
+                if delivered:
+                    deliveredPB = float(deliv)
+                    d_brilcalc_delivered[(run,ls)] = deliveredPB
+                else:
+                    recordedPB = float(recorded)
+                    d_brilcalc[(run,ls)] = recordedPB
             except: pass
 
 def getChunks(v,n=3): return [ v[i:i+n] for i in range(0, len(v), n) ]
@@ -174,6 +187,7 @@ def getRunLumis(fnames, treename="Events"):
     else:
         fname = fnames
 
+    import ROOT as r
     f1 = r.TFile(fname)
     treenames = [obj.GetName() for obj in f1.GetListOfKeys()]
     treename = treenames[0]
