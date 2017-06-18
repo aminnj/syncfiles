@@ -448,12 +448,11 @@ fu! CoutTokens()
         for word in words
             " if there's a quote in the variable, replace it with single tick
             let escword = substitute(word, "\"", "'", "g")
-            let newstr .= " \"" . escword . ": \" << " . word . " << "
+            let newstr .= " \" " . escword . ": \" << " . word . " << "
         endfor
         let newstr .= " std::endl;"
     endif
 
-    echom newstr 
     :d
     :-1put =newstr
     execute "norm! =="
