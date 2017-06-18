@@ -33,17 +33,22 @@ export TERM=xterm-256color
 echo -ne "\033]0;${USER}@${HOST}\007"
 
 PS="\[\033[01;34m\][\t]\[\e[0m\] \[\033[00;34m\][\u@\h]\[\e[0m\]"
-if [ ! -z $CMSSW_VERSION ]; then
-    short=${CMSSW_VERSION#$"CMSSW_"}
-    short=${short/patch/p}
-    PS+=" \[\033[00;38;5;1m\][${short}]\[\e[0m\]"
-fi
+function cmsswprompt {
+    cmsswpromptstr=""
+    if [ ! -z $CMSSW_VERSION ]; then
+        short=${CMSSW_VERSION#$"CMSSW_"}
+        short=${short/patch/p}
+        cmsswpromptstr=" \033[00;38;5;1m[${short}]\e[0m"
+    fi
+    echo -e $cmsswpromptstr
+}
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
-PS+=" \w \[\033[01;32m\]> "
-PS+="\[\e[0m\]"
-# PS+=" \w > "
+# PS+=" \[\$(cmsswprompt)\] \w \[\033[01;32m\]> "
+# PS+=" \w \[\033[01;32m\]> "
+# PS+="\[\e[0m\]"
+PS+=" \w > "
 export PS1=$PS
 
 export EDITOR=vim
@@ -96,6 +101,7 @@ alias ..='cd ..'
 alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
 alias ,,='echo "$PWD -> $OLDPWD" && cd $OLDPWD'
 alias cd..='cd ..'
+alias cdl='cd $(ls -1rtd */ | tail -1); lk'
 alias bc='bc -l'
 alias msquark='mosh --server=/usr/local/bin/mosh-server squark.physics.ucsb.edu --bind-server=any'
 alias iroot='command root'
@@ -154,12 +160,15 @@ if [[ $HOST == *uaf-* ]]; then
     alias ssan="cd ~/2016/ssan/tex/notes/AN-16-386/trunk;"
     alias ssp="cd ~/2016/ssan/tex/notes/SUS-16-035/trunk;"
     alias sspp="cd ~/2016/ssan/tex/papers/SUS-16-035/trunk;"
+    alias ftan="cd ~/2017/fouran/tex/notes/AN-17-115/trunk;"
+    alias ft="cd ~/2017/fourtop; . setup.sh"
     alias lim="cd ~/2016/ss/master/SSAnalysis/cards; cd CMSSW_7_1_6; cmsenv; cd .."
     alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
     alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
     alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     # alias hlt="cd /home/users/namin/2017/hlt/CMSSW_9_0_0_pre6/src/HLTrigger/Configuration/test; cmsenv"
-    alias hlt="cd /home/users/namin/2017/hlt/cms3/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
+    # alias hlt="cd /home/users/namin/2017/hlt/cms3/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
+    alias hlt="cd ~/2017/hlt/CMSSW_8_0_24/src/HLTAnalysis/TriggerAnalyzer/python ;  cmsenv"
     alias four="ssm; cd ~/2016/ss/master/SSAnalysis/yieldsAndSRs/numericYields/tttt/baby;"
     alias halo="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
     alias jets="cd ~/2017/jets/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv "
@@ -218,6 +227,7 @@ alias brazos='ssh amin.nj@login.brazos.tamu.edu'
 alias hurr='ssh amin.nj@hurr.tamu.edu'
 alias oldschool='ssh amin.nj@oldschool.tamu.edu'
 alias ucsb='ssh namin@squark.physics.ucsb.edu'
+alias fino='ssh namin@uafino.physics.ucsb.edu'
 alias squark='ssh namin@squark.physics.ucsb.edu'
 alias io='ssh amin.nj@io.physics.tamu.edu'
 alias grad='ssh namin@gshell.physics.ucsb.edu'
@@ -695,10 +705,15 @@ function myip {
     curl "http://icanhazip.com/"
 }
 
-
 function remove_preliminary() {
-    oldtext=Preliminary
-    newtext=
+    rename_pdf "Preliminary" "" $@
+}
+export -f remove_preliminary
+function rename_pdf() {
+    oldtext="$1"
+    newtext="$2"
+    shift
+    shift
     for pdffile in $@; do
         echo "Processing $pdffile..."
         cp $pdffile $pdffile.bak
@@ -711,6 +726,7 @@ function remove_preliminary() {
         rm -f $pdffile.tmp-e
     done
 }
+export -f rename_pdf
 
 function simulation_to_sp() {
     oldtext=Simulation
@@ -727,6 +743,8 @@ function simulation_to_sp() {
         rm -f $pdffile.tmp-e
     done
 }
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 if [ -d ~/.bash_completion.d ]; then
   for file in ~/.bash_completion.d/*; do

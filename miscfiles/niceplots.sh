@@ -23,7 +23,9 @@ if [ $# -gt 0 ]; then
     #     gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
     # else
 
-    density=150
+    # density=150
+    density=125
+    # density=100
     if [ $# -gt 1 ]; then
         density=$2
     fi
@@ -36,8 +38,8 @@ fi
 }
 export -f pdftopng
 
-ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 10 sh -c "pdftopng % 100;"
-ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 10 sh -c "pdftopng % 100;"
+ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 150;"
+ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 150;"
 
 # for i in $(ls -1 $dir/*.pdf); do
 #     pdftopng $i &
