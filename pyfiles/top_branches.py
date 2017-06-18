@@ -55,8 +55,10 @@ def main(fname_in, treename, maxnum, precision, groupmakers):
     if use_edm_tool:
         d_info = {}
         events = -1
-        os.system("edmEventSize -n {0} -a -d {1} -o /tmp/branchsizes.txt >& /dev/null".format(treename,fname_in))
-        with open("/tmp/branchsizes.txt", "r") as fhin:
+        uid = os.getuid()
+
+        os.system("edmEventSize -n {0} -a -d {1} -o /tmp/branchsizes_{2}.txt >& /dev/null".format(treename,fname_in, uid))
+        with open("/tmp/branchsizes_{0}.txt".format(uid), "r") as fhin:
             line1 = fhin.readline()
             events = int(line1.split()[-1])
             fhin.readline()
@@ -94,9 +96,12 @@ def main(fname_in, treename, maxnum, precision, groupmakers):
     for n, (z,uz) in d_info.items():
         branches.append({"bname": n, "frac": 1.0*z/tot_z, "uncompBytes": uz, "compBytes": z})
 
+    sizeperevt = int(os.stat(fname_in).st_size / events)
+
     print
     print " Tree name: %s" % treename
     print "      nevents: %i" % events
+    print "      bytes/evt: %i" % sizeperevt
     print
     top_branches = sorted(branches, key=lambda x: x.get("frac",-1), reverse=True)[:maxnum]
     maxcols = max([len(b["bname"]) for b in top_branches[:maxnum]])+4
