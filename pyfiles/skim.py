@@ -3,13 +3,6 @@ import os
 import argparse
 import time
 
-# This stuff is super necessary or else we all die
-from ROOT import TChain, TFile, gSystem, gROOT, TTree
-import ROOT as r
-r.v5.TFormula.SetMaxima(5000000)
-gSystem.Load("libFWCoreFWLite.so") 
-gSystem.Load("libDataFormatsFWLite.so");
-gROOT.ProcessLine("FWLiteEnabler::enable()")
 
 """
 This script makes skimmed root files by retaining only specified branches
@@ -49,7 +42,7 @@ def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root"
     branches_to_keep = [b for b in branches_to_keep if b] # remove empty strings
 
     # cut_str = "Sum$(abs(genps_id_mother)==24 && genps_isLastCopy && (abs(genps_id)==11 || abs(genps_id)==13))==2" # 2 leps
-    cut_str = "abs(Sum$(genps_id*(abs(genps_id_mother)==24 && genps_isLastCopy && (abs(genps_id)==11 || abs(genps_id)==13))))>20" # SS
+    # cut_str = "abs(Sum$(genps_id*(abs(genps_id_mother)==24 && genps_isLastCopy && (abs(genps_id)==11 || abs(genps_id)==13))))>20" # SS
 
     if len(cut_str) > 0:
         print ">>> [!] You specified a cut string of: %s" % cut_str
@@ -111,7 +104,7 @@ def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root"
     # wow the user with incredible reduction stats
     size_before = get_filesizes(filenames)
     size_after = get_filesizes([fname_out])
-    print ">>> Size reduction: %s --> %s (factor of %.1f)" % (readable_size(size_before),readable_size(size_after),size_before/size_after)
+    print ">>> Size reduction: %s --> %s (factor of %.1f)" % (readable_size(size_before),readable_size(size_after),1.0*size_before/size_after)
     print ">>> Your output file is %s." % fname_out
 
 if __name__ == "__main__":
@@ -135,6 +128,13 @@ if __name__ == "__main__":
     print " "*4, "Cut string:", args.cut
     print "-"*30
 
+    # This stuff is super necessary or else we all die
+    from ROOT import TChain, TFile, gSystem, gROOT, TTree
+    import ROOT as r
+    r.v5.TFormula.SetMaxima(5000000)
+    gSystem.Load("libFWCoreFWLite.so") 
+    gSystem.Load("libDataFormatsFWLite.so");
+    gROOT.ProcessLine("FWLiteEnabler::enable()")
 
     skim_tree(args.files, args.branches, args.treename, args.output, args.cut)
 
