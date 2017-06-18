@@ -58,10 +58,10 @@ vnoremap . :norm .<cr>
 " leader stuff {{{
 let mapleader = ","
 map <Leader>vi :tabe ~/.vimrc<CR>
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tk :tabclose<cr>
-map <leader>tm :tabnext<cr>
+" map <leader>tn :tabnew<cr>
+" map <leader>to :tabonly<cr>
+" map <leader>tk :tabclose<cr>
+" map <leader>tm :tabnext<cr>
 map <leader>ww :set nowrap!<cr>
 map <leader>nn :set nu!<cr>
 map <leader>qq :wq<cr>
@@ -109,7 +109,8 @@ nnoremap <leader>pp "+p
 " 1 2 3 
 " into
 " std::cout << " 1 " << 1 << " 2 " << 2 << " 3 " << 3 << std::endl;
-nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr> ==
+" nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr> ==
+nnoremap <leader>cp :call g:CoutTokens()<CR>
 
 " nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
 " calculate quantity in Word
@@ -315,6 +316,10 @@ nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
 nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
 
+" https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
+" dot works over visual line selection
+xnoremap . :norm.<CR>
+
 " autocommands {{{
 "
 " this is why I made a group for autocommands:
@@ -326,6 +331,15 @@ let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=238
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=244
 let g:indent_guides_guide_size=1
+
+" abbreviations (because snippets are stupid) {{{
+" python
+abbr ifnm if __name__ == "__main__" 
+abbr allimps import os<CR>import sys<CR>import math<CR>
+" cpp
+abbr coutline std::cout << __LINE__ << std::endl;
+
+" }}}
 
 
 if has("autocmd")
@@ -371,6 +385,9 @@ if has("autocmd")
         " autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
         autocmd FileType markdown nnoremap <F6> :w <bar> exec "!'/cygdrive/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' ".shellescape('%')<CR>
         autocmd FileType html nnoremap <F6> :w <bar> exec "!'/cygdrive/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' ".shellescape('%')<CR>
+        " autocmd FileType vim nnoremap <leader><leader> :w <bar> source shellescape('%')<CR>
+        autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
+        autocmd FileType vim nnoremap <leader>ts :call Test()<CR>
 
         autocmd BufWritePost .vimrc source %
 
@@ -394,6 +411,45 @@ function! g:ToggleColorColumn()
         setlocal colorcolumn=80
     endif
 endfunction
+
+fu! CoutTokens()
+    " toggles between
+    "    std::cout << " blah1: " << blah1 << " blah2: " << blah2 << " blah3: " << blah3 << std::endl;
+    " and
+    "    blah1 blah2 blah3  
+    "
+    let line=getline('.')
+
+    " turn into cout statement or reverse, depending on if 
+    " line contains std::cout"
+    let newstr = ""
+    if line =~ "std::cout"
+        let words = split(line," << ")
+        for word in words
+            " if token has these things then it's not a variable by itself
+            if word =~ "std::" || word =~ ": "
+                continue
+            endif
+            let newstr .= word . " "
+        endfor
+    else
+        let words = split(line)
+        let newstr .= "std::cout << "
+        for word in words
+            " if there's a quote in the variable, replace it with single tick
+            let escword = substitute(word, "\"", "'", "g")
+            let newstr .= " \"" . escword . ": \" << " . word . " << "
+        endfor
+        let newstr .= " std::endl;"
+    endif
+
+    echom newstr 
+    :d
+    :-1put =newstr
+    execute "norm! =="
+endfu
+
+
 
 
 " continue comment if in insert mode
