@@ -742,6 +742,22 @@ function rename_pdf() {
 }
 export -f rename_pdf
 
+function simulation_to_sp() {
+    oldtext=Simulation
+    newtext="Simulation Preliminary"
+    for pdffile in $@; do
+        echo "Processing $pdffile..."
+        cp $pdffile $pdffile.bak
+        pdftk $pdffile output $pdffile.tmp uncompress
+        rm $pdffile
+        # the LANG=C hack may or may not be needed
+        LANG=C && sed -i -e "s/$oldtext/$newtext/g" $pdffile.tmp
+        pdftk $pdffile.tmp output $pdffile compress
+        rm -f $pdffile.tmp
+        rm -f $pdffile.tmp-e
+    done
+}
+
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 if [ -d ~/.bash_completion.d ]; then
