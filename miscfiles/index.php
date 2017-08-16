@@ -146,6 +146,7 @@ function contains_any(str, substrings) {
 }
 
 function draw_objects(file_objects) {
+    var jsrootbase = "http://uaf-8.t2.ucsd.edu/~namin/dump/jsroot/index.htm?json=../../.."+window.location.pathname;
     $("#images").html("");
     for (var ifo = 0; ifo < file_objects.length; ifo++) {
         var fo = file_objects[ifo];
@@ -154,12 +155,14 @@ function draw_objects(file_objects) {
         var path = fo["path"];
         var color = fo["color"];
         var pdf = fo["pdf"] || fo["name"];
+        if (path) pdf = path+pdf;
         var txt_str = (fo["txt"].length > 0) ? " <a href='"+fo["txt"]+"' id='"+"text_"+fo["name_noext"]+"'>[text]</a>" : "";
         var extra_str = (fo["extra"].length > 0) ? " <a href='"+fo["extra"]+"' id='"+"extra_"+fo["name_noext"]+"'>[extra]</a>" : "";
+        var json_str = (fo["json"].length > 0) ? " <a href='"+jsrootbase+fo["json"]+"' id='"+"json_"+fo["name_noext"]+"'>[js]</a>" : "";
         $("#images").append(
             "<div class='box' id='"+name_noext+"'>"+
                 "    <fieldset style='border:2px solid "+color+"'>"+
-                "        <legend>"+name_noext+txt_str+extra_str+"</legend>"+
+                "        <legend>"+name_noext+txt_str+extra_str+json_str+"</legend>"+
                 "        <a href='"+pdf+"'>"+
                 "            <img class='innerimg' src='"+path+"/"+name+"' height='300px' />"+
                 "        </a>"+
@@ -194,6 +197,7 @@ function make_objects(filelist) {
         var pdf = (filelist.indexOf(path+name_noext + ".pdf") != -1) ? path+name_noext+".pdf" : "";
         var txt = (filelist.indexOf(path+name_noext + ".txt") != -1) ? name_noext+".txt" : "";
         var extra = (filelist.indexOf(path+name_noext + ".extra") != -1) ? name_noext+".extra" : "";
+        var json = (filelist.indexOf(path+name_noext + ".json") != -1) ? name_noext+".json" : "";
         file_objects.push({
             "path": path,
             "name_noext": name_noext,
@@ -203,6 +207,7 @@ function make_objects(filelist) {
             "pdf": pdf,
             "txt": txt,
             "extra": extra,
+            "json": json,
             "color": color,
         });
     }
@@ -287,12 +292,12 @@ $(function() {
 
     // drag images and hover over others to overlay
 
-    $( ".box" ).draggable({
-        opacity: 0.50,
-        helper: "clone",
-        snap: true,
-        revert: true,
-    });
+    /* $( ".box" ).draggable({ */
+    /*     opacity: 0.50, */
+    /*     helper: "clone", */
+    /*     snap: true, */
+    /*     revert: true, */
+    /* }); */
 
     // make map from title of each plot to the html of the title
     var titleMap = {};

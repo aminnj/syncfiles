@@ -13,6 +13,8 @@ class Table():
         self.matrix = []
         self.colnames = []
         self.colsizes = []
+        self.hlines = []
+        self.rowcolors = {}
         self.extra_padding = 1
         self.d_style = {}
         self.set_theme_fancy()
@@ -20,7 +22,7 @@ class Table():
 
     def shorten_string(self, val, length):
         return val[:length//2-1] + "..." + val[-length//2+2:]
-    def fmt_string(self, val, length, fill_char=" ", justify="c", bold=False, offcolor=False):
+    def fmt_string(self, val, length, fill_char=" ", justify="c", bold=False, offcolor=False, color=None):
         ret = ""
         val = str(val)
         lenval = len(val.decode("utf-8"))
@@ -39,6 +41,11 @@ class Table():
             ret = '\033[1m' + ret + '\033[0m'
         if offcolor and self.use_color:
             ret = '\033[2m' + ret + '\033[0m'
+        if self.use_color:
+            if color == "green":
+                ret = '\033[00;32m' + ret + '\033[0m'
+            if color == "blue":
+                ret = '\033[00;34m' + ret + '\033[0m'
         return ret
 
     def set_theme_fancy(self):
@@ -99,8 +106,17 @@ class Table():
         self.colnames = cnames
         self.update()
 
-    def add_row(self, row):
+    def add_row(self, row, color=None):
         self.matrix.append(row)
+        if color:
+            self.rowcolors[len(self.matrix)] = color
+
+
+    def add_line(self):
+        # draw hlines by making list of the row 
+        # indices, which we will check when drawing
+        # the matrix
+        self.hlines.append(len(self.matrix))
 
     def update(self):
         if not self.colnames:
@@ -121,7 +137,7 @@ class Table():
     def print_table(self, **kwargs):
         print "".join(self.get_table_string(**kwargs))
 
-    def get_table_string(self, bold_title=True, show_row_separators=False, show_alternating=False):
+    def get_table_string(self, bold_title=True, show_row_separators=False, show_alternating=False, ljustall=False, show_colnames=True):
         self.update()
         nrows = len(self.matrix) + 1
 
@@ -138,10 +154,6 @@ class Table():
         # yield self.d_style["OUTER_LEFT_INTERSECT"]
         # yield self.d_style["INNER_HORIZONTAL"]*(10)
         # yield self.d_style["OUTER_RIGHT_INTERSECT"]+"\n"
-
-
-        show_colnames = False
-        ljust = True
 
         # for irow,row in enumerate([self.colnames]+self.matrix):
         for irow,row in enumerate([self.colnames]+self.matrix):
@@ -160,10 +172,12 @@ class Table():
             yield self.d_style["OUTER_LEFT_VERTICAL"]
             oc = False if not show_alternating else (irow%2==1 )
             bold = False if not bold_title else (irow==0)
+            color = self.rowcolors.get(irow,None)
+            if irow == 0: color = "blue"
             for icol,col in enumerate(row):
                 j = "l" if icol == 0 else "c"
-                if ljust: j = "l"
-                yield self.fmt_string(col, self.colsizes[icol]+self.extra_padding, justify=j, bold=bold,offcolor=oc)
+                if ljustall: j = "l"
+                yield self.fmt_string(col, self.colsizes[icol]+self.extra_padding, justify=j, bold=bold,offcolor=oc,color=color)
                 if icol != len(row)-1: yield self.d_style["INNER_VERTICAL"]
             yield self.d_style["OUTER_RIGHT_VERTICAL"]+"\n"
 
@@ -182,6 +196,14 @@ class Table():
                     yield self.d_style["OUTER_BOTTOM_HORIZONTAL"]*(self.colsizes[icol]+self.extra_padding)
                     if icol != len(row)-1: yield self.d_style["OUTER_BOTTOM_INTERSECT"]
                 yield self.d_style["OUTER_BOTTOM_RIGHT"]+"\n"
+            else:
+                # extra hlines
+                if irow in self.hlines:
+                    yield self.d_style["OUTER_LEFT_INTERSECT"]
+                    for icol,col in enumerate(row):
+                        yield self.d_style["OUTER_TOP_HORIZONTAL"]*(self.colsizes[icol]+self.extra_padding)
+                        if icol != len(row)-1: yield self.d_style["INNER_INTERSECT"]
+                    yield self.d_style["OUTER_RIGHT_INTERSECT"]+"\n"
 
 
 if __name__ == "__main__":
@@ -190,7 +212,7 @@ if __name__ == "__main__":
 
         tab = Table()
         # tab.set_theme_basic()
-        tab.set_theme_latex()
+        # tab.set_theme_latex()
         tab.set_column_names(["name", "age", "blahhhhhh"])
         for row in [
                 ["Alice", 42, 4293.9923344],
@@ -202,7 +224,10 @@ if __name__ == "__main__":
                 ["John", 4.2, 0.9923344],
                 ["John", 4.2, 0.9923344],
                 ]:
-            tab.add_row(row)
+            color = "green" if row[0] in ["Bob","Alice"] else None
+            tab.add_row(row,color=color)
+            if row[0] == "Alice":
+                tab.add_line()
         tab.sort(column="age", descending=True)
         tab.print_table(show_row_separators=False,show_alternating=True)
 

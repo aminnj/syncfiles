@@ -123,7 +123,8 @@ alias gp='git push'
 alias gsu='git status --untracked-files=no'
 alias rootenv='source ~/root/bin/thisroot.sh'
 alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
-alias usa='source ~/syncfiles/miscfiles/usa.sh'
+# alias usa='source ~/syncfiles/miscfiles/usa.sh'
+alias usa='source ~/syncfiles/miscfiles/nicer_usa.sh'
 alias cond='condor_q $USER'
 alias conda='condor_q'
 alias condt='condor_q $USER -total'
@@ -133,7 +134,7 @@ alias cstata='condor_q | col 6 | drop 4 | head -n -2 | stats'
 alias dfh='df -h | grep hadoop'
 alias pt='ev; ptpython'
 alias xb='xargs -n 1 -I {} sh -c'
-alias xbf='xargs -n 1 -P 4 -I {} sh -c'
+alias xbf='xargs -n 1 -P 20 -I {} sh -c'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
@@ -143,6 +144,7 @@ if [[ $HOST == *uaf-* ]]; then
     # alias redt="cd ~/dataTuple/rereco/NtupleTools/dataTuple/"
     alias mc="cd ~/2016/forSicheng/9Mar17"
     alias higgs="cd ~/2016/higgs/CMSSW_7_1_12/prod/GenLHEfiles/Run2Mechanism; cmsenv; . setupGenEnv.sh"
+    alias ftgen="cd ~/2017/madgraph/newermg/CMSSW_7_1_12/prod/GenLHEfiles/Run2Mechanism; cmsenv; . setupGenEnv.sh"
     alias gen="cd /home/users/namin/2016/higgs/take2/gensim/CMSSW_7_1_20_patch3/crab ; cmsenv; crabenv;"
     alias jsroot="cd ~/public_html/dump/jsroot"
     alias remerge="cd ~/dataTuple/2016D/NtupleTools/dataTuple/remerge/"
@@ -166,8 +168,8 @@ if [[ $HOST == *uaf-* ]]; then
     alias ssp="cd ~/2016/ssan/tex/notes/SUS-16-035/trunk;"
     alias sspp="cd ~/2016/ssan/tex/papers/SUS-16-035/trunk;"
     alias ftan="cd ~/2017/fouran/tex/notes/AN-17-115/trunk;"
-    alias ftp="cd ~/2017/fouran/tex/notes/TOP-17-009/trunk;"
-    alias ftpp="cd ~/2017/fouran/tex/papers/TOP-17-009/trunk;"
+    # alias ftp="cd ~/2017/fouran/tex/notes/TOP-17-009/trunk;"
+    alias ftp="cd ~/2017/fouran/tex/papers/TOP-17-009/trunk;"
     alias ft="cd ~/2017/fourtop; . setup.sh"
     alias lim="cd ~/2016/ss/master/SSAnalysis/cards; cd CMSSW_7_1_6; cmsenv; cd .."
     alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
@@ -183,6 +185,8 @@ if [[ $HOST == *uaf-* ]]; then
     alias slimr="cd /home/users/namin/2017/slimming/retry/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
     alias slimold="cd /home/users/namin/2017/slimming/old/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
     alias aging="cd ~/2017/csc/aging/CMSSW_8_1_0/src/DPGAnalysis/MuonSysAging/test; cmsenv"
+    alias cscval="cd ~/2017/csc/cscval/CMSSW_9_1_1/src/CSCValidationRunning/AutoValidation; cmsenv"
+    alias cscvalzmm="cd ~/2017/csc/cscval/CMSSW_9_1_1_patch1/src/CSCValidationRunning/RecoLocalMuon/CSCValidation/src; cmsenv"
     alias sm="cd ~/Software/slideMaker/; ls -lrth"
     alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
     alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
@@ -200,7 +204,9 @@ if [[ $HOST == *uaf-* ]]; then
     alias ichep="cd /home/users/namin/2016/ichep/NtupleTools/AutoTwopler/"
     alias cms4="cd /home/users/namin/2017/cms4/NtupleTools/AutoTwopler"
 
-    alias metis="cd ~/2017/ProjectMetis"
+    alias metis="cd ~/2017/ProjectMetis; source setup.sh"
+    alias metisweb="cd ~/public_html/dump/metis_test/"
+    alias mrun="cond -w | grep Metis | col 10 | cut -d'/' -f8 | stats"
     alias lepton="cd ~/2016/ss/master/LeptonBabyMaker/CMSSW_8_0_5_patch1; cmsenv ; cd ../"
 
     alias lu='lumi_utils.py'
@@ -430,10 +436,13 @@ complete -F _screenscomp sc
 
 function cw {
     # condor_q $USER -const 'JobStatus==2' -l | grep MATCH_GLIDEIN_SiteWMS_Slot | cut -d'@' -f2 | cut -d'"' -f1 | sort
-    condor_q $USER -const 'JobStatus==2' -l | grep RemoteHost | rev | cut -d '@' -f1 | rev | cut -d '"' -f1 | cut -d '-' -f1
+    condor_q $USER $1 -const 'JobStatus==2' -l | grep RemoteHost | rev | cut -d '@' -f1 | rev | cut -d '"' -f1 | cut -d '-' -f1
 }
 function cwh {
     cw | cut -d'-' -f1 | stats
+}
+function cweach {
+    condor_q $USER $1 -const 'JobStatus==2' -l | grep -E "(^ClusterId =|RemoteHost)" | cut -d '=' -f2 | xargs -n 2
 }
 
 function clog {
@@ -633,7 +642,7 @@ if [ $# -gt 0 ]; then
         scp -rp $@ ${USER}@uaf-6.t2.ucsd.edu:~/public_html/dump/
     fi
     for file in "$@"; do
-        echo "uaf-8.t2.ucsd.edu/~${USER}/dump/$(basename $file)"
+        echo "${HOSTNAME}/~${USER}/dump/$(basename $file)"
     done
     # if [[ -f $1 ]]; then
     #     ic $1
@@ -724,6 +733,12 @@ fi
 
 function myip {
     curl "http://icanhazip.com/"
+}
+
+function multiply_defined_labels {
+    # inside a cms svn repo, this will find figure labels
+    # that have been multiply defined (i.e., uniq -c > 1)
+    grep label *tex | grep -v "%" | pyline.py 'x.split("label{")[-1].split("}")[0]' | sort  | uniq -c | sort -n
 }
 
 function remove_preliminary() {

@@ -15,31 +15,29 @@ fi
 
 
 function pdftopng {
-#sharpen not really necessary
-#convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
-if [ $# -gt 0 ]; then
-    echo "$1 ==> ${1%%.pdf}.png" 
-    # if [[ $HOST == *uaf-* ]]; then 
-    #     gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -r144 $1
-    # else
-
-    # density=150
-    density=125
-    # density=100
-    if [ $# -gt 1 ]; then
-        density=$2
+    #sharpen not really necessary
+    #convert -density 250 -trim $1 -quality 100 -sharpen 0x1.0 ${1%%.pdf}.png
+    if [ $# -gt 0 ]; then
+        density=125
+        if [ $# -gt 1 ]; then
+            density=$2
+        fi
+        echo "$1 ==> ${1%%.pdf}.png" 
+        if [[ $HOST == *uaf-* ]]; then 
+            gs -q -sDEVICE=pngalpha -o ${1%%.pdf}.png -sDEVICE=pngalpha -dUseCropBox -r${density} $1
+        else
+            convert -density ${density} -trim $1 -fuzz 1% ${1%%.pdf}.png
+        fi
+    else
+        echo "Usage: pdftopng <pdf name> [optional density]"
     fi
-    convert -density ${density} -trim $1 -fuzz 1% ${1%%.pdf}.png
-
-    # fi
-else
-    echo "Usage: pdftopng <pdf name> [optional density]"
-fi
 }
 export -f pdftopng
 
-ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 150;"
-ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 15 sh -c "pdftopng % 150;"
+# ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 75;"
+# ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 75;"
+ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 125;"
+ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 125;"
 
 # for i in $(ls -1 $dir/*.pdf); do
 #     pdftopng $i &
@@ -62,4 +60,4 @@ else
     ssh $USER@uaf-6.t2.ucsd.edu "mkdir -p ~/public_html/dump/$outdir; rm ~/public_html/dump/$outdir/*.png"
     scp -rp $dir/* $USER@uaf-6.t2.ucsd.edu:~/public_html/dump/$outdir/
 fi
-echo "uaf-6.t2.ucsd.edu/~$USER/dump/$outdir/"
+echo "${HOSTNAME}/~$USER/dump/$outdir/"

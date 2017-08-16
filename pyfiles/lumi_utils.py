@@ -121,12 +121,18 @@ class RunLumis():
 
     def getIntLumi(self, typ="recorded", first_run=None, last_run=None):
         intlumi = 0.0
-        if not d_brilcalc: makeBrilcalcMap()
+        if typ == "recorded":
+            if not d_brilcalc: makeBrilcalcMap(delivered=False)
+        else:
+            if not d_brilcalc_delivered: makeBrilcalcMap(delivered=True)
         # print d_brilcalc
         for pair in self.getRunLumiPairs():
             if first_run and pair[0] < first_run: continue
             if last_run and pair[0] > last_run: continue
-            intlumi += d_brilcalc.get(pair, 0.0)
+            if typ == "recorded":
+                intlumi += d_brilcalc.get(pair, 0.0)
+            else:
+                intlumi += d_brilcalc_delivered.get(pair, 0.0)
         return intlumi
 
     def getBrilcalcMap(self, delivered=False):
@@ -157,25 +163,27 @@ class RunLumis():
             print "Wrote snt format to file %s" % fname
 
 # BRILCALC_FILE = "/home/users/namin/dataTuple/2016D/NtupleTools/dataTuple/lumis/lumis_skim.csv"
-BRILCALC_FILE = "/home/users/namin/luminosity/fetcher/lumis_skim.csv"
+# BRILCALC_FILES = ["/home/users/namin/luminosity/fetcher/lumis_skim.csv", "/home/users/namin/luminosity/fetcher/lumis_skim_2016.csv"]
+BRILCALC_FILES = ["/home/users/namin/luminosity/fetcher/lumis_skim.csv"]
 d_brilcalc = {}
 d_brilcalc_delivered = {}
 def makeBrilcalcMap(delivered=False):
     dLumiMap =  {}
-    with open(BRILCALC_FILE, "r") as fhin:
-        for line in fhin:
-            line = line.strip()
-            try:
-                run,ls,ts,deliv,recorded = line.split(",")
-                run = int(run)
-                ls = int(ls)
-                if delivered:
-                    deliveredPB = float(deliv)
-                    d_brilcalc_delivered[(run,ls)] = deliveredPB
-                else:
-                    recordedPB = float(recorded)
-                    d_brilcalc[(run,ls)] = recordedPB
-            except: pass
+    for bfn in BRILCALC_FILES:
+        with open(bfn, "r") as fhin:
+            for line in fhin:
+                line = line.strip()
+                try:
+                    run,ls,ts,deliv,recorded = line.split(",")
+                    run = int(run)
+                    ls = int(ls)
+                    if delivered:
+                        deliveredPB = float(deliv)
+                        d_brilcalc_delivered[(run,ls)] = deliveredPB
+                    else:
+                        recordedPB = float(recorded)
+                        d_brilcalc[(run,ls)] = recordedPB
+                except: pass
 
 def getChunks(v,n=3): return [ v[i:i+n] for i in range(0, len(v), n) ]
 

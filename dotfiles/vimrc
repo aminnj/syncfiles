@@ -39,6 +39,7 @@ if exists('$CMSSW_BASE')
     set path+=$CMSSW_BASE/src/CMS3/NtupleMaker/src
     set path+=$CMSSW_BASE/src
     set path+=$CMSSW_RELEASE_BASE/src
+    set path+=$ROOTSYS/include
     " remove includes from autocomplete search list, otherwise slow
     set complete-=i 
 endif
@@ -136,7 +137,7 @@ set pastetoggle=<F12>
 
 nnoremap <leader>n :NeoCompleteToggle<CR>
 
-nnoremap <leader>fv <C-w>f<C-w>L
+nnoremap <leader>fv <C-w>F<C-w>L
 
 " }}}
 

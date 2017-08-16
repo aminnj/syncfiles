@@ -41,8 +41,11 @@ def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root"
     nevents = ch.GetEntries()
     branches_to_keep = [b for b in branches_to_keep if b] # remove empty strings
 
-    # cut_str = "Sum$(abs(genps_id_mother)==24 && genps_isLastCopy && (abs(genps_id)==11 || abs(genps_id)==13))==2" # 2 leps
-    # cut_str = "abs(Sum$(genps_id*(abs(genps_id_mother)==24 && genps_isLastCopy && (abs(genps_id)==11 || abs(genps_id)==13))))>20" # SS
+    # https://root-forum.cern.ch/t/pyroot-crashes-when-in-arguments/25379/3 -- figured out solution to below lines
+    # # cut_str = "Sum$(abs(genps_id_mother)==24 && genps_isLastCopy && (abs(genps_id)==11 || abs(genps_id)==13))==2" # 2 leps
+    # # cut_str = "abs(Sum$(genps_id*(abs(genps_id_mother)==24 && genps_isLastCopy && (abs(genps_id)==11 || abs(genps_id)==13))))>20" # SS
+    # # apparently when using a $ sign in the cut_str, root hijacks the arguments to the script and crashes. Sigh.
+    # cut_str = cut_str.replace("SSS","$")
 
     if len(cut_str) > 0:
         print ">>> [!] You specified a cut string of: %s" % cut_str
@@ -92,7 +95,6 @@ def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root"
     for key in f1.GetListOfKeys():
         if key.ReadObj().InheritsFrom(TTree.Class()): continue
         name = key.GetName()
-        print name
         f1.Get(name).Write()
 
     print ">>> Started skimming tree %s with %i events: %i --> %i branches" % (treename, nevents, len(branches), len(branches_to_keep))
@@ -131,7 +133,9 @@ if __name__ == "__main__":
     # This stuff is super necessary or else we all die
     from ROOT import TChain, TFile, gSystem, gROOT, TTree
     import ROOT as r
+    r.PyConfig.IgnoreCommandLineOptions = True # https://root-forum.cern.ch/t/pyroot-crashes-when-in-arguments/25379/3
     r.v5.TFormula.SetMaxima(5000000)
+
     gSystem.Load("libFWCoreFWLite.so") 
     gSystem.Load("libDataFormatsFWLite.so");
     gROOT.ProcessLine("FWLiteEnabler::enable()")

@@ -36,6 +36,8 @@ if __name__ == "__main__":
         sys.exit()
     fname = sys.argv[-1]
 
+    # fname = "timing.txt"
+
     # fname = "timing_1k.txt"
 
     d_times = {}
@@ -47,7 +49,8 @@ if __name__ == "__main__":
             if line.startswith("TimeEvent> "): eventtimes.append(float(line.split()[-1]))
             if line.startswith("Begin processing the"):
                 record = float("".join([b for b in line.split("record")[0].split("the")[-1] if b in "1234567890"]))
-                ts = time.mktime(datetime.datetime.strptime( line.split()[-2], "%H:%M:%S.%f" ).replace(year=2016).timetuple())
+                dtobj = datetime.datetime.strptime( line.split()[-2], "%H:%M:%S.%f" ).replace(year=2016)
+                ts = time.mktime(dtobj.timetuple())+(dtobj.microsecond/1.e6)
                 processingpairs.append([record,ts])
             if not line.startswith("TimeModule> "): continue
             parts = line.split()
@@ -58,18 +61,25 @@ if __name__ == "__main__":
             d_events.add(event)
             d_times[module].append(float(t))
 
+    # print d_times.keys()
+
+    # drop first and last two points
+    processingpairs = processingpairs[2:-2]
+    # print processingpairs
     mint = min([pp[-1] for pp in processingpairs])
     processingpairs = map(lambda x: [x[0],x[1]-mint], processingpairs)
-    m, b, merr, berr = linfit(*zip(*processingpairs[1:-1]))
+    m, b, merr, berr = linfit(*zip(*processingpairs))
 
     # nevents = len(d_events)
     nevents = len(eventtimes)
 
     # drop first and last 10 events
-    # for m in d_times.keys():
-    #     d_times[m] = d_times[m][10:-10]
+    for mname in d_times.keys():
+        d_times[mname] = d_times[mname][10:-10]
     eventtimes = eventtimes[10:-10]
     nevents -= 20
+
+    # print d_times["hltMaker"]
 
 
     tot_avg_time = sum(eventtimes)/nevents
@@ -77,7 +87,7 @@ if __name__ == "__main__":
 
     avgs = []
     for maker in d_times.keys():
-        avg = sum(d_times[maker])/tot_avg_time/len(d_times[maker])
+        avg = sum(d_times[maker])/tot_avg_time_weird/len(d_times[maker])
         avgs.append( [avg,maker] )
 
     print "Average event rate: {0:.1f}Hz (reported by TimeEvent)".format(tot_avg_time**-1.0)
