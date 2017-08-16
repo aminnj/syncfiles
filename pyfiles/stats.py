@@ -99,7 +99,7 @@ if __name__ == "__main__":
             if do_ascii:
                 makehisto(words)
             else:
-                get_table(words).print_table()
+                get_table(words).print_table(ljustall=True, show_colnames=False)
     else: 
         print """
         length: {0} ({6})
