@@ -4,7 +4,7 @@ set -g prefix C-a
 unbind C-b
 bind C-a send-prefix
 
-setw -g mode-mouse off
+# setw -g mode-mouse off
 
 # set -g prefix C-b
 # unbind C-a
@@ -18,7 +18,7 @@ setw -g mode-mouse off
 set -g bell-action any
 
 # Reload key
-bind r source-file ~/.tmux.conf
+bind r source-file ~/.tmux.conf ; display "Reloaded!"
 
 # set -g status-position top
 
@@ -45,6 +45,10 @@ bind h select-pane -L
 bind j select-pane -D
 bind k select-pane -U
 bind l select-pane -R
+bind H resize-pane -L 5
+bind J resize-pane -D 5
+bind K resize-pane -U 5
+bind L resize-pane -R 5
 
 set -g base-index 1
 setw -g pane-base-index 1
@@ -64,18 +68,29 @@ setw -g pane-base-index 1
 #------------
 # status bar
 #------------
-# set-option -g status-position top
 set -g status-fg colour3
 set -g status-bg colour237
 set -g clock-mode-colour colour75
+# set-option -g status-position top
 
 # set -g mouse-select-pane off
 set -g pane-active-border-fg colour75
 
 
-set -g status-left "#[fg=colour154] #h "
+set -g status-left "#[fg=colour154] #(echo $USER)@#h "
+set -g status-left-length 40
 
 setw -g window-status-current-format "#[bg=colour235]#[fg=brightblue] • #I#[fg=brightblue]#[bg=colour235] [#W] "
 setw -g window-status-format "#[bg=colour235]#[fg=white,bold] #I#[fg=white,bold]#[bg=colour235] [#W] "
 
-set -g status-right "#[fg=colour233,bg=default,nobold,noitalics,nounderscore] •#[fg=colour247,bg=colour233,nobold,noitalics,nounderscore] test  #[fg=colour241,bg=colour233,nobold,noitalics,nounderscore] •#[fg=colour2,bg=colour233,nobold,noitalics,nounderscore] Pane #P #[fg=colour236,bg=colour233,nobold,noitalics,nounderscore] •#[fg=colour247,bg=colour236,nobold,noitalics,nounderscore]  %A %D #[fg=colour241,bg=colour236,nobold,noitalics,nounderscore] •#[fg=colour252,bg=colour236,bold,noitalics,nounderscore] %l:%M%p #[fg=colour252,bg=colour236,nobold,noitalics,nounderscore] •#[fg=colour16,bg=colour252,bold,noitalics,nounderscore]"
+set -g status-right "#[fg=colour233,bg=default,nobold,noitalics,nounderscore] •#[fg=colour247,bg=colour233,nobold,noitalics,nounderscore] #S  #[fg=colour241,bg=colour233,nobold,noitalics,nounderscore] •#[fg=colour2,bg=colour233,nobold,noitalics,nounderscore] Pane #P #[fg=colour236,bg=colour233,nobold,noitalics,nounderscore] •#[fg=colour247,bg=colour236,nobold,noitalics,nounderscore]  %A %D #[fg=colour241,bg=colour236,nobold,noitalics,nounderscore] •#[fg=colour252,bg=colour236,bold,noitalics,nounderscore] %l:%M%p #[fg=colour252,bg=colour236,nobold,noitalics,nounderscore] •#[fg=colour16,bg=colour252,bold,noitalics,nounderscore]"
+
+# ----------------------
+# set some pretty colors
+# ----------------------
+set -g pane-border-fg colour241
+set -g status-justify centre
+
+# colorize messages in the command line
+set-option -g message-bg colour235
+set-option -g message-fg colour75

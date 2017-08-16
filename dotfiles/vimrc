@@ -57,7 +57,7 @@ vnoremap . :norm .<cr>
 "
 " leader stuff {{{
 let mapleader = ","
-map <Leader>vi :tabe ~/.vimrc<CR>
+map <Leader>vi :e ~/.vimrc<CR>
 " map <leader>tn :tabnew<cr>
 " map <leader>to :tabonly<cr>
 " map <leader>tk :tabclose<cr>
@@ -334,13 +334,15 @@ let g:indent_guides_guide_size=1
 
 " abbreviations (because snippets are stupid) {{{
 " python
-abbr ifnm if __name__ == "__main__" 
+abbr ifnm if __name__ == "__main__":
 abbr allimps import os<CR>import sys<CR>import math<CR>
 " cpp
 abbr coutline std::cout << __LINE__ << std::endl;
 
 " }}}
 
+"Remove all trailing whitespace by pressing F5
+nnoremap <leader>ws :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " " git clone https://github.com/unblevable/quick-scope ~/.vim/bundle/quick-scope
 " " https://github.com/unblevable/quick-scope

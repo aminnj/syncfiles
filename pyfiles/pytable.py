@@ -23,18 +23,17 @@ class Table():
     def fmt_string(self, val, length, fill_char=" ", justify="c", bold=False, offcolor=False):
         ret = ""
         val = str(val)
-        if u"\u00B1".encode("utf-8") in val:
-            # unicode plus or minus symbol forces us to add another
-            # space, but I don't know why. whatever, just do it
-            length += 1
+        lenval = len(val.decode("utf-8"))
             
-        if len(val) > length: val = self.shorten_string(val, length)
+        if lenval > length: val = self.shorten_string(val, length)
         if justify == "l": 
-            ret = " "+val.ljust(length-1, fill_char)
+            nr = (length-lenval-1)
+            ret = " " + val + fill_char*nr
+            # ret = " "+val.ljust(length-1, fill_char)
         elif justify == "r": ret = val.rjust(length, fill_char)
         elif justify == "c":
-            nl = (length-len(val))//2
-            nr = (length-len(val))-(length-len(val))//2
+            nl = (length-lenval)//2
+            nr = (length-lenval)-(length-lenval)//2
             ret = fill_char*nl + val + fill_char*nr
         if bold and self.use_color:
             ret = '\033[1m' + ret + '\033[0m'
@@ -110,7 +109,7 @@ class Table():
         if self.matrix:
             for ic, cname in enumerate(self.colnames):
                 self.colsizes.append( max(
-                    max([len(str(r[ic])) for r in self.matrix])+2,
+                    max([len(str(r[ic]).decode("utf-8")) for r in self.matrix])+2,
                     len(str(cname))+2
                     ) )
 
@@ -141,24 +140,33 @@ class Table():
         # yield self.d_style["OUTER_RIGHT_INTERSECT"]+"\n"
 
 
+        show_colnames = False
+        ljust = True
 
+        # for irow,row in enumerate([self.colnames]+self.matrix):
         for irow,row in enumerate([self.colnames]+self.matrix):
-            if irow == 0:
+
             # line at very top
+            if irow == 0:
                 yield self.d_style["OUTER_TOP_LEFT"]
                 for icol,col in enumerate(row):
                     yield self.d_style["OUTER_TOP_HORIZONTAL"]*(self.colsizes[icol]+self.extra_padding)
                     if icol != len(row)-1: yield self.d_style["OUTER_TOP_INTERSECT"]
                 yield self.d_style["OUTER_TOP_RIGHT"]+"\n"
+
+            if not show_colnames and irow == 0: continue
+
             # lines separating columns
             yield self.d_style["OUTER_LEFT_VERTICAL"]
             oc = False if not show_alternating else (irow%2==1 )
             bold = False if not bold_title else (irow==0)
             for icol,col in enumerate(row):
                 j = "l" if icol == 0 else "c"
+                if ljust: j = "l"
                 yield self.fmt_string(col, self.colsizes[icol]+self.extra_padding, justify=j, bold=bold,offcolor=oc)
                 if icol != len(row)-1: yield self.d_style["INNER_VERTICAL"]
             yield self.d_style["OUTER_RIGHT_VERTICAL"]+"\n"
+
             # lines separating rows
             if (show_row_separators and (irow < nrows-1)) or (irow == 0):
                 yield self.d_style["OUTER_LEFT_INTERSECT"]
@@ -166,6 +174,7 @@ class Table():
                     yield self.d_style["INNER_HORIZONTAL"]*(self.colsizes[icol]+self.extra_padding)
                     if icol != len(row)-1: yield self.d_style["INNER_INTERSECT"]
                 yield self.d_style["OUTER_RIGHT_INTERSECT"]+"\n"
+
             # line at very bottom
             if irow == nrows-1:
                 yield self.d_style["OUTER_BOTTOM_LEFT"]

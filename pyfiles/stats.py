@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import math, sys, os
+from collections import Counter
+from pytable import Table
 
 def hum(num):
     # stolen from http://stackoverflow.com/questions/17973278/python-decimal-engineering-notation-for-mili-10e-3-and-micro-10e-6
@@ -58,8 +60,23 @@ def makehisto(ls):
         else: # scale to scaleto width
             print strbuff % (w, "*" * max(1,int(float(scaleto)*d[w]/maxval)), d[w])
 
+def get_table(vals, do_unicode=True, width=50):
+    d = dict(Counter(vals))
+    maxval = max([d[k] for k in d.keys()])
+    maxstrlen = max([len(k) for k in d.keys()])
+    scaleto=width-maxstrlen
+    fillchar = "*"
+    if do_unicode:
+        fillchar = unichr(0x2589).encode('utf-8')
+    tab = Table()
+    for w in sorted(d, key=d.get, reverse=True):
+        nfill = d[w] if maxval < scaleto else max(1,int(float(scaleto)*d[w]/maxval))
+        strbuff = "{0} ({1})".format(fillchar*nfill,d[w])
+        tab.add_row([w,strbuff])
+    return tab
 
 if __name__ == "__main__":
+    do_ascii = False
     nums, words = [], []
     column = -1
     if(len(sys.argv) > 1): column = int(sys.argv[-1])
@@ -75,11 +92,14 @@ if __name__ == "__main__":
         else: pass
 
     if(len(nums) <= 1):
-        if(len(words) < 3):
+        if(len(words) < 2):
             print "Can't calculate stuff with %i element!" % len(nums)
         else:
-            print "Found %i words, so histo will be made!" % len(words)
-            makehisto(words)
+            # print "Found %i words, so histo will be made!" % len(words)
+            if do_ascii:
+                makehisto(words)
+            else:
+                get_table(words).print_table()
     else: 
         print """
         length: {0} ({6})

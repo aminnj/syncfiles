@@ -213,6 +213,8 @@ fi
 
 if [[ ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     alias mks="cd ~/sandbox/makers; ls -lrth"
+    alias metis="cd ~/sandbox/ProjectMetis; source setup.sh"
+    alias dump="cd ~/public_html/dump/"
 
     bwf() {
         cd  ~/sandbox/bwf/ 
@@ -641,6 +643,11 @@ else
 fi
 }
 export -f web
+
+function uls {
+    # upload latest slides
+    web $(ls -1rth ~/Desktop/Slides/*pdf | tail -1)
+}
 
 # function rweb {
 # if [ $# -gt 0 ]; then
