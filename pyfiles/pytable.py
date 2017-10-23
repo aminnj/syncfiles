@@ -111,6 +111,13 @@ class Table():
         if color:
             self.rowcolors[len(self.matrix)] = color
 
+    def add_column(self, colname, values):
+        for irow in range(len(self.matrix)):
+            if irow < len(values): val = values[irow]
+            else: val = "-"
+            self.matrix[irow].append(val)
+        self.colnames.append(colname)
+
 
     def add_line(self):
         # draw hlines by making list of the row 
@@ -228,6 +235,8 @@ if __name__ == "__main__":
             tab.add_row(row,color=color)
             if row[0] == "Alice":
                 tab.add_line()
+        # oh crap, forgot a field. no worries ;)
+        tab.add_column("forgot this",range(8))
         tab.sort(column="age", descending=True)
         tab.print_table(show_row_separators=False,show_alternating=True)
 
