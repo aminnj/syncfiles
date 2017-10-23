@@ -112,10 +112,15 @@ class Table():
             self.rowcolors[len(self.matrix)] = color
 
     def add_column(self, colname, values):
-        for irow in range(len(self.matrix)):
-            if irow < len(values): val = values[irow]
-            else: val = "-"
-            self.matrix[irow].append(val)
+        # if no matrix to begin with, just add the column, otherwise append to rows
+        if len(self.matrix) == 0:
+            for val in values:
+                self.matrix.append([val])
+        else:
+            for irow in range(len(self.matrix)):
+                if irow < len(values): val = values[irow]
+                else: val = "-"
+                self.matrix[irow].append(val)
         self.colnames.append(colname)
 
 
@@ -217,27 +222,31 @@ if __name__ == "__main__":
 
     if(sys.stdin.isatty()):
 
+        # tab = Table()
+        # # tab.set_theme_basic()
+        # # tab.set_theme_latex()
+        # tab.set_column_names(["name", "age", "blahhhhhh"])
+        # for row in [
+        #         ["Alice", 42, 4293.9923344],
+        #         ["Bob", 1, 0.9999999],
+        #         ["Jim", -3, 4293],
+        #         ["Pam", 4.2, 0.9923344],
+        #         ["David", 4.2, 0.99999923344],
+        #         ["John", 4.2, 0.9923344],
+        #         ["John", 4.2, 0.9923344],
+        #         ["John", 4.2, 0.9923344],
+        #         ]:
+        #     color = "green" if row[0] in ["Bob","Alice"] else None
+        #     tab.add_row(row,color=color)
+        #     if row[0] == "Alice":
+        #         tab.add_line()
+        # # oh crap, forgot a field. no worries ;)
+        # tab.add_column("forgot this",range(8))
+        # tab.sort(column="age", descending=True)
+        # tab.print_table(show_row_separators=False,show_alternating=True)
+
         tab = Table()
-        # tab.set_theme_basic()
-        # tab.set_theme_latex()
-        tab.set_column_names(["name", "age", "blahhhhhh"])
-        for row in [
-                ["Alice", 42, 4293.9923344],
-                ["Bob", 1, 0.9999999],
-                ["Jim", -3, 4293],
-                ["Pam", 4.2, 0.9923344],
-                ["David", 4.2, 0.99999923344],
-                ["John", 4.2, 0.9923344],
-                ["John", 4.2, 0.9923344],
-                ["John", 4.2, 0.9923344],
-                ]:
-            color = "green" if row[0] in ["Bob","Alice"] else None
-            tab.add_row(row,color=color)
-            if row[0] == "Alice":
-                tab.add_line()
-        # oh crap, forgot a field. no worries ;)
         tab.add_column("forgot this",range(8))
-        tab.sort(column="age", descending=True)
         tab.print_table(show_row_separators=False,show_alternating=True)
 
     else:
