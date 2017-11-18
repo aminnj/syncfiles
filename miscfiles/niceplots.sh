@@ -54,10 +54,10 @@ ln -s $index $dir/index.php
 # wait
 chmod -R a+r $dir
 mkdir -p ~/public_html/dump/$outdir/
-if [[ $(hostname) == *uaf-* ]]; then 
+if [[ $(hostname) == *uaf-* ]] || [[ "$NOINTERNET" == "true" ]]; then
     cp -rp $dir/* ~/public_html/dump/$outdir/
 else
-    ssh $USER@uaf-6.t2.ucsd.edu "mkdir -p ~/public_html/dump/$outdir; rm ~/public_html/dump/$outdir/*.png"
-    scp -rp $dir/* $USER@uaf-6.t2.ucsd.edu:~/public_html/dump/$outdir/
+    ssh $USER@uaf-10.t2.ucsd.edu "mkdir -p ~/public_html/dump/$outdir; rm ~/public_html/dump/$outdir/*.png"
+    scp -rp $dir/* $USER@uaf-10.t2.ucsd.edu:~/public_html/dump/$outdir/
 fi
 echo "${HOSTNAME}/~$USER/dump/$outdir/"
