@@ -145,7 +145,13 @@ class Table():
         self.update()
         icol = self.colnames.index(column)
         # sort matrix and range of numbers to get sorted indices for later use
-        self.matrix, self.sortedidxs = zip(*sorted(zip(self.matrix,range(len(self.matrix))), key=lambda x: x[icol], reverse=descending))
+        self.matrix, self.sortedidxs = zip(
+                *sorted(
+                    zip(
+                        self.matrix,range(len(self.matrix))
+                        ), key=lambda x: x[0][icol], reverse=descending
+                    )
+                )
         self.matrix = list(self.matrix)
 
         # now update row colors and hlines to match sorted matrix
