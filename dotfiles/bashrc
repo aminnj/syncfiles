@@ -546,22 +546,22 @@ git commit -a -m $msg
 git push
 }
 
-function nevts {
-fpatt=$1
-[[ $fpatt == /store/* ]] && fpatt="root://cmsxrootd.fnal.gov//$fpatt"
-if [ $# -gt 1 ]; then
-    if [ $# -gt 2 ]; then
-        stuff='("'$fpatt'","'$2'","'$3'")'
-    else
-        stuff='("'$fpatt'","'$2'")'
-    fi
-else
-    stuff='("'$fpatt'")'
-fi
-eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' 2>&1 | grep Events | cut -d ' ' -f2"
-}
-# export so this can be used in other scripts
-export -f nevts
+# function nevts {
+# fpatt=$1
+# [[ $fpatt == /store/* ]] && fpatt="root://cmsxrootd.fnal.gov//$fpatt"
+# if [ $# -gt 1 ]; then
+#     if [ $# -gt 2 ]; then
+#         stuff='("'$fpatt'","'$2'","'$3'")'
+#     else
+#         stuff='("'$fpatt'","'$2'")'
+#     fi
+# else
+#     stuff='("'$fpatt'")'
+# fi
+# eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' 2>&1 | grep Events | cut -d ' ' -f2"
+# }
+# # export so this can be used in other scripts
+# export -f nevts
 
 function branches {
 # dumps branches of root file
