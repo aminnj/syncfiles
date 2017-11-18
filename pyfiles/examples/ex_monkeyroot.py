@@ -22,3 +22,17 @@ print sum(binvalerrs).round(3)
 
 print ">>> take a peek with imgcat"
 h1.Show("histe")
+
+"""
+More details:
+
+After importing monkeyroot, all TH1F constructors are monkeypatched.
+If you do something like 
+ch.Draw("blah>>h1","")
+and h1 has not already been constructed,
+then h1 will NOT be patched if you get it like
+h1 = r.gDirectory.Get("h1").
+Simply "cast" it:
+h1 = r.TH1F(r.gDirectory.Get("h1"))
+Done
+"""
