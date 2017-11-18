@@ -35,4 +35,9 @@ h1 = r.gDirectory.Get("h1").
 Simply "cast" it:
 h1 = r.TH1F(r.gDirectory.Get("h1"))
 Done
+
+
+You can also get a simple data/MC ratio in one line.
+hdata, h1,h2,h3 are your data and bg hists. This gives you an SF and error. Neat.
+print r.TH1F(hdata).IntegralAndErrorBetween(0.,5.)/r.TH1F(sum([h1,h2,h3],r.TH1F())).IntegralAndErrorBetween(0.,5.)
 """
