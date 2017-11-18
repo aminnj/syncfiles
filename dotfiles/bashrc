@@ -79,11 +79,12 @@ if [[ ${HOST} == *uaf-* ]]; then
     export UCSD="true"
     # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
-if [[ ${HOST} == *squark* || ${HOST} == *naminmac*  || ${HOST} == *laptop* ]]; then 
+if [[ ${HOST} == *squark* || ${HOST} == *naminmac*  || ${HOST} == *laptop* || ${HOST} == *pc28* ]]; then 
     if [[ ${HOST} == *squark* ]]; then 
         source ~/root/bin/thisroot.sh
     fi
-    if [[ ${HOST} == *naminmac* || ${HOST} == *laptop* ]]; then 
+    if [[ ${HOST} == *naminmac* || ${HOST} == *laptop* || ${HOST} == *pc28* ]]; then 
+        # echo "FIXME"
         source /Applications/root_v6.08.00/bin/thisroot.sh
     fi
     alias webd='web $(ls -1rtd ~/Downloads/* | tail -n 1)'
@@ -217,7 +218,7 @@ if [[ $HOST == *uaf-* ]]; then
 
 fi
 
-if [[ ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+if [[ ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* || ${HOST} == *pc28* ]]; then 
     alias mks="cd ~/sandbox/makers; ls -lrth"
     alias metis="cd ~/sandbox/ProjectMetis; source setup.sh"
     alias dump="cd ~/public_html/dump/"
@@ -638,12 +639,15 @@ if [ $# -gt 0 ]; then
     chmod -R a+r $@
     if [[ $(hostname) == *uaf-* ]]; then 
         cp -rp $@ ~/public_html/dump/
+        for file in "$@"; do
+            echo "${HOSTNAME}/~${USER}/dump/$(basename $file)"
+        done
     else
-        scp -rp $@ ${USER}@uaf-6.t2.ucsd.edu:~/public_html/dump/
+        scp -rp $@ ${USER}@uaf-10.t2.ucsd.edu:~/public_html/dump/
+        for file in "$@"; do
+            echo "uaf-10.t2.ucsd.edu/~${USER}/dump/$(basename $file)"
+        done
     fi
-    for file in "$@"; do
-        echo "${HOSTNAME}/~${USER}/dump/$(basename $file)"
-    done
     # if [[ -f $1 ]]; then
     #     ic $1
     # fi
