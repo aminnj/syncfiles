@@ -2,8 +2,8 @@ import monkeyroot
 import ROOT as r
 import numpy as np
 
-h1 = r.TH1F("h1","not a regular hist",10,0,10)
-h1.FillRandom("expo",50000)
+h1 = r.TH1F("h1","not a regular hist",20,0,10)
+h1.FillRandom("expo",100000)
 
 print ">>> get integral between two values:",
 print h1.IntegralBetween(0.,2.)
@@ -21,7 +21,12 @@ print ">>> sum them to show that you get the integral and Poisson error:",
 print sum(binvalerrs).round(3)
 
 print ">>> take a peek with imgcat"
-h1.Show("histe")
+h2 = 1.2*h1+h1-0.8*h1
+h2.SetTitle("newer hist")
+h2.Show("histe")
+print ">>> using 'same' will augment the legend, and change the color"
+h1.FillFromList(np.random.normal(2,1,100000))
+h1.Show("samehiste")
 
 """
 More details:
@@ -39,5 +44,5 @@ Done
 
 You can also get a simple data/MC ratio in one line.
 hdata, h1,h2,h3 are your data and bg hists. This gives you an SF and error. Neat.
-print r.TH1F(hdata).IntegralAndErrorBetween(0.,5.)/r.TH1F(sum([h1,h2,h3],r.TH1F())).IntegralAndErrorBetween(0.,5.)
+print r.TH1F(hdata).IntegralAndErrorBetween(0.,5.)/sum([h1,h2,h3],r.TH1F()).IntegralAndErrorBetween(0.,5.)
 """
