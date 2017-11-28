@@ -72,8 +72,9 @@ export PATH=${PATH}:${HOME}/syncfiles/pyfiles/
 if [[ ${HOST} == *uaf-* ]]; then 
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
     unset SSH_ASKPASS
-    export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
+    # export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
     export PATH=/home/users/namin/.local/bin:$PATH # for vim 8
+    export PATH=/home/users/namin/.iterm2/:$PATH
     export PYTHONPATH=$PYTHONPATH:/home/users/namin/Software/slideMaker
     export PYTHONPATH=$PYTHONPATH:/home/users/namin/2016/ss/master/SSAnalysis/software/dataMCplotMaker
     export UCSD="true"
@@ -156,7 +157,7 @@ if [[ $HOST == *uaf-* ]]; then
     alias vdr="rm /nfs-7/userdata/dataTuple/nick/running.pid"
     alias lumi="ev; crabenv; dt; python findMissingLumis.py | tee lumiSummary.txt"
     alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/CMSSW_8_0_20/; cmsenv; cd -"
-    alias ev9="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_9_0_0_pre4; cmsenv; cd -"
+    alias ev9="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_9_2_8; cmsenv; cd -"
     alias ev74="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/; cmsenv; cd -"
     alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
     # alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
@@ -186,10 +187,12 @@ if [[ $HOST == *uaf-* ]]; then
     alias slimold="cd /home/users/namin/2017/slimming/old/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
     alias aging="cd ~/2017/csc/aging/CMSSW_8_1_0/src/DPGAnalysis/MuonSysAging/test; cmsenv"
     alias cscval="cd ~/2017/csc/cscval/CMSSW_9_1_1/src/CSCValidationRunning/AutoValidation; cmsenv"
+    alias me42="cd /home/users/namin/2017/csc/me42/CMSSW_9_2_10/src/CSCValidationRunning/RecoLocalMuon/CSCValidation/src/; cmsenv"
     alias cscvalzmm="cd ~/2017/csc/cscval/CMSSW_9_1_1_patch1/src/CSCValidationRunning/RecoLocalMuon/CSCValidation/src; cmsenv"
     alias sm="cd ~/Software/slideMaker/; ls -lrth"
     alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
     alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
+    alias gan="cd ~/2017/gan/DY-GAN/gan/ ; ev9"
     alias fr="ssm; cd InSituFR/"
     alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
     alias mks="cd ~/public_html/makers; ls -lrth"
@@ -203,6 +206,9 @@ if [[ $HOST == *uaf-* ]]; then
     alias moriond="cd ~/2016/moriond/NtupleTools/AutoTwopler/"
     alias ichep="cd /home/users/namin/2016/ichep/NtupleTools/AutoTwopler/"
     alias cms4="cd /home/users/namin/2017/cms4/NtupleTools/AutoTwopler"
+
+    alias eleold="cd ~/2017/elemva/scanner/ ; ev9"
+    alias ele="metis; cd ~/2017/ProjectMetis/elemva/CMSSW_8_0_28/src/electronML/Analysis/postprocessing/; source setup.sh"
 
     alias metis="cd ~/2017/ProjectMetis; source setup.sh"
     alias metisweb="cd ~/public_html/dump/metis_test/"
@@ -286,6 +292,14 @@ pkldump() {
    python -c "with open('"$1"','r') as fhin: __import__('pprint').pprint(__import__('pickle').load(fhin))"
 }
 
+npdump() {
+   python -c "data = __import__('numpy').load('"$1"'); print data.shape; print data"
+}
+
+pddump() {
+   python -c "print __import__('pandas').DataFrame(__import__('numpy').load('"$1"')).head()"
+}
+
 wifi() {
 if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
     /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
@@ -327,6 +341,15 @@ tree() {
 
 function hdu() {
     echo $@ | sed 's#/hadoop##g' | xargs hadoop fs -du -h
+}
+
+function hdur() {
+    echo $@ | sed 's#/hadoop##g' | xargs hadoop fs -du
+}
+
+function mjobs() {
+    # cond -w | grep ProjectMetis | col 10 | cut -d '/' -f8 | pyline.py 'x.split("_Tune")[0].split("-PromptReco")[0]' | stats
+    cond -w | grep ProjectMetis | col 10 | pyline.py 'x.split("Metis/")[1].split("_Tune")[0].split("_13TeV")[0].split("-PromptReco")[0]' | stats
 }
 
 function dtprogress1() {
@@ -781,7 +804,6 @@ function simulation_to_sp() {
 }
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
 if [ -d ~/.bash_completion.d ]; then
   for file in ~/.bash_completion.d/*; do
     . $file
