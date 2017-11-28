@@ -177,7 +177,7 @@ if __name__ == "__main__":
         have_aliases = True
         for iala, ala in enumerate(aliases):
             alias = ala.GetName()
-            print alias
+            # print alias
             for tree in trees:
                 if tree.GetBranch(tree.GetAlias(alias)):
                     branch = tree.GetBranch(tree.GetAlias(alias))
@@ -210,6 +210,9 @@ if __name__ == "__main__":
     buff += '#include "TBits.h"\n'
     buff += '#include <vector>\n'
     buff += '#include <unistd.h>\n'
+    buff += '#include <chrono>\n'
+    buff += '#include <ctime>\n'
+    buff += '#include <numeric>\n'
     buff += 'typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;\n\n'
 
     buff += '// Generated with file: %s\n\n' % fnames_in[0]
@@ -243,7 +246,7 @@ if __name__ == "__main__":
         buff += "  float passTauID(TString idName, unsigned int tauIndex);\n"
     if haveBtagInfo:
         buff += "  float getbtagvalue(TString bDiscriminatorName, unsigned int jetIndex);\n" 
-    buff += "  static void progress( int nEventsTotal, int nEventsChain );\n"
+    buff += "  static void progress( int curr, int tot, int period=1000, unsigned int smoothing=30 );\n"
     buff += '};\n\n'
 
     buff += "#ifndef __CINT__\n"
@@ -455,23 +458,27 @@ if __name__ == "__main__":
         buff += "  }\n"
         buff += "}\n"        
         
-    buff += "void %s::progress( int nEventsTotal, int nEventsChain ){\n" % (classname)
-    buff += "  int period = 1000;\n"
-    buff += "  if(nEventsTotal%1000 == 0) {\n"
-    buff += "    if (isatty(1)) {\n"
-    buff += "      if( ( nEventsChain - nEventsTotal ) > period ){\n"
-    buff += "        float frac = (float)nEventsTotal/(nEventsChain*0.01);\n"
-    buff += "        printf(\"\\015\\033[32m ---> \\033[1m\\033[31m%4.1f%%\"\n"
-    buff += "               \"\\033[0m\\033[32m <---\\033[0m\\015\", frac);\n"
-    buff += "        fflush(stdout);\n"
-    buff += "      }\n"
-    buff += "      else {\n"
-    buff += "        printf(\"\\015\\033[32m ---> \\033[1m\\033[31m%4.1f%%\"\n"
-    buff += "               \"\\033[0m\\033[32m <---\\033[0m\\015\", 100.);\n"
-    buff += "        cout << endl;\n"
-    buff += "      }\n"
+    buff += "std::chrono::time_point<std::chrono::system_clock> t_old = std::chrono::system_clock::now();\n"
+    buff += "std::vector<double> deq;\n"
+    buff += "void %s::progress( int curr, int tot, int period, unsigned int smoothing) {\n" % (classname)
+    buff += "    if(curr%period == 0) {\n"
+    buff += "        auto now = std::chrono::system_clock::now();\n"
+    buff += "        double dt = ((std::chrono::duration<double>)(now - t_old)).count();\n"
+    buff += "        t_old = now;\n"
+    buff += "        // if (deq.size() >= smoothing) deq.pop_front();\n"
+    buff += "        if (deq.size() >= smoothing) deq.erase(deq.begin());\n"
+    buff += "        deq.push_back(dt);\n"
+    buff += "        double avgdt = std::accumulate(deq.begin(),deq.end(),0.)/deq.size();\n"
+    buff += "        float prate = (float)period/avgdt;\n"
+    buff += "        float peta = (tot-curr)/prate;\n"
+    buff += "        if (isatty(1)) {\n"
+    buff += "            float pct = (float)curr/(tot*0.01);\n"
+    buff += "            if( ( tot - curr ) <= period ) pct = 100.0;\n"
+    buff += "            printf(\"\\015\\033[32m ---> \\033[1m\\033[31m%4.1f%% \\033[34m [%.3f kHz, ETA: %.0f s] \\033[0m\\033[32m  <---\\033[0m\\015 \", pct, prate/1000.0, peta);\n"
+    buff += "            if( ( tot - curr ) > period ) fflush(stdout);\n"
+    buff += "            else cout << endl;\n"
+    buff += "        }\n"
     buff += "    }\n"
-    buff += "  }\n"
     buff += "}\n"
 
     buff += "namespace %s {\n" % (namespace)
