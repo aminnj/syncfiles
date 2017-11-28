@@ -15,6 +15,9 @@ class Reader(object):
             self.ch.Add(fname)
             self.make_alias_map()
 
+    def get_ievent(self):
+        return self.ievent
+
     def __repr__(self):
         return "<Event %i/%i of tree %s>" % (self.ievent, self.nevents, self.treename)
 
