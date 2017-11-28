@@ -79,6 +79,10 @@ map <leader>ss :%s/  \+/ /g<cr>
 " indent file
 map <Leader>i mkHmlgg=G`lzt`k
 
+"https://github.com/majutsushi/tagbar
+"http://ctags.sourceforge.net/
+map <leader>tt :TagbarToggle<cr>
+
 " ==========================================
 " sets off header with =, /, or #, like this
 " ==========================================
