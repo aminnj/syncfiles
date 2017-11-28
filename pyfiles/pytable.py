@@ -111,6 +111,18 @@ class Table():
         if color:
             self.rowcolors[len(self.matrix)] = color
 
+    def add_column(self, colname, values):
+        # if no matrix to begin with, just add the column, otherwise append to rows
+        if len(self.matrix) == 0:
+            for val in values:
+                self.matrix.append([val])
+        else:
+            for irow in range(len(self.matrix)):
+                if irow < len(values): val = values[irow]
+                else: val = "-"
+                self.matrix[irow].append(val)
+        self.colnames.append(colname)
+
 
     def add_line(self):
         # draw hlines by making list of the row 
@@ -132,7 +144,24 @@ class Table():
     def sort(self, column=None, descending=True):
         self.update()
         icol = self.colnames.index(column)
-        self.matrix = sorted(self.matrix, key=lambda x: x[icol], reverse=descending)
+        # sort matrix and range of numbers to get sorted indices for later use
+        self.matrix, self.sortedidxs = zip(
+                *sorted(
+                    zip(
+                        self.matrix,range(len(self.matrix))
+                        ), key=lambda x: x[0][icol], reverse=descending
+                    )
+                )
+        self.matrix = list(self.matrix)
+
+        # now update row colors and hlines to match sorted matrix
+        # one based indexing, not zero, so add 1
+        oldtonewidx = dict([(self.sortedidxs[i]+1,i+1) for i in range(len(self.sortedidxs))])
+        newrowcolors = {}
+        for key,val in self.rowcolors.items():
+            newrowcolors[oldtonewidx[key]] = val
+        self.rowcolors = newrowcolors
+        self.hlines = [oldtonewidx[hline] for hline in self.hlines]
 
     def print_table(self, **kwargs):
         print "".join(self.get_table_string(**kwargs))
@@ -141,21 +170,6 @@ class Table():
         self.update()
         nrows = len(self.matrix) + 1
 
-
-        # # line at very top
-        # yield self.d_style["OUTER_TOP_LEFT"]
-        # yield self.d_style["OUTER_TOP_HORIZONTAL"]*(10)
-        # yield self.d_style["OUTER_TOP_RIGHT"]+"\n"
-        # # lines separating columns
-        # yield self.d_style["OUTER_LEFT_VERTICAL"]
-        # yield " "*10
-        # yield self.d_style["OUTER_RIGHT_VERTICAL"]+"\n"
-        # # lines separating rows
-        # yield self.d_style["OUTER_LEFT_INTERSECT"]
-        # yield self.d_style["INNER_HORIZONTAL"]*(10)
-        # yield self.d_style["OUTER_RIGHT_INTERSECT"]+"\n"
-
-        # for irow,row in enumerate([self.colnames]+self.matrix):
         for irow,row in enumerate([self.colnames]+self.matrix):
 
             # line at very top
@@ -226,8 +240,10 @@ if __name__ == "__main__":
                 ]:
             color = "green" if row[0] in ["Bob","Alice"] else None
             tab.add_row(row,color=color)
-            if row[0] == "Alice":
+            if row[0] == "Pam":
                 tab.add_line()
+        # oh crap, forgot a field. no worries ;)
+        tab.add_column("forgot this",range(8))
         tab.sort(column="age", descending=True)
         tab.print_table(show_row_separators=False,show_alternating=True)
 
