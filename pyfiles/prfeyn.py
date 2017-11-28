@@ -4,7 +4,7 @@ import ROOT as r
 c1 = None
 
 class Label(object):
-    def __init__(self,text="",x1=0.0,y1=0.0,offsetx=0,offsety=0,textsize=0.05,textalign=22,roman=False):
+    def __init__(self,text="",x1=0.0,y1=0.0,offsetx=0,offsety=0,textsize=0.08,textalign=22,roman=False):
         self.x1 = x1
         self.y1 = y1
         self.text = text
@@ -48,7 +48,7 @@ class Vertex(object):
 
 class Propagator(object):
     def __init__(self,  v1,v2, typ="line", label=Label(), autolabel=True, \
-            linewidth=1, linecolor=r.kBlack, fliparrow=False):
+            linewidth=1, linecolor=r.kBlack, fliparrow=False,noarrow=False):
         self.v1 = v1
         self.v2 = v2
         self.typ = typ
@@ -56,6 +56,7 @@ class Propagator(object):
         self.linewidth = linewidth
         self.linecolor = linecolor
         self.fliparrow = fliparrow
+        self.noarrow = noarrow
 
         if autolabel:
             self.label.set_location(
@@ -111,7 +112,7 @@ class Propagator(object):
         if prop1: _nodelete.append(prop1)
         if prop2: _nodelete.append(prop2)
 
-        if self.typ in ["line", "dashedline"]:
+        if self.typ in ["line", "dashedline"] and not self.noarrow:
             c1 = self.v1.x1,self.v1.y1
             c2 = self.v2.x1,self.v2.y1
             if self.fliparrow: c1, c2 = c2, c1
