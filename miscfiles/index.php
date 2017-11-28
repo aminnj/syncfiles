@@ -10,12 +10,12 @@ echo $folder;
 ?>
 </title>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 <link rel="icon" type="image/png" href="../trashcan.png" />
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
 <style>
 
@@ -159,10 +159,12 @@ function draw_objects(file_objects) {
         var txt_str = (fo["txt"].length > 0) ? " <a href='"+fo["txt"]+"' id='"+"text_"+fo["name_noext"]+"'>[text]</a>" : "";
         var extra_str = (fo["extra"].length > 0) ? " <a href='"+fo["extra"]+"' id='"+"extra_"+fo["name_noext"]+"'>[extra]</a>" : "";
         var json_str = (fo["json"].length > 0) ? " <a href='"+jsrootbase+fo["json"]+"' id='"+"json_"+fo["name_noext"]+"'>[js]</a>" : "";
+        // var popout_str = " <a href='#/' id='popout_"+fo["name_noext"]+"'>[popout]</a>";
+        var popout_str = "";
         $("#images").append(
             "<div class='box' id='"+name_noext+"'>"+
                 "    <fieldset style='border:2px solid "+color+"'>"+
-                "        <legend>"+name_noext+txt_str+extra_str+json_str+"</legend>"+
+                "        <legend>"+name_noext+txt_str+extra_str+json_str+popout_str+"</legend>"+
                 "        <a href='"+pdf+"'>"+
                 "            <img class='innerimg' src='"+path+"/"+name+"' height='300px' />"+
                 "        </a>"+
@@ -236,6 +238,16 @@ function register_hover() {
             $("#bintable").delay(500).fadeOut();
         } 
     );
+
+    $("[id^=popout_]").click( function(){
+        console.log("here");
+        $('#modal').dialog({
+        closeOnEscape: true,
+            width: 'auto',
+            height: 'auto',
+        });
+        $("#modal").html("<img height=700px src='"+ $(this).parent().parent().children("a").children("img").attr("src") + "' />");
+    });
 }
 
 // ultimately this will be a master filelist with all files recursively in this directory
@@ -384,6 +396,7 @@ function getQueryURL() {
 <body>
 
   <div id="jstree_demo_div"> </div>
+  <div id="modal"></div>
 
 <input type="text" class="inputbar" id="filter" placeholder="Search/wildcard filter" />
 <a href="javascript:;" onClick="getQueryURL();">copy as URL</a> &nbsp; &nbsp; 
