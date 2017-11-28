@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
 import math, sys, os
-from collections import Counter
 from pytable import Table
+try:
+    from collections import Counter
+except:
+    def Counter(vals):
+        d = {}
+        for v in vals:
+            if v not in d: d[v] = 0
+            d[v] += 1
+        return d
 
 def hum(num):
     # stolen from http://stackoverflow.com/questions/17973278/python-decimal-engineering-notation-for-mili-10e-3-and-micro-10e-6
@@ -60,7 +68,7 @@ def makehisto(ls):
         else: # scale to scaleto width
             print strbuff % (w, "*" * max(1,int(float(scaleto)*d[w]/maxval)), d[w])
 
-def get_table(vals, do_unicode=True, width=50):
+def get_table(vals, do_unicode=True, width=80):
     d = dict(Counter(vals))
     maxval = max([d[k] for k in d.keys()])
     maxstrlen = max([len(k) for k in d.keys()])
@@ -92,7 +100,7 @@ if __name__ == "__main__":
         else: pass
 
     if(len(nums) <= 1):
-        if(len(words) < 2):
+        if(len(words) < 3):
             print "Can't calculate stuff with %i element!" % len(nums)
         else:
             # print "Found %i words, so histo will be made!" % len(words)
