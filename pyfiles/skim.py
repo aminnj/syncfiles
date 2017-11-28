@@ -32,7 +32,7 @@ def readable_size(size):
 def get_filesizes(fnames): return sum(map(os.path.getsize, fnames))
 
     
-def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root", cut_str=""):
+def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root", cut_str="", flip_branches=False):
 
 
     ch = TChain(treename)
@@ -63,13 +63,13 @@ def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root"
 
     # see if the dummy user specified any branches to keep that aren't in the chain
     # and subtract them out to avoid segfaulttttt
-    branches_not_in_chain = set(branches_to_keep)-set(branches)
-    if len(branches_not_in_chain) > 0 and len(branches_to_keep) > 0:
-        print ">>> [!] You dummy! I am going to neglect these branches which are not even in the TTree: %s" % ",".join(list(branches_not_in_chain))
+    if not flip_branches:
+        branches_not_in_chain = set(branches_to_keep)-set(branches)
+        if len(branches_not_in_chain) > 0 and len(branches_to_keep) > 0:
+            print ">>> [!] You dummy! I am going to neglect these branches which are not even in the TTree: %s" % ",".join(list(branches_not_in_chain))
+        branches_to_keep = list(set(branches_to_keep)-branches_not_in_chain)
 
-    branches_to_keep = list(set(branches_to_keep)-branches_not_in_chain)
-
-    if len(branches_to_keep) == 0:
+    if len(branches_to_keep) == 0 and not flip_branches:
         if len(cut_str) == 0:
             print ">>> [!] You dummy! You want me to skim 0 branches without any cut? That's pointless."
             return
@@ -79,9 +79,15 @@ def skim_tree(fname_patts, branches_to_keep, treename="t", fname_out="skim.root"
     else:
 
         # whitelist the ones to copy
-        ch.SetBranchStatus("*",0)
-        for bname in branches_to_keep:
-            ch.SetBranchStatus(bname,1)
+        # or reverse if we have flip_branches
+        if not flip_branches:
+            ch.SetBranchStatus("*",0)
+            for bname in branches_to_keep:
+                ch.SetBranchStatus(bname,1)
+        else:
+            ch.SetBranchStatus("*",1)
+            for bname in branches_to_keep:
+                ch.SetBranchStatus(bname,0)
 
         # need this to actually copy over any 4vectors. WTF.
         # https://root.cern.ch/phpBB3/viewtopic.php?t=10725
@@ -117,6 +123,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", help="Name of output skim file", default="skim.root")
     parser.add_argument("-b", "--branches", help="Comma-delimited list of branches to keep", default="")
     parser.add_argument("-c", "--cut", help="Specify a TCut. e.g.: evt_event==12345&&run=123", default="")
+    parser.add_argument("-f", "--flipbranches", help="If branches to keep are specified, drop them instead", action="store_true")
     args = parser.parse_args()
 
     args.branches = map(lambda x: x.strip(), args.branches.split(","))
@@ -140,7 +147,7 @@ if __name__ == "__main__":
     gSystem.Load("libDataFormatsFWLite.so");
     gROOT.ProcessLine("FWLiteEnabler::enable()")
 
-    skim_tree(args.files, args.branches, args.treename, args.output, args.cut)
+    skim_tree(args.files, args.branches, args.treename, args.output, args.cut, args.flipbranches)
 
     # fname_patts = "/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*.root"
     # treename = "t"
