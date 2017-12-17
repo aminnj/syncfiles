@@ -32,7 +32,7 @@ def format_interval(t):
         return '%02d:%02d' % (m, s)
 
 
-def format_meter(n, total, elapsed, do_rgb=True, do_ascii=False):
+def format_meter(n, total, elapsed, do_rgb=True, do_ascii=False, size=75, extra=""):
     # n - number of finished iterations
     # total - total number of iterations, or None
     # elapsed - number of seconds passed since start
@@ -46,7 +46,8 @@ def format_meter(n, total, elapsed, do_rgb=True, do_ascii=False):
         frac = float(n) / total
         
         # N_BARS = 25
-        N_BARS = 75
+        # N_BARS = 75
+        N_BARS = size
         # bar_length = int(frac*N_BARS)
         # bar = '#'*bar_length + '-'*(N_BARS-bar_length)
         percentage = '%3d%%' % (frac * 100)
@@ -99,8 +100,9 @@ def format_meter(n, total, elapsed, do_rgb=True, do_ascii=False):
         
         left_str = format_interval(elapsed / n * (total-n)) if n else '?'
         
-        return '|%s| %d/%d %s [elapsed: %s ETA: %s, %s Hz]' % (
-            bar, n, total, percentage, elapsed_str, left_str, rate)
+        # return '|%s| %d/%d %s [elapsed: %s ETA: %s, %s Hz]' % (
+        return '|%s| %d/%d %s [%s<%s, %s Hz]%s' % (
+            bar, n, total, percentage, elapsed_str, left_str, rate, extra)
     
     else:
         return '%d [elapsed: %s, %s Hz]' % (n, elapsed_str, rate)
