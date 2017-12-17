@@ -68,7 +68,7 @@ stty stop ""
 
 # special host-dependent stuff
 # cmsenv compatibility for ucsd uaf
-export PATH=${PATH}:${HOME}/syncfiles/pyfiles/
+export PATH=${HOME}/syncfiles/pyfiles/:${PATH}
 if [[ ${HOST} == *uaf-* ]]; then 
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
     unset SSH_ASKPASS
@@ -273,7 +273,8 @@ export HISTCONTROL=ignoreboth
 shopt -s cmdhist #(combine multiline commands)
 shopt -s histappend #(multiple terminals all save to history)
 
-export PYTHONPATH="${PYTHONPATH}:$HOME/syncfiles/pyfiles"
+export PYTHONPATH="$HOME/syncfiles/pyfiles:${PYTHONPATH}"
+export PYTHONPATH="$HOME/syncfiles:${PYTHONPATH}"
 # Fix spelling errors for cd
 shopt -s cdspell
 # git config --global alias.co checkout
