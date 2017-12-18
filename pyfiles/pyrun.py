@@ -50,8 +50,9 @@ def f_bash((idx,x)):
     status, out = commands.getstatusoutput(x)
     return idx,status
 
+
 class Runner(object):
-    def __init__(self,nproc=5,func=f_bash):
+    def __init__(self,nproc=5,func=f_bash,dot_type=1):
         self.pool = Pool(processes=nproc)
         self.args = []
         self.indices_with_args = []
@@ -62,6 +63,7 @@ class Runner(object):
         self.t0 = None
         self.func = func
         self.outputs = []
+        self.dot_type = dot_type
 
     def add_args(self,args):
         next_idx = len(self.indices_with_args)
@@ -85,6 +87,19 @@ class Runner(object):
         # second element is the return value of the function)
         return self.outputs
 
+    def get_dots(self,indices_status,which=1):
+        if which == 1:
+            return " "+"".join(u"\033[92m\u2022\033[0m" if x == 1 else u"\033[90m\u2219\033[0m" for x in indices_status)
+        elif which in [2,3]:
+            ncells = (6 if which == 2 else 8)
+            chunks = [indices_status[i:i+ncells]+[0 for _ in range(ncells-len(indices_status[i:i+ncells]))] for i in range(0,len(indices_status),ncells)]
+            chars = ""
+            for chunk in chunks:
+                on = [x for x in range(1,len(chunk)+1) if chunk[x-1]==1]
+                char = ("\u"+hex(0x2800+reduce(lambda x,y:x|y,[1<<(x-1) for x in on],0))[2:]).decode("unicode-escape")
+                chars += char
+            return u" \033[92m"+chars+u"\033[0m"
+
     def run(self):
         if not self.t0: 
             self.t0 = time.time()
@@ -98,7 +113,7 @@ class Runner(object):
             #     self.add_args(["sleep 2"])
             self.ndone += 1
             self.elapsed = time.time()-self.t0
-            dots = " "+"".join(u"\033[92m\u2022\033[0m" if x == 1 else u"\033[90m\u2219\033[0m" for x in self.indices_status)
+            dots = self.get_dots(self.indices_status,which=self.dot_type)
             sp.print_status(format_meter(self.ndone, self.ntotal, self.elapsed, size=13,extra=dots))
         print
 
@@ -107,6 +122,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="text file with one command per line")
     parser.add_argument("-n", "--nproc", help="number of processes in pool", default="5")
+    parser.add_argument("-d", "--dot_type", help="dot type (1,2,3)", default="1")
     cli_args = parser.parse_args()
 
     func_args = []
@@ -120,7 +136,7 @@ if __name__ == '__main__':
         for item in sys.stdin:
             func_args.append(item.strip())
 
-    runner = Runner(int(cli_args.nproc))
+    runner = Runner(nproc=int(cli_args.nproc),dot_type=int(cli_args.dot_type))
     runner.add_args(func_args)
     runner.run()
 
