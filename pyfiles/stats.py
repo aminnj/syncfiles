@@ -71,7 +71,9 @@ def makehisto(ls):
 def get_table(vals, do_unicode=True, width=80):
     d = dict(Counter(vals))
     maxval = max([d[k] for k in d.keys()])
-    maxstrlen = max([len(k) for k in d.keys()])
+    def shorten(label):
+        return label[:50]
+    maxstrlen = max([len(shorten(k)) for k in d.keys()])
     scaleto=width-maxstrlen
     fillchar = "*"
     if do_unicode:
@@ -80,7 +82,8 @@ def get_table(vals, do_unicode=True, width=80):
     for w in sorted(d, key=d.get, reverse=True):
         nfill = d[w] if maxval < scaleto else max(1,int(float(scaleto)*d[w]/maxval))
         strbuff = "{0} ({1})".format(fillchar*nfill,d[w])
-        tab.add_row([w,strbuff])
+        shortw = shorten(w)
+        tab.add_row([shortw,strbuff])
     return tab
 
 if __name__ == "__main__":
