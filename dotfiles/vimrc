@@ -204,9 +204,13 @@ execute pathogen#infect()
 " let &t_EI.="\e[1 q"
 " let &t_te.="\e[0 q"
 
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+"
+let &t_SI = "\<Esc>]1337;CursorShape=1\x7"
+let &t_SR = "\<Esc>]1337;CursorShape=2\x7"
+let &t_EI = "\<Esc>]1337;CursorShape=0\x7"
 
 " set runtimepath^=~/.vim/bundle/ctrlp.vim
 " let g:ctrlp_map = '<c-p>'
@@ -516,3 +520,34 @@ set noswapfile
 hi MatchParen cterm=none ctermbg=none ctermfg=yellow
 hi Statement cterm=bold
 
+
+" From
+" https://bitbucket.org/sjl/dotfiles/src/1cd90a0458e45ddfcb5b8b988133bf02a29f84c7/vim/vimrc?at=default&fileviewer=file-view-default#vimrc-3100:3140
+function! HiInterestingWord(n) " {{{
+    " Save our location.
+    normal! mz
+    " Yank the current word into the z register.
+    normal! "zyiw
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let mid = 86750 + a:n
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(mid)
+    " Construct a literal pattern that has to match at boundaries.
+    let pat = '\V\<' . escape(@z, '\') . '\>'
+    " Actually match the words.
+    call matchadd("InterestingWord" . a:n, pat, 1, mid)
+    " Move back to our original location.
+    normal! `z
+endfunction " }}}
+nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
+nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
+nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
+nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
+nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
+nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
+hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
+hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
+hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
+hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
+hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
+hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
