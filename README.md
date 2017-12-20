@@ -15,6 +15,7 @@ git clone git://github.com/tpope/vim-commentary.git
 git clone git://github.com/tpope/vim-surround.git
 git clone git://github.com/tpope/vim-fugitive.git
 git clone https://github.com/haya14busa/incsearch.vim
+git clone https://github.com/haya14busa/incsearch-fuzzy.vim # z/ to fuzzy search
 git clone https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor 
 git clone git://github.com/godlygeek/tabular.git
 git clone https://github.com/ervandew/supertab
