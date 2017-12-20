@@ -153,6 +153,11 @@ alias pt='ev; ptpython'
 alias xb='xargs -n 1 -I {} sh -c'
 alias xbf='xargs -n 1 -P 20 -I {} sh -c'
 
+
+alias rrnd='rnd "root -l" .root'
+alias rndic='rnd ic'
+alias crnd='rnd cd'
+
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
     alias fullfast="cd ~/sandbox/fullfastjets/"
@@ -323,6 +328,24 @@ if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; t
 fi
 }
 
+rnd() {
+    local nthf=${3:-1}
+    if [[ -z $2 ]]; then
+        local rndf=`ls -ltr | awk '{if ($5 != 0) print $9}' | tail -n $nthf | head -n 1`
+    elif [[ $2 == "*/*" ]]; then
+        local rndf=`ls -ltr *${2}* | awk '{if ($5 != 0) print $9}' | tail -n $nthf | head -n 1`
+    else
+        local rndf=`ls -ltr | grep ${2} | awk '{if ($5 != 0) print $9}' | tail -n $nthf | head -n 1`
+    fi
+    if [[ $rndf != "" ]]; then
+        echo "$1 $rndf"
+        $1 $rndf
+        history -s "$1 $rndf"
+    else
+        echo "Fail to find any random file."
+    fi
+}
+
 cl() {
     if [[ -z $1 ]]; then
         ls -ltrhG
@@ -419,22 +442,25 @@ function vsp {
 vim -O $1 $2
 }
 
+function show_and_add_to_clipboard {
+    echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a"
+}
 function pg {
 PWD1=`pwd`
 PWD2=$1
 if [ -e $PWD1/$PWD2 ] ; then
   blah=$PWD1/$PWD2
   if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
-    echo `greadlink -f $blah`
+    show_and_add_to_clipboard `greadlink -f $blah`
   else
-    echo `readlink -f $blah`
+    show_and_add_to_clipboard `readlink -f $blah`
   fi
 else
   if [ -e $PWD2 ]; then 
       if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
-      echo `greadlink -f $PWD2`
+      show_and_add_to_clipboard `greadlink -f $PWD2`
     else
-      echo `readlink -f $PWD2`
+      show_and_add_to_clipboard `readlink -f $PWD2`
     fi
   else
     echo "$PWD1/$PWD2 does not exist." 
