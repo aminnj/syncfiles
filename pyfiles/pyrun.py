@@ -88,8 +88,11 @@ class Runner(object):
         return self.outputs
 
     def get_dots(self,indices_status,which=1):
+        # color = u"\033[92m"
+        color = u"\033[38;2;12;185;103m"
         if which == 1:
-            return " "+"".join(u"\033[92m\u2022\033[0m" if x == 1 else u"\033[90m\u2219\033[0m" for x in indices_status)
+            # return " "+"".join(u"\033[92m\u2022\033[0m" if x == 1 else u"\033[90m\u2219\033[0m" for x in indices_status)
+            return " "+"".join(color+u"\u2022\033[0m" if x == 1 else u"\033[90m\u2219\033[0m" for x in indices_status)
         elif which in [2,3]:
             ncells = (6 if which == 2 else 8)
             chunks = [indices_status[i:i+ncells]+[0 for _ in range(ncells-len(indices_status[i:i+ncells]))] for i in range(0,len(indices_status),ncells)]
@@ -98,7 +101,7 @@ class Runner(object):
                 on = [x for x in range(1,len(chunk)+1) if chunk[x-1]==1]
                 char = ("\u"+hex(0x2800+reduce(lambda x,y:x|y,[1<<(x-1) for x in on],0))[2:]).decode("unicode-escape")
                 chars += char
-            return u" \033[92m"+chars+u"\033[0m"
+            return u" "+color+chars+u"\033[0m"
 
     def run(self):
         if not self.t0: 
