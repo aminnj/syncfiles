@@ -57,6 +57,9 @@ class E:
         new_err = ((other * self.val**(other-1) * self.err)**2.0)**0.5
         return E(new_val, new_err)
 
+    def __neg__(self):
+        return E(-1.*self.val, self.err)
+
     def get_val(self, other):
         other_val, other_err = other, 0.0
         if type(other)==type(self):
