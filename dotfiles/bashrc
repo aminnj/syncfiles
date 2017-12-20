@@ -104,14 +104,17 @@ function iterm2_set_tab_default() {
     echo -e "\033]6;1;bg;*;default\a"
 }
 export -f iterm2_set_tab_default
-if [[ "${HOST}" == *squark* ]]; then iterm2_set_tab_rgb 145 191 255; # blue
-elif [[ "${HOST}" == *uaf-10.t2* ]]; then iterm2_set_tab_rgb 69 221 102; # green
-elif [[ "${HOST}" == *uaf-1.t2* ]]; then iterm2_set_tab_rgb 255 170 32; # orange
-elif [[ "${HOST}" == *uaf-8.t2* ]]; then iterm2_set_tab_rgb 255 91 116; # pink/red
-elif [[ "${HOST}" == *uaf-6.t2* ]]; then iterm2_set_tab_rgb 166 117 161; # purple
-elif [[ "${HOST}" == *uaf-7.t2* ]]; then iterm2_set_tab_rgb 255 230 127; # yellow
-elif [[ "${HOST}" == *lxplus* ]]; then iterm2_set_tab_rgb 191 190 191 ; # gray
-else iterm2_set_tab_default ; fi
+function iterm2_set_tab_label() {
+    echo -e "\033]0;$@\a"
+}
+if [[ "${HOST}" == *squark* ]]; then iterm2_set_tab_label squark ; iterm2_set_tab_rgb 145 191 255; # blue
+elif [[ "${HOST}" == *uaf-10.t2* ]]; then iterm2_set_tab_label uaf-10 ; iterm2_set_tab_rgb 69 221 102; # green
+elif [[ "${HOST}" == *uaf-1.t2* ]]; then iterm2_set_tab_label uaf-1 ; iterm2_set_tab_rgb 255 170 32; # orange
+elif [[ "${HOST}" == *uaf-8.t2* ]]; then iterm2_set_tab_label uaf-8 ; iterm2_set_tab_rgb 255 91 116; # pink/red
+elif [[ "${HOST}" == *uaf-6.t2* ]]; then iterm2_set_tab_label uaf-6 ; iterm2_set_tab_rgb 166 117 161; # purple
+elif [[ "${HOST}" == *uaf-7.t2* ]]; then iterm2_set_tab_label uaf-8 ; iterm2_set_tab_rgb 255 230 127; # yellow
+elif [[ "${HOST}" == *lxplus* ]]; then iterm2_set_tab_label lxplus ; iterm2_set_tab_rgb 191 190 191 ; # gray
+else iterm2_set_tab_default ; iterm2_set_tab_label Local ; fi
 
 
 alias l='ls -lG'
