@@ -94,6 +94,21 @@ if [[ ${HOST} == *squark* || ${HOST} == *naminmac*  || ${HOST} == *laptop* || ${
 fi
 export PATH=${PATH}:~/syncfiles/miscfiles/
 
+function iterm2_set_tab_rgb() {
+    echo -e "\033]6;1;bg;red;brightness;$1\a"
+    echo -e "\033]6;1;bg;green;brightness;$2\a"
+    echo -e "\033]6;1;bg;blue;brightness;$3\a"
+}
+export -f iterm2_set_tab_rgb
+
+[[ ${HOST} == *squark* ]] && iterm2_set_tab_rgb 145 191 255 # blue
+[[ ${HOST} == *uaf-10* ]] && iterm2_set_tab_rgb 166 117 161 # purple
+[[ ${HOST} == *uaf-1* ]] && iterm2_set_tab_rgb 255 91 116 # pink/red
+[[ ${HOST} == *uaf-8* ]] && iterm2_set_tab_rgb 69 221 102 # green
+[[ ${HOST} == *uaf-6* ]] && iterm2_set_tab_rgb 255 170 32 # orange
+[[ ${HOST} == *uaf-7* ]] && iterm2_set_tab_rgb 253 204 0 # yellow
+[[ ${HOST} == *lxplus* ]] && iterm2_set_tab_rgb 191 190 191  # gray
+
 alias l='ls -lG'
 alias ll='ls -lG'
 alias lsa='/bin/ls --color=auto'
@@ -807,6 +822,7 @@ function simulation_to_sp() {
         rm -f $pdffile.tmp-e
     done
 }
+
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 if [ -d ~/.bash_completion.d ]; then
