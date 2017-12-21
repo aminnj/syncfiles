@@ -114,7 +114,8 @@ elif [[ "${HOST}" == *uaf-8.t2* ]]; then iterm2_set_tab_label uaf-8 ; iterm2_set
 elif [[ "${HOST}" == *uaf-6.t2* ]]; then iterm2_set_tab_label uaf-6 ; iterm2_set_tab_rgb 166 117 161; # purple
 elif [[ "${HOST}" == *uaf-7.t2* ]]; then iterm2_set_tab_label uaf-8 ; iterm2_set_tab_rgb 255 230 127; # yellow
 elif [[ "${HOST}" == *lxplus* ]]; then iterm2_set_tab_label lxplus ; iterm2_set_tab_rgb 191 190 191 ; # gray
-else iterm2_set_tab_default ; iterm2_set_tab_label Local ; fi
+elif [[ "${HOST}" == *local* || "${HOST}" == *laptop* ]]; then iterm2_set_tab_label local ; iterm2_set_tab_default;
+else iterm2_set_tab_rgb 27 27 75 ; iterm2_set_tab_label "???" ; fi
 
 
 alias l='ls -lG'
