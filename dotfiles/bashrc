@@ -452,28 +452,27 @@ vim -O $1 $2
 }
 
 function show_and_add_to_clipboard {
-    echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a"
+if [ -n "$WINDOW" ]; then
+    echo -e "\033P\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHISNOW\033\033]1337;EndCopy\a\033\\" # for screen
+    # echo -e "\033Ptmux;\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHIS\033\033]1337;EndCopy\a\033\\" # for tmux
+else
+    echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a" # for normal term
+fi
 }
 function pg {
 PWD1=`pwd`
 PWD2=$1
+cmd="readlink"
+if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+    cmd="greadlink"
+fi
 if [ -e $PWD1/$PWD2 ] ; then
-  blah=$PWD1/$PWD2
-  if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
-    show_and_add_to_clipboard `greadlink -f $blah`
-  else
-    show_and_add_to_clipboard `readlink -f $blah`
-  fi
+    PWD3=$PWD1/$PWD2
+    show_and_add_to_clipboard `$cmd -f $PWD3`
 else
-  if [ -e $PWD2 ]; then 
-      if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
-      show_and_add_to_clipboard `greadlink -f $PWD2`
-    else
-      show_and_add_to_clipboard `readlink -f $PWD2`
+    if [ -e $PWD2 ]; then 
+        show_and_add_to_clipboard `$cmd -f $PWD2`
     fi
-  else
-    echo "$PWD1/$PWD2 does not exist." 
-  fi
 fi
 }
 
