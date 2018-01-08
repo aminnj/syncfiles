@@ -11,17 +11,18 @@ xrdb -merge ~/.Xresources
 mkdir -p ~/.vim/autoload ~/.vim/bundle
 curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 cd ~/.vim/bundle
-git clone git://github.com/tpope/vim-commentary.git
-git clone git://github.com/tpope/vim-surround.git
-git clone git://github.com/tpope/vim-fugitive.git
+git clone https://github.com/tpope/vim-commentary.git
+git clone https://github.com/tpope/vim-surround.git
+git clone https://github.com/tpope/vim-fugitive.git
+git clone https://github.com/scrooloose/nerdtree
 git clone https://github.com/haya14busa/incsearch.vim
 git clone https://github.com/haya14busa/incsearch-fuzzy.vim # z/ to fuzzy search
 git clone https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor 
-git clone git://github.com/godlygeek/tabular.git
+git clone https://github.com/godlygeek/tabular.git
+git clone https://github.com/itchyny/lightline.vim
 git clone https://github.com/ervandew/supertab
+git clone https://github.com/w0rp/ale.git
 git clone https://github.com/machakann/vim-swap # gs, g< or g> on args to switch them
-git clone https://github.com/osyo-manga/vim-over # search and replace with :OverCommandLine
-git clone https://github.com/andymass/vim-matchup
 mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
