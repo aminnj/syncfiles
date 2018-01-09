@@ -39,6 +39,7 @@ set nowrap
 set wildmenu                      " Turn on wild menu for tab command completion
 set wildmode=list:longest,full
 set wildignorecase
+set wildignore=*.pyc,*.so,*.o,*.pkl,*.png,*.pdf
 set ruler                         " Turn ruler on to show position
 set splitbelow                    " Open new split panes to the bottom
 set splitright                    " ...and right, which is more natural
@@ -66,7 +67,7 @@ set ignorecase                    " Case-sensitive only if search contains an up
 set smartcase
 set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/.viminfo
 set noswapfile
-set foldmethod=marker
+" set foldmethod=marker
 
 " cursor changing escape sequences in iTerm
 let &t_SI = "\<Esc>]1337;CursorShape=1\x7"
@@ -149,7 +150,7 @@ map z? <Plug>(incsearch-fuzzy-?)
 map zg/ <Plug>(incsearch-fuzzy-stay)
 
 " NERDTree
-nnoremap <C-n> :NERDTreeToggle<CR>
+map <leader>nt :NERDTreeToggle<CR>
 
 " remap arrow keys for long lines
 noremap <Down> gj
@@ -174,10 +175,24 @@ abbr coutline std::cout << __LINE__ << std::endl;
 
 " ====== Misc plugin settings {{{
 
+
+  
 " ====== Lightline {{{
+
 let g:lightline = {
-\ 'colorscheme': 'wombat',
-\ }
+            \ 'colorscheme': 'wombat',
+            \ 'active': {
+            \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'gitbranch', 'cmsswver', 'filename', 'modified' ] ]
+            \ },
+            \ 'component': {
+            \   'filename': '%<%F',
+            \ },
+            \ 'component_function': {
+            \   'gitbranch': 'fugitive#head',
+            \   'cmsswver': 'LightlineCMSSWver',
+            \ },
+            \ }
+
 " }}}
 
 " ====== Ale {{{
@@ -196,7 +211,8 @@ let g:ale_sign_warning = '❯❯'
 " 251 - unespected spaces around keyword/parameter equals
 " 201 - whitespace after (
 " 202 - whitespace before )
-let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202 "
+" 124 - closing bracket does not match outer indent level
+let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202,E124 "
 " }}}
 
 " }}}
@@ -211,6 +227,9 @@ if has("autocmd")
     augroup Group1
         autocmd!
         filetype plugin indent on
+
+        " restore cursor position when opening a file
+        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
         " close vim if only nerdtree is left
         autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -283,14 +302,17 @@ if exists('$CMSSW_BASE')
     set path+=$ROOTSYS/include
     " remove includes from autocomplete search list, otherwise slow
     set complete-=i
+
+    function! LightlineCMSSWver()
+        return split($CMSSW_BASE,"CMSSW_")[1]
+    endfunction
+
 endif
 " }}}
 
 " ====== MacVim {{{
 if has('gui_running')
-    let g:lightline = {
-                \ 'colorscheme': 'one',
-                \ }
+    let g:lightline.colorscheme = 'one'
     colorscheme  one
     set background=dark
     call one#highlight('VertSplit', '2c323c', '2c323c', 'none')
