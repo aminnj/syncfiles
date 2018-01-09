@@ -86,7 +86,7 @@ if [[ ${HOST} == *squark* || ${HOST} == *naminmac*  || ${HOST} == *laptop* || ${
     fi
     if [[ ${HOST} == *naminmac* || ${HOST} == *laptop* || ${HOST} == *pc28* ]]; then 
         # echo "FIXME"
-        source /Applications/root_v6.08.00/bin/thisroot.sh
+        source /Applications/root_v6.12.04/bin/thisroot.sh
     fi
     alias webd='web $(ls -1rtd ~/Downloads/* | tail -n 1)'
     # alias temp="istats cpu temp --no-graphs | cut -d'°' -f1 | cut -d' ' -f3"
