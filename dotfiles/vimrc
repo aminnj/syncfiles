@@ -28,41 +28,41 @@ endif
 " fixes error syntax for $( ) in .sh files
 let g:is_posix = 1
 
-set backupdir=~/.backup,.
-set directory=~/.backup,.
 set t_Co=256
-set nu
-set sidescroll=1
-set backspace=indent,eol,start
-set hidden
+set backupdir=~/.backup,.         " Backupdir (doesn't exist)
+set directory=~/.backup,.
+set nu                            " Line numbers ON
+set sidescroll=1                  " Columns to scroll horizontally when wrapping on
+set backspace=indent,eol,start    " Allow backspacing to move over various chars
+set hidden                        " Hides (not closes) buffers when :q
 set nowrap
-set wildmenu
+set wildmenu                      " Turn on wild menu for tab command completion
 set wildmode=list:longest,full
 set wildignorecase
-set ruler
-set splitbelow
-set splitright
-set scrolloff=3 " keep at least 3 lines visible on either side of the cursor
-set noerrorbells visualbell t_vb=
-set ttyfast
-set lazyredraw
-set cursorline
-set laststatus=2
-set noshowmode
-set formatoptions+=cr " continue comment if in insert mode but not when hitting o/O
-set formatoptions-=o
-set autochdir
-set tabstop=4
+set ruler                         " Turn ruler on to show position
+set splitbelow                    " Open new split panes to the bottom
+set splitright                    " ...and right, which is more natural
+set scrolloff=3                   " Keep at least 3 lines visible on either side of cursor
+set noerrorbells visualbell t_vb= " No alerts/bells
+set ttyfast                       " Smoother drawing
+set lazyredraw                    " Lazy redrawing for slow connections
+set cursorline                    " Highlight current line
+set laststatus=2                  " Show the status line always
+set noshowmode                    " Because of lightline don't show mode at bottom
+set formatoptions+=cr             " Continue comment if in insert mode
+set formatoptions-=o              " ...but not when hitting o/O
+set autochdir                     " Cd into directory where file is
+set tabstop=4                     " Spaces only, and 4 spaces forever
 set shiftwidth=4
 set softtabstop=4
-set smarttab
+set smarttab                      " Correct the wicked by converting tabs to spaces
 set expandtab
-set title
-set showmatch
-set matchtime=3
-set incsearch
-set hlsearch
-set ignorecase
+set title                         " Set window title to current file
+set showmatch                     " When bracket inserted, briefly flash matching one
+set matchtime=3                   " Timing for above
+set incsearch                     " Search as characters are entered
+set hlsearch                      " Highlight search
+set ignorecase                    " Case-sensitive only if search contains an uppercase character
 set smartcase
 set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/.viminfo
 set noswapfile
@@ -96,16 +96,20 @@ nnoremap <leader>h# :center 40<cr>hhv0r#A<space><esc>20A#<esc>d40<bar>YppVr#kk.
 " paste from system clipboard, but only locally
 nnoremap <leader>pp "+p
 
+" mash to escape
 inoremap kj <Esc>
 inoremap kJ <Esc>
 inoremap KJ <Esc>
 inoremap Kj <Esc>
+
+" mash to move
+noremap K 5<up>
+noremap J 5<down>
+
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-l> <C-w>l
 nnoremap <C-k> <C-w>k
-noremap K 5<up>
-noremap J 5<down>
 
 nnoremap <space> %
 
