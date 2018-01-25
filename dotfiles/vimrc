@@ -1,4 +1,21 @@
+let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to debug
+
+
 " load plugins before screwing with settings
+"    https://github.com/tpope/vim-commentary
+"    https://github.com/tpope/vim-surround
+"    https://github.com/tpope/vim-fugitive
+"    https://github.com/scrooloose/nerdtree
+"    https://github.com/haya14busa/incsearch.vim
+"    https://github.com/haya14busa/incsearch-fuzzy.vim # z/ to fuzzy search
+"    https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor 
+"    https://github.com/godlygeek/tabular
+"    https://github.com/itchyny/lightline.vim
+"    https://github.com/ervandew/supertab
+"    https://github.com/w0rp/ale
+"    https://github.com/majutsushi/tagbar
+"    https://github.com/machakann/vim-swap # gs, g< or g> on args to switch them
+"    https://github.com/aminnj/vim-lazytools
 execute pathogen#infect()
 
 syntax on
@@ -59,6 +76,7 @@ set laststatus=2                  " Show the status line always
 set noshowmode                    " Because of lightline don't show mode at bottom
 set formatoptions+=cr             " Continue comment if in insert mode
 set formatoptions-=o              " ...but not when hitting o/O
+set formatoptions-=t              " Disable automatic wrapping of comments
 set autochdir                     " Cd into directory where file is
 set tabstop=4                     " Spaces only, and 4 spaces forever
 set shiftwidth=4
@@ -72,8 +90,9 @@ set incsearch                     " Search as characters are entered
 set hlsearch                      " Highlight search
 set ignorecase                    " Case-sensitive only if search contains an uppercase character
 set smartcase
-set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/.viminfo
 set noswapfile
+set diffopt+=vertical             " Vertical split for diff
+set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/.viminfo
 " set foldmethod=marker
 
 " cursor changing escape sequences in iTerm
@@ -162,6 +181,9 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 " NERDTree
 map <leader>nt :NERDTreeToggle<CR>
 
+" tagbar
+map <leader>tt :TagbarToggle<cr>
+
 " remap arrow keys for long lines
 noremap <Down> gj
 noremap <Up> gk
@@ -189,16 +211,16 @@ abbr coutline std::cout << __LINE__ << std::endl;
   
 " ====== Lightline {{{
 
+" Note that fugitive is slow on sshfs
 let g:lightline = {
             \ 'colorscheme': 'wombat',
             \ 'active': {
-            \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'gitbranch','cmsswver', 'filename', 'modified' ] ]
+            \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'cmsswver', 'filename', 'modified' ] ]
             \ },
             \ 'component': {
             \   'filename': '%<%F',
             \ },
             \ 'component_function': {
-            \   'gitbranch': 'fugitive#head',
             \   'cmsswver': 'LightlineCMSSWver',
             \ },
             \ }
@@ -207,7 +229,8 @@ let g:lightline = {
 
 " ====== Ale {{{
 let g:ale_sign_error = '❯❯'
-let g:ale_sign_warning = '❯❯'
+let g:ale_sign_warning = '•'
+
 " 501 - line >80 chars
 " 303 - too many blank lines
 " 226 - missing whitespace around arithmetic operator
@@ -223,12 +246,18 @@ let g:ale_sign_warning = '❯❯'
 " 202 - whitespace before )
 " 124 - closing bracket does not match outer indent level
 let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202,E124 "
+
+" Disable Ale completely on sshfs mount
+let g:ale_pattern_options = {
+    \   '.*sandbox/uaf/.*$': {'ale_enabled': 0},
+\}
+
 " }}}
 
 " }}}
 
 " ====== Autocommands {{{
-"
+
 " this is why I made a group for autocommands:
 " http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
 
@@ -246,8 +275,11 @@ if has("autocmd")
         autocmd InsertLeave * set nopaste
         autocmd FileType crontab set nobackup nowritebackup
         autocmd FileType crontab set nobackup nowritebackup
-        autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
-        autocmd FileType cpp nnoremap <leader><leader> :w <bar> exec '!root -b -q -l -n '.shellescape('%')<CR>
+        " hack? when hitting ,, ALE will try to 'run' again and this screws up colors, so disable and then re-enable
+        " autocmd FileType python nnoremap <buffer> <leader><leader> :ALEDisable <bar> w <bar> exec '!python '.shellescape('%') <bar>ALEEnable<CR>
+        autocmd FileType python nnoremap <buffer> <leader><leader> :w <bar> exec '!python '.shellescape('%') <CR>
+        " why <buffer> ? with a .py file open, opening another file type will cause ,, to use the python ,, mapping to be overriden
+        autocmd FileType cpp nnoremap <buffer> <leader><leader> :w <bar> exec '!root -b -q -l -n '.shellescape('%')<CR>
         autocmd FileType sh nnoremap <leader><leader> :w <bar> exec '!./'.shellescape('%')<CR>
         autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
         autocmd FileType c,cpp nnoremap <leader>cp :call lazytools#CoutTokens()<CR>
@@ -284,8 +316,6 @@ if exists('$CMSSW_BASE')
 
 endif
 " }}}
-"
-
 
 " ====== MacVim {{{
 if has('gui_running')
@@ -293,10 +323,12 @@ if has('gui_running')
     colorscheme  one
     set background=dark
     call one#highlight('VertSplit', '2c323c', '2c323c', 'none')
-    set guifont=Monaco:h15
+    let g:lightline.separator = { 'left': "\ue0b0", 'right': "\ue0b2" }
+    let g:lightline.subseparator = { 'left': "\ue0b1", 'right': "\ue0b3" }
+    " set guifont=Monaco:h15
+    set guifont=Source\ Code\ Pro:h15
     set guioptions-=r  " remove right-hand scroll bar
     set guioptions-=l  " remove left-hand scroll bar
     set guioptions-=L  " remove left-hand scroll bar
 endif
 " }}}
-
