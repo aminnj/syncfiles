@@ -245,7 +245,8 @@ let g:ale_sign_warning = '•'
 " 201 - whitespace after (
 " 202 - whitespace before )
 " 124 - closing bracket does not match outer indent level
-let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202,E124 "
+" 402 - module level import not at top of file
+let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202,E124,E402 "
 
 " Disable Ale completely on sshfs mount
 let g:ale_pattern_options = {
