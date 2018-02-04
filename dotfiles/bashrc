@@ -10,6 +10,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 HOST=$(hostname)
+OSNAME=$(uname)
 
 if [ "$TERM" != "dumb" ]; then
     dircolors -b 1>/dev/null 2>/dev/null
@@ -73,24 +74,19 @@ export PATH=${HOME}/syncfiles/pyfiles/:${PATH}
 if [[ ${HOST} == *uaf-* ]]; then 
     source /code/osgcode/cmssoft/cms/cmsset_default.sh
     unset SSH_ASKPASS
-    # export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
+    export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
     export PATH=/home/users/namin/.local/bin:$PATH # for vim 8
     export PATH=/home/users/namin/.iterm2/:$PATH
-    export PYTHONPATH=$PYTHONPATH:/home/users/namin/Software/slideMaker
-    export PYTHONPATH=$PYTHONPATH:/home/users/namin/2016/ss/master/SSAnalysis/software/dataMCplotMaker
     export UCSD="true"
     # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
-if [[ ${HOST} == *squark* || ${HOST} == *naminmac*  || ${HOST} == *laptop* || ${HOST} == *pc28* ]]; then 
+if [[ "$OSNAME" == "Darwin" ]]; then
     if [[ ${HOST} == *squark* ]]; then 
         source ~/root/bin/thisroot.sh
-    fi
-    if [[ ${HOST} == *naminmac* || ${HOST} == *laptop* || ${HOST} == *pc28* ]]; then 
-        # echo "FIXME"
-        source /Applications/root_v6.08.00/bin/thisroot.sh
+    else
+        source /Applications/root_v6.12.04/bin/thisroot.sh
     fi
     alias webd='web $(ls -1rtd ~/Downloads/* | tail -n 1)'
-    # alias temp="istats cpu temp --no-graphs | cut -d'°' -f1 | cut -d' ' -f3"
     alias temp="~/syncfiles/miscfiles/osx-cpu-temp"
 fi
 export PATH=${PATH}:~/syncfiles/miscfiles/
@@ -115,7 +111,8 @@ elif [[ "${HOST}" == *uaf-8.t2* ]]; then iterm2_set_tab_label uaf-8 ; iterm2_set
 elif [[ "${HOST}" == *uaf-6.t2* ]]; then iterm2_set_tab_label uaf-6 ; iterm2_set_tab_rgb 166 117 161; # purple
 elif [[ "${HOST}" == *uaf-7.t2* ]]; then iterm2_set_tab_label uaf-8 ; iterm2_set_tab_rgb 255 230 127; # yellow
 elif [[ "${HOST}" == *lxplus* ]]; then iterm2_set_tab_label lxplus ; iterm2_set_tab_rgb 191 190 191 ; # gray
-else iterm2_set_tab_default ; iterm2_set_tab_label Local ; fi
+elif [[ "${HOST}" == *local* || "${HOST}" == *laptop* ]]; then iterm2_set_tab_label local ; iterm2_set_tab_default;
+else iterm2_set_tab_label "???" ; iterm2_set_tab_default ; fi
 
 
 alias l='ls -lG'
@@ -161,6 +158,9 @@ alias dfh='df -h | grep hadoop'
 alias pt='ev; ptpython'
 alias xb='xargs -n 1 -I {} sh -c'
 alias xbf='xargs -n 1 -P 20 -I {} sh -c'
+alias mountuaf='sshfs namin@uaf-10.t2.ucsd.edu:/home/users/namin /Users/namin/sandbox/uaf  -o Compression=no,follow_symlinks,auto_cache,reconnect,defer_permissions,noappledouble'
+alias aria='aria2c -j 6 -s 6 -x 6'
+alias v='vim'
 
 
 alias rrnd='rnd "root -l" .root'
@@ -254,7 +254,8 @@ if [[ $HOST == *uaf-* ]]; then
 
 fi
 
-if [[ ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* || ${HOST} == *pc28* ]]; then 
+if [[ "$OSNAME" == "Darwin" ]]; then
+    alias osu="mono ~/sandbox/lazer/osu/osu.Desktop/bin/Release/osu\!.exe"
     alias mks="cd ~/sandbox/makers; ls -lrth"
     alias metis="cd ~/sandbox/ProjectMetis; source setup.sh"
     alias dump="cd ~/public_html/dump/"
@@ -286,6 +287,7 @@ alias grad='ssh namin@gshell.physics.ucsb.edu'
 alias pi='ssh pi@192.168.0.21'
 alias officepi='ssh pi@128.111.19.91'
 #alias eos='ssh namin@eos.tamu.edu'
+alias ela='ssh namin@ela.cscs.ch'
 
 
 alias stats='~/syncfiles/pyfiles/stats.py'
@@ -335,7 +337,7 @@ pddump() {
 }
 
 wifi() {
-if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+if [[ "$OSNAME" == "Darwin" ]]; then
     /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
 fi
 }
@@ -384,7 +386,7 @@ kajobs() {
 }
 
 tree() {
-    if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+    if [[ "$OSNAME" == "Darwin" ]]; then
         tree_osx -C
     else
         tree -C
@@ -435,7 +437,7 @@ str=$(echo $str | sed 's/:/./g')
 echo "$(pwd) $(ls -lthr)" | mail -s "$str" amin.nj@gmail.com
 }
 function utc {
-    if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
+    if [[ "$OSNAME" == "Darwin" ]]; then
         date -r $1
     else
         date -d "1970-01-01 $1 sec UTC"
@@ -462,28 +464,27 @@ vim -O $1 $2
 }
 
 function show_and_add_to_clipboard {
-    echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a"
+if [ -n "$WINDOW" ]; then
+    echo -e "\033P\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHISNOW\033\033]1337;EndCopy\a\033\\" # for screen
+    # echo -e "\033Ptmux;\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHIS\033\033]1337;EndCopy\a\033\\" # for tmux
+else
+    echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a" # for normal term
+fi
 }
 function pg {
 PWD1=`pwd`
 PWD2=$1
+cmd="readlink"
+if [[ "$OSNAME" == "Darwin" ]]; then
+    cmd="greadlink"
+fi
 if [ -e $PWD1/$PWD2 ] ; then
-  blah=$PWD1/$PWD2
-  if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
-    show_and_add_to_clipboard `greadlink -f $blah`
-  else
-    show_and_add_to_clipboard `readlink -f $blah`
-  fi
+    PWD3=$PWD1/$PWD2
+    show_and_add_to_clipboard `$cmd -f $PWD3`
 else
-  if [ -e $PWD2 ]; then 
-      if [[  ${HOST} == *naminmac* || ${HOST} == *squark* || ${HOST} == *laptop* ]]; then 
-      show_and_add_to_clipboard `greadlink -f $PWD2`
-    else
-      show_and_add_to_clipboard `readlink -f $PWD2`
+    if [ -e $PWD2 ]; then 
+        show_and_add_to_clipboard `$cmd -f $PWD2`
     fi
-  else
-    echo "$PWD1/$PWD2 does not exist." 
-  fi
 fi
 }
 

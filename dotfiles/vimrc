@@ -1,28 +1,47 @@
-"Formatting
+scriptencoding utf-8
+
+let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to debug
+
+
+" load plugins before screwing with settings
+"    https://github.com/tpope/vim-commentary
+"    https://github.com/tpope/vim-surround
+"    https://github.com/tpope/vim-fugitive
+"    https://github.com/scrooloose/nerdtree
+"    https://github.com/haya14busa/incsearch.vim
+"    https://github.com/haya14busa/incsearch-fuzzy.vim # z/ to fuzzy search
+"    https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor 
+"    https://github.com/godlygeek/tabular
+"    https://github.com/itchyny/lightline.vim
+"    https://github.com/ervandew/supertab
+"    https://github.com/w0rp/ale
+"    https://github.com/majutsushi/tagbar
+"    https://github.com/machakann/vim-swap # gs, g< or g> on args to switch them
+"    https://github.com/aminnj/vim-lazytools
+execute pathogen#infect()
+
 syntax on
-" fixes error syntax for $( ) in .sh files
-let g:is_posix = 1
-set background=light
 
-set backupdir=~/.backup,.
-set directory=~/.backup,.
+" zR to open all folds
+" zM to close them again
 
-set t_Co=256
+" ====== One and only theme {{{
 color wombat256mod
+set background=dark
+" Tweak to have more vivid error/warning/todo colors
+" especially for Ale
+hi SpellBad  ctermfg=253  ctermbg=160  cterm=none
+hi Error  ctermfg=253  ctermbg=160  cterm=none
+hi SpellCap  ctermfg=253  ctermbg=220  cterm=none
+hi Todo  ctermfg=235  ctermbg=220  cterm=none
+" }}}
 
-set nu
-" set nowrap
-set sidescroll=1
+" ====== Settings {{{
 
 
 " fix backspace in tmux->ssh->vim
 if &term == "screen"
     set t_kb=
-endif
-
-if v:version >= 700
-  au BufLeave * let b:winview = winsaveview()
-  au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
 endif
 
 if exists('$TMUX')
@@ -32,13 +51,277 @@ if exists('$UCSD')
     set term=screen-256color
 endif
 
+" fixes error syntax for $( ) in .sh files
+let g:is_posix = 1
+
+set encoding=utf-8
+set t_Co=256
+set backupdir=~/.backup,.         " Backupdir (doesn't exist)
+set directory=~/.backup,.
+set nu                            " Line numbers ON
+set sidescroll=1                  " Columns to scroll horizontally when wrapping on
+set backspace=indent,eol,start    " Allow backspacing to move over various chars
+set hidden                        " Hides (not closes) buffers when :q
+set nowrap
+set wildmenu                      " Turn on wild menu for tab command completion
+set wildmode=list:longest,full
+set wildignorecase
+set wildignore=*.pyc,*.so,*.o,*.pkl,*.png,*.pdf
+set ruler                         " Turn ruler on to show position
+set splitbelow                    " Open new split panes to the bottom
+set splitright                    " ...and right, which is more natural
+set scrolloff=3                   " Keep at least 3 lines visible on either side of cursor
+set noerrorbells visualbell t_vb= " No alerts/bells
+set ttyfast                       " Smoother drawing
+set lazyredraw                    " Lazy redrawing for slow connections
+set cursorline                    " Highlight current line
+set laststatus=2                  " Show the status line always
+set noshowmode                    " Because of lightline don't show mode at bottom
+set formatoptions+=cr             " Continue comment if in insert mode
+set formatoptions-=o              " ...but not when hitting o/O
+set formatoptions-=t              " Disable automatic wrapping of comments
+set autochdir                     " Cd into directory where file is
+set tabstop=4                     " Spaces only, and 4 spaces forever
+set shiftwidth=4
+set softtabstop=4
+set smarttab                      " Correct the wicked by converting tabs to spaces
+set expandtab
+set title                         " Set window title to current file
+set showmatch                     " When bracket inserted, briefly flash matching one
+set matchtime=3                   " Timing for above
+set incsearch                     " Search as characters are entered
+set hlsearch                      " Highlight search
+set ignorecase                    " Case-sensitive only if search contains an uppercase character
+set smartcase
+set noswapfile
+set diffopt+=vertical             " Vertical split for diff
+set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/.viminfo
+" set foldmethod=marker
+
+" cursor changing escape sequences in iTerm
+let &t_SI = "\<Esc>]1337;CursorShape=1\x7"
+let &t_SR = "\<Esc>]1337;CursorShape=2\x7"
+let &t_EI = "\<Esc>]1337;CursorShape=0\x7"
+
+" }}}
+
+" ====== Mapping {{{
+let mapleader = ","
+map <leader>vi :e ~/.vimrc<CR>
+map <leader>ww :set nowrap!<cr>
+map <leader>nn :set nu!<cr>
+
+" table delimited by space for whole document
+map <leader>ts ggVG:Tab / <cr>:set nohl<cr>
+
+" table delimited by comma for whole document
+map <leader>tc ggVG:Tab /,<cr>
+
+" replace multiple spaces with single space
+map <leader>ss :%s/  \+/ /g<cr>
+
+" sets off header with #
+nnoremap <leader>h# :center 40<cr>hhv0r#A<space><esc>20A#<esc>d40<bar>YppVr#kk.
+
+" paste from system clipboard, but only locally
+nnoremap <leader>pp "+p
+
+" mash to escape
 inoremap kj <Esc>
 inoremap kJ <Esc>
 inoremap KJ <Esc>
-" Type kj to get out of insert or visual mode!
-" virtual lag caused by the below mapping in visual mode!
-" vnoremap kj <Esc>
-"
+inoremap Kj <Esc>
+
+" mash to move
+noremap K 5<up>
+noremap J 5<down>
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
+tnoremap <C-h> <C-w>h
+tnoremap <C-j> <C-w>j
+tnoremap <C-l> <C-w>l
+tnoremap <C-k> <C-w>k
+
+nnoremap <space> %
+
+" maintain line joining even though J remapped
+nnoremap <leader>j J
+vnoremap <leader>j J
+
+
+" calculate quantity in Word
+nnoremap <leader>cc ciW<C-r>=<C-r>"<CR><Esc>
+nnoremap <leader><space> :noh<cr>
+nnoremap <leader>rr :w <bar> call Termrun()<CR>
+nnoremap <leader>pt :set paste!<CR>
+nnoremap <leader>fv <C-w>F<C-w>L
+
+" copies a line and comments the old line
+nmap zz yygccp
+vmap zz V<Esc>gvygvgc`>p
+
+nnoremap <leader>an :ALENextWrap<CR>
+nnoremap <leader>ap :ALEPreviousWrap<CR>
+
+" dot maps over visual line selection
+xnoremap . :norm .<CR>
+vnoremap . :norm .<CR>
+
+" remove all trailing whitespace
+nnoremap <leader>ws :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+
+" https://github.com/haya14busa/incsearch.vim
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+map z/ <Plug>(incsearch-fuzzy-/)
+map z? <Plug>(incsearch-fuzzy-?)
+map zg/ <Plug>(incsearch-fuzzy-stay)
+
+" NERDTree
+map <leader>nt :NERDTreeToggle<CR>
+
+" tagbar
+map <leader>tt :TagbarToggle<cr>
+
+" spawn terminal in vertical split
+map <leader>te :vertical term<cr>
+
+" go back into normal mode when in :term (:h terminal-mode)
+" to go back to term mode, go into insert mode via i/I or a/A
+tnoremap <leader>tn <C-w>N
+tnoremap kj <C-w>N
+
+" useful for re-executing .vimrc
+map <leader>so :source %<cr>
+
+" remap arrow keys for long lines
+noremap <Down> gj
+noremap <Up> gk
+
+" select last pasted text
+nnoremap gp `[v`]
+
+" remap VIM 0 to first non-blank character
+map 0 ^
+
+" }}}
+
+" ====== Abbreviations {{{
+
+iab xdate <c-r>=strftime("%I:%M%p\ \%a\ %b\ %d,\ %Y")<cr>
+abbr ifnm if __name__ == "__main__":
+abbr allimps import os<CR>import sys<CR>import math<CR>
+abbr coutline std::cout << __LINE__ << std::endl;
+
+" }}}
+
+" ====== Misc plugin settings {{{
+
+
+" ====== Lightline {{{
+
+" Note that fugitive is slow on sshfs
+let g:lightline = {
+            \ 'colorscheme': 'wombat',
+            \ 'active': {
+            \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'cmsswver', 'filename', 'modified' ] ]
+            \ },
+            \ 'component': {
+            \   'filename': '%<%F',
+            \ },
+            \ 'component_function': {
+            \   'cmsswver': 'LightlineCMSSWver',
+            \ },
+            \ }
+
+" }}}
+
+" ====== Ale {{{
+let g:ale_sign_error = '❯❯'
+let g:ale_sign_warning = '•'
+
+" 501 - line >80 chars
+" 303 - too many blank lines
+" 226 - missing whitespace around arithmetic operator
+" 231 - missing whitespace after ,
+" 225 - missing whitespace after operator
+" 302 - 2 blank lines before class
+" 305 - 2 blank lines after class
+" 701 - multiple statements on one line
+" 126 - continuation line over-indented for hanging indent 
+" 123 - closing bracket does not match indentation of opening bracket
+" 251 - unespected spaces around keyword/parameter equals
+" 201 - whitespace after (
+" 202 - whitespace before )
+" 124 - closing bracket does not match outer indent level
+" 402 - module level import not at top of file
+let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202,E124,E402 "
+
+" Disable Ale completely on sshfs mount
+let g:ale_pattern_options = {
+    \   '.*sandbox/uaf/.*$': {'ale_enabled': 0},
+\}
+
+" }}}
+
+" }}}
+
+" ====== Autocommands {{{
+
+" this is why I made a group for autocommands:
+" http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
+
+if has("autocmd")
+
+    augroup Group1
+        autocmd!
+        filetype plugin indent on
+
+        " restore cursor position when opening a file
+        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+        " close vim if only nerdtree is left
+        autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+        autocmd InsertLeave * set nopaste
+        autocmd FileType crontab set nobackup nowritebackup
+        autocmd FileType crontab set nobackup nowritebackup
+        " hack? when hitting ,, ALE will try to 'run' again and this screws up colors, so disable and then re-enable
+        " autocmd FileType python nnoremap <buffer> <leader><leader> :ALEDisable <bar> w <bar> exec '!python '.shellescape('%') <bar>ALEEnable<CR>
+        autocmd FileType python nnoremap <buffer> <leader><leader> :w <bar> exec '!python '.shellescape('%') <CR>
+        " why <buffer> ? with a .py file open, opening another file type will cause ,, to use the python ,, mapping to be overriden
+        autocmd FileType cpp nnoremap <buffer> <leader><leader> :w <bar> exec '!root -b -q -l -n '.shellescape('%')<CR>
+        autocmd FileType sh nnoremap <leader><leader> :w <bar> exec '!./'.shellescape('%')<CR>
+        autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
+        autocmd FileType c,cpp nnoremap <leader>cp :call lazytools#CoutTokens()<CR>
+
+        " vim-commentary 
+        autocmd FileType c set commentstring=\/\/\ %s
+        autocmd FileType cpp set commentstring=\/\/\ %s
+        autocmd FileType text set commentstring=\#\ %s
+        autocmd FileType crontab set commentstring=\#\ %s
+
+
+    augroup END
+endif
+
+" }}}
+
+" ====== Misc functions {{{
+
+function! Termrun()
+    " find first buffer that is from :term
+    let l:bufnum = bufnr("!/bin/bash")
+    let l:cmd = "python " . expand("%:p") . "\<CR>"
+    call term_sendkeys(l:bufnum,l:cmd)
+endfunction
+
+" }}}
+
+" ====== CMSSW {{{
 if exists('$CMSSW_BASE')
     " search CMS3 first, then local CMSSW, then central CMSSW
     set path+=$CMSSW_BASE/src/CMS3/NtupleMaker/src
@@ -46,518 +329,29 @@ if exists('$CMSSW_BASE')
     set path+=$CMSSW_RELEASE_BASE/src
     set path+=$ROOTSYS/include
     " remove includes from autocomplete search list, otherwise slow
-    set complete-=i 
+    set complete-=i
+
+    function! LightlineCMSSWver()
+        return split($CMSSW_BASE,"CMSSW_")[1]
+    endfunction
+
 endif
-
-
-" control jikl (akin to wasd) will switch panes
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-l> <C-w>l
-nnoremap <C-k> <C-w>k
-
-
-vnoremap . :norm .<cr>
-
-"
-"
-" leader stuff {{{
-let mapleader = ","
-map <Leader>vi :e ~/.vimrc<CR>
-" map <leader>tn :tabnew<cr>
-" map <leader>to :tabonly<cr>
-" map <leader>tk :tabclose<cr>
-" map <leader>tm :tabnext<cr>
-map <leader>ww :set nowrap!<cr>
-map <leader>nn :set nu!<cr>
-map <leader>qq :wq<cr>
-map <leader>ff :vertical wincmd f<CR>
-map <leader>nc :NeoComplCacheEnable<CR>
-
-" table delimited by space for whole document
-map <leader>ts ggVG:Tab / <cr>:set nohl<cr>
-" table delimited by comma for whole document
-map <leader>tc ggVG:Tab /,<cr>
-" replace multiple spaces with single space
-map <leader>ss :%s/  \+/ /g<cr>
-
-" indent file
-map <Leader>i mkHmlgg=G`lzt`k
-
-"https://github.com/majutsushi/tagbar
-"http://ctags.sourceforge.net/
-map <leader>tt :TagbarToggle<cr>
-
-" ==========================================
-" sets off header with =, /, or #, like this
-" ==========================================
-nnoremap <leader>h= yyPVr=jyypVr=
-nnoremap <leader>h/ yyPVr/jyypVr/
-nnoremap <leader>h# :center 40<cr>hhv0r#A<space><esc>20A#<esc>d40<bar>YppVr#kk.
-
-"format paragraph to 80 chars
-nnoremap <leader>pf gqap
-
-" leader " to quote word under cursor
-nnoremap <leader>" viw<esc>a"<esc>gvo<esc>i"<esc>gvo<esc>3l
-
-" Switch between the last two files
-" nnoremap <leader><leader> <c-^>
-
-" paste from system clipboard, but only locally
-nnoremap <leader>pp "+p
-
-
-
-"note: if we wanted to do this by default, we could do
-"set clipboard=unnamed
-"but I'd like to have 2 main clipboards in use just in case
-
-" set rtp+=~/powerline/powerline/bindings/vim
-
-" (C, cpp printout) turns
-" 1 2 3 
-" into
-" std::cout << " 1 " << 1 << " 2 " << 2 << " 3 " << 3 << std::endl;
-" nnoremap <leader>cp :s/\([^ ]\+\)/<< " \1: " << \1/g<cr> :le 1<cr> :s/^ \+/std::cout /g<cr> :s/$/ << std::endl;/g<cr> :noh<cr> ==
-nnoremap <leader>cp :call g:CoutTokens()<CR>
-
-" nnoremap <leader>cc :call g:ToggleColorColumn()<CR>
-" calculate quantity in Word
-nnoremap <leader>cc ciW<C-r>=<C-r>"<CR><Esc>
-nnoremap <leader><space> :noh<cr>
-
-" maintain line joining even though J remapped below
-nnoremap <leader>j J
-vnoremap <leader>j J
-
-nnoremap <leader><Space> :noh<CR>
-" nnoremap <leader>rr :w <bar> exec '!root -l -b -q run.C'<CR>
-nnoremap <leader>rr :w <bar> exec '!. all.sh'<CR>
-
-" nnoremap <leader>xs :w <bar> exec '!xpdf -remote pdfname -exec reload &'<CR>
-nnoremap <leader>xu :w <bar> exec '!xpdf -remote pdfname -z 200 output.pdf &'<CR>
-
-" F12 toggles formatting so you can paste without
-" screwing up formatting of contents.
-nnoremap <leader>pt :set paste!<CR>
-set pastetoggle=<F12>
-
-
-nnoremap <leader>n :NeoCompleteToggle<CR>
-
-nnoremap <leader>fv <C-w>F<C-w>L
-
 " }}}
 
-" o and O will put newlines below and above cursor
-" nnoremap o m`o<esc>``
-" nnoremap O m`O<esc>``
-
-" stop dumb window from opening from typo
-" map q: :q
-
-nnoremap <space> %
-
-set shortmess=atI
-set backspace=indent,eol,start
-set hidden
-
-" copies a line and comments the old line
-nmap zz yygccp
-vmap zz V<Esc>gvygvgc`>p
-
-" inoremap { {}<Left>
-inoremap {<Tab> {<CR>}<Esc>==O
-inoremap {{ {
-" inoremap {} {}
-
-" my preferred date format as an abbreviation
-iab xdate <c-r>=strftime("%I:%M%p\ \%a\ %b\ %d,\ %Y")<cr>
-
-" get rid of stupid Thanks for flying Vim title
-set title 
-set titleold="" 
-set titlestring=VIM:\ %F 
-
-" backspace compatibility
-set bs=2
-
-"turn on wild menu for tab command completion
-set wildmenu
-set wildmode=list:longest,full
-set wildignorecase
-
-" turn ruler on to show position
-set ruler
-
-" Open new split panes to right and bottom, which feels more natural
-set splitbelow
-set splitright
-
-set nocp
-execute pathogen#infect()
-
-
-" let &t_ti.="\e[1 q"
-" let &t_SI.="\e[5 q"
-" let &t_EI.="\e[1 q"
-" let &t_te.="\e[0 q"
-
-" let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-" let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-" let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-"
-let &t_SI = "\<Esc>]1337;CursorShape=1\x7"
-let &t_SR = "\<Esc>]1337;CursorShape=2\x7"
-let &t_EI = "\<Esc>]1337;CursorShape=0\x7"
-
-" set runtimepath^=~/.vim/bundle/ctrlp.vim
-" let g:ctrlp_map = '<c-p>'
-" let g:ctrlp_cmd = 'CtrlP'
-
-" https://coderwall.com/p/if9mda/automatically-set-paste-mode-in-vim-when-pasting-in-insert-mode
-let &t_SI .= "\<Esc>[?2004h"
-let &t_EI .= "\<Esc>[?2004l"
-inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
-function! XTermPasteBegin()
-    set pastetoggle=<Esc>[201~
-    set paste
-    return ""
-endfunction
-
-" easymotion
-nmap s <Plug>(easymotion-overwin-f2)
-
-" https://github.com/haya14busa/incsearch.vim
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-
-function! s:noregexp(pattern) abort
-  return '\V' . escape(a:pattern, '\')
-endfunction
-
-function! s:config() abort
-  return {'converters': [function('s:noregexp')]}
-endfunction
-
-noremap <silent><expr> z/ incsearch#go(<SID>config())
-
-
-" NERDTree {
-    map <C-n> :NERDTreeToggle<CR>
-    let g:NERDTreeDirArrows=0
-" }
-" TagBar {
-    nmap <C-t> :TagbarToggle<CR>
-" }
-" vim-commentary {
-    autocmd FileType cpp set commentstring=\/\/\ %s
-    autocmd FileType c set commentstring=\/\/\ %s
-" }
-
-" abbreviations for misspellings
-abbr hte the
-abbr teh the
-
-set scrolloff=3 " keep at least 3 lines visible on either side of cursor
-
-set noerrorbells visualbell t_vb=
-set ttyfast
-
-
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-
-set cursorline          " highlight current line
-set incsearch           " search as characters are entered
-filetype indent on      " load FileType-specific indent files
-
-" ENABLE USE OF MOUSE (SCROLL, SELECT, CURSOR PLACEMENT)
-" in visual mode only (=a for all)
-" set mouse=v
-
-" shift hjkl over to jkl; and switch up and down
-"  noremap l <down>
-"  noremap k <up>
-"  noremap ; <right>
-"  noremap j <left>
-"  
-noremap K 5<up>
-noremap J 5<down>
-
-" remap arrow keys for long lines
-noremap <Down> gj
-noremap <Up> gk
-
-" " MRU command-line completion
-" function! s:MRUComplete(ArgLead, CmdLine, CursorPos)
-"     return filter(copy(v:oldfiles), 'v:val =~ a:ArgLead')
-" endfunction
-
-" " MRU function
-" function! s:MRU(command, arg)
-"     if a:command == "tabedit"
-"         execute a:command . " " . a:arg . "|lcd %:p:h"
-"     else
-"         execute a:command . " " . a:arg
-"     endif
-" endfunction
-
-" " commands
-" command! -nargs=1 -complete=customlist,<sid>MRUComplete ME call <sid>MRU('edit', <f-args>)
-" command! -nargs=1 -complete=customlist,<sid>MRUComplete MS call <sid>MRU('split', <f-args>)
-" command! -nargs=1 -complete=customlist,<sid>MRUComplete MV call <sid>MRU('vsplit', <f-args>)
-" command! -nargs=1 -complete=customlist,<sid>MRUComplete MT call <sid>MRU('tabedit', <f-args>)
-
-
-" cnoremap <expr> <Tab>   getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"
-" cnoremap <expr> <S-Tab> getcmdtype() == "/" \|\| getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"
-
-
-" yank to end of line
-nnoremap Y y$
-
-" select last pasted text
-nnoremap gp `[v`]
-
-
-nnoremap o o<Esc><up>
-nnoremap O O<Esc><down>
-
-
-"remap VIM 0 to first non-blank character
-map 0 ^
-
-" statusline {{{
-" show the status line always
-set laststatus=2
-
-
-" spell
-map <F5> :setlocal spell! spelllang=en_us<CR>
-
-" nnoremap <Enter> o<Esc>
-
-"Sets F2 to enable and disable line numeration
-nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
-nnoremap <F3> :set tabstop=2<CR>:set shiftwidth=2<CR>:set softtabstop=2<CR>
-nnoremap <F4> :set tabstop=4<CR>:set shiftwidth=4<CR>:set softtabstop=4<CR>
-
-" https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
-" dot works over visual line selection
-xnoremap . :norm.<CR>
-
-" autocommands {{{
-"
-" this is why I made a group for autocommands:
-" http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
-
-" for https://github.com/nathanaelkane/vim-indent-guides
-" note: <leader>ig toggles the indent guides
-let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=238
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=244
-let g:indent_guides_guide_size=1
-
-" abbreviations (because snippets are stupid) {{{
-" python
-abbr ifnm if __name__ == "__main__":
-abbr allimps import os<CR>import sys<CR>import math<CR>
-" cpp
-abbr coutline std::cout << __LINE__ << std::endl;
-
-" }}}
-
-"Remove all trailing whitespace by pressing F5
-nnoremap <leader>ws :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
-
-" " git clone https://github.com/unblevable/quick-scope ~/.vim/bundle/quick-scope
-" " https://github.com/unblevable/quick-scope
-" " let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-" let g:qs_highlight_on_keys = []
-" let g:qs_first_occurrence_highlight_color = 155       " terminal vim
-" let g:qs_second_occurrence_highlight_color = 81         " terminal vim
-
-" " https://github.com/itchyny/vim-cursorword
-
-
-if has("autocmd")
-
-    " augroup vimrc
-    "         autocmd QuickFixCmdPost * botright copen 8
-    " augroup END
-
-    augroup Group1
-        autocmd!
-        filetype plugin indent on
-        autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif " close vim if only nerdtree is left
-        au InsertLeave * set nopaste
-
-        au FileType crontab set nobackup nowritebackup
-
-        au BufNewFile,BufRead *.{p,gp} setlocal ft=gnuplot
-        au BufNewFile,BufRead *.md setlocal ft=markdown
-
-        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-        " F6 executes gnuplot, python, C, C++ code by compiling and running
-        " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
-        au FileType crontab set nobackup nowritebackup
-
-        autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
-        autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
-        " autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!/usr/bin/python '.shellescape('%')<CR>
-        " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun!  python % <bar> <C-w><C-p><CR>
-        " autocmd FileType python nnoremap <leader><leader> :w <bar> :copen <bar> :AsyncRun! python %:p:h <CR>
-        " autocmd FileType python nnoremap <leader><leader> :w <CR> :AsyncRun python %<CR> :copen <CR><C-w><C-p>
-        autocmd FileType python nnoremap <F7> :w <bar> exec '!/cygdrive/c/Python27/python.exe '.shellescape('%')<CR>
-        autocmd FileType gnuplot nnoremap <F6> :w <bar> exec '!gnuplot '.shellescape('%')<CR>
-        autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; cp '.shellescape('%:r').'.pdf ~/public_html/dump/'<CR>
-        " autocmd FileType tex nnoremap <F6> :w <bar> exec '!pdflatex -quiet '.shellescape('%').'; xpdf -remote pdfname -exec reload'<CR>
-        autocmd FileType tex nnoremap <F7> :w <bar> exec '!xpdf -remote pdfname -z 200 '.shellescape('%:r').'.pdf &'<CR>
-        autocmd FileType c nnoremap <F6> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-        " autocmd FileType cpp nnoremap <F6> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').'.exe && ./'.shellescape('%:r') . '.exe'<CR>
-        autocmd FileType cpp nnoremap <leader><leader> :w <bar> exec '!root -b -q -l -n '.shellescape('%')<CR>
-        autocmd FileType sh nnoremap <F6> :w <bar> exec '!. '.shellescape('%')<CR>
-        autocmd FileType sh nnoremap <leader><leader> :w <bar> exec '!./'.shellescape('%')<CR>
-        " put printf template into code if using c++ and type PF in insert mode
-        " autocmd FileType cpp inoremap PF printf("\n",);<Esc>=0f\i
-        autocmd FileType markdown nnoremap <F6> :w <bar> exec "!'/cygdrive/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' ".shellescape('%')<CR>
-        autocmd FileType html nnoremap <F6> :w <bar> exec "!'/cygdrive/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' ".shellescape('%')<CR>
-        " autocmd FileType vim nnoremap <leader><leader> :w <bar> source shellescape('%')<CR>
-        autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
-        autocmd FileType vim nnoremap <leader>ts :call Test()<CR>
-
-        autocmd BufWritePost .vimrc source %
-
-
-        " if exists("+relativenumber")
-        "     set rnu | set nu
-        "     au InsertEnter * :set nornu | set number
-        "     au InsertLeave * :set relativenumber
-        " endif
-
-    augroup END
+" ====== MacVim {{{
+if has('gui_running')
+    let g:lightline.colorscheme = 'one'
+    let g:one_allow_italics = 1
+    colorscheme  one
+    set background=dark
+    call one#highlight('VertSplit', '2c323c', '2c323c', 'none')
+    let g:lightline.separator = { 'left': "\ue0b0", 'right': "\ue0b2" }
+    let g:lightline.subseparator = { 'left': "\ue0b1", 'right': "\ue0b3" }
+    " set guifont=Monaco:h15
+    set guifont=Source\ Code\ Pro:h15
+    set guioptions-=r  " remove right-hand scroll bar
+    set guioptions-=l  " remove left-hand scroll bar
+    set guioptions-=L  " remove left-hand scroll bar
 endif
-
 " }}}
 
-
-function! g:ToggleColorColumn()
-    if &colorcolumn != ''
-        setlocal colorcolumn&
-    else
-        setlocal colorcolumn=80
-    endif
-endfunction
-
-fu! CoutTokens()
-    " toggles between
-    "    std::cout << " blah1: " << blah1 << " blah2: " << blah2 << " blah3: " << blah3 << std::endl;
-    " and
-    "    blah1 blah2 blah3  
-    "
-    let line=getline('.')
-
-    " turn into cout statement or reverse, depending on if 
-    " line contains std::cout"
-    let newstr = ""
-    if line =~ "std::cout"
-        let words = split(line," << ")
-        for word in words
-            " if token has these things then it's not a variable by itself
-            if word =~ "std::" || word =~ ": "
-                continue
-            endif
-            let newstr .= word . " "
-        endfor
-    else
-        let words = split(line)
-        let newstr .= "std::cout << "
-        for word in words
-            " if there's a quote in the variable, replace it with single tick
-            let escword = substitute(word, "\"", "'", "g")
-            let newstr .= " \" " . escword . ": \" << " . word . " << "
-        endfor
-        let newstr .= " std::endl;"
-    endif
-
-    :d
-    :-1put =newstr
-    execute "norm! =="
-endfu
-
-
-
-
-" continue comment if in insert mode
-" but not when hitting o/O
-set formatoptions+=cr
-set formatoptions-=o
-
-
-set autochdir
-
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-set smarttab
-set expandtab
-
-"Set title of window to file name
-set title
-
-
-set showmatch
-set matchtime=3
-set incsearch
-set hlsearch
-"Ignores case for searches
-set ignorecase
-"case-sensitive if search contains an uppercase character
-set smartcase
-
-
-"Remember previous buffer session
-exec 'set viminfo=%,' . &viminfo
-
-
-set noswapfile
-
-" ([])
-hi MatchParen cterm=none ctermbg=none ctermfg=yellow
-hi Statement cterm=bold
-
-
-" From
-" https://bitbucket.org/sjl/dotfiles/src/1cd90a0458e45ddfcb5b8b988133bf02a29f84c7/vim/vimrc?at=default&fileviewer=file-view-default#vimrc-3100:3140
-function! HiInterestingWord(n) " {{{
-    " Save our location.
-    normal! mz
-    " Yank the current word into the z register.
-    normal! "zyiw
-    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
-    let mid = 86750 + a:n
-    " Clear existing matches, but don't worry if they don't exist.
-    silent! call matchdelete(mid)
-    " Construct a literal pattern that has to match at boundaries.
-    let pat = '\V\<' . escape(@z, '\') . '\>'
-    " Actually match the words.
-    call matchadd("InterestingWord" . a:n, pat, 1, mid)
-    " Move back to our original location.
-    normal! `z
-endfunction " }}}
-nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
-nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
-nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
-nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
-nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
-nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
-hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
-hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
-hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
-hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
-hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
-hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
