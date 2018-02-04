@@ -159,7 +159,6 @@ vnoremap <leader>j J
 " calculate quantity in Word
 nnoremap <leader>cc ciW<C-r>=<C-r>"<CR><Esc>
 nnoremap <leader><space> :noh<cr>
-nnoremap <leader>rr :w <bar> call Termrun()<CR>
 nnoremap <leader>pt :set paste!<CR>
 nnoremap <leader>fv <C-w>F<C-w>L
 
@@ -296,9 +295,11 @@ if has("autocmd")
         " hack? when hitting ,, ALE will try to 'run' again and this screws up colors, so disable and then re-enable
         " autocmd FileType python nnoremap <buffer> <leader><leader> :ALEDisable <bar> w <bar> exec '!python '.shellescape('%') <bar>ALEEnable<CR>
         autocmd FileType python nnoremap <buffer> <leader><leader> :w <bar> exec '!python '.shellescape('%') <CR>
+        autocmd FileType python nnoremap <leader>rr :w <bar> call Termrun("python ")<CR>
         " why <buffer> ? with a .py file open, opening another file type will cause ,, to use the python ,, mapping to be overriden
         autocmd FileType cpp nnoremap <buffer> <leader><leader> :w <bar> exec '!root -b -q -l -n '.shellescape('%')<CR>
         autocmd FileType sh nnoremap <leader><leader> :w <bar> exec '!./'.shellescape('%')<CR>
+        autocmd FileType sh nnoremap <leader>rr :w <bar> call Termrun("sh ")<CR>
         autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
         autocmd FileType c,cpp nnoremap <leader>cp :call lazytools#CoutTokens()<CR>
 
@@ -316,10 +317,10 @@ endif
 
 " ====== Misc functions {{{
 
-function! Termrun()
+function! Termrun(prefix)
     " find first buffer that is from :term
     let l:bufnum = bufnr("!/bin/bash")
-    let l:cmd = "python " . expand("%:p") . "\<CR>"
+    let l:cmd = a:prefix . expand("%:p") . "\<CR>"
     call term_sendkeys(l:bufnum,l:cmd)
 endfunction
 
