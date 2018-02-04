@@ -57,7 +57,6 @@ def get_colortext(text,fg=None,bg=None,modifiers=[],small_caps=False):
             buff += ";{};2;{};{};{}".format(num,col[0],col[1],col[2])
         elif col in col_lut.keys():
             code = col_lut[col] + (40 if which == "bg" else 30)
-            print code
             buff += ";{}".format(code)
     if not fg and not bg and not modifiers:
         return text
@@ -76,11 +75,15 @@ def print_debug(text):
 def print_error(text):
     print get_colortext(" error ",bg=(186, 35, 55), fg=(242, 207, 14),small_caps=True)+" "+text
 
+def print_note(text):
+    print get_colortext(" note ",bg="black", fg="white",small_caps=True)+" "+text
+
 if __name__ == "__main__":
     print_info("my test")
     print_debug("my test")
     print_error("my test")
     print_info("my test")
+    print_note("my test")
 
     # print get_colortext(" info ",bg=(224,229,233),fg=(53,127,222),small_caps=True)
     # print get_colortext(" debug ",bg=(235, 231, 111),fg=(149, 3, 25),small_caps=True)
