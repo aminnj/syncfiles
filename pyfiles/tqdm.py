@@ -121,7 +121,7 @@ class StatusPrinter(object):
 
 
 def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
-         mininterval=0.05, miniters=1):
+         mininterval=0.05, miniters=1, extra=""):
     """
     Get an iterable object, and return an iterator which acts exactly like the
     iterable, but prints a progress meter and updates it every time a value is
@@ -148,7 +148,7 @@ def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
     do_ascii = not not os.getenv("STY")
     
     sp = StatusPrinter(file)
-    sp.print_status(prefix + format_meter(0, total, 0, do_rgb, do_ascii))
+    sp.print_status(prefix + format_meter(0, total, 0, do_rgb, do_ascii, extra=extra))
     
     start_t = last_print_t = time.time()
     last_print_n = 0
@@ -161,7 +161,7 @@ def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
             # We check the counter first, to reduce the overhead of time.time()
             cur_t = time.time()
             if cur_t - last_print_t >= mininterval:
-                sp.print_status(prefix + format_meter(n, total, cur_t-start_t, do_rgb, do_ascii))
+                sp.print_status(prefix + format_meter(n, total, cur_t-start_t, do_rgb, do_ascii, extra=extra))
                 last_print_n = n
                 last_print_t = cur_t
     
@@ -171,7 +171,7 @@ def tqdm(iterable, desc='', total=None, leave=True, file=sys.stderr,
     else:
         if last_print_n < n:
             cur_t = time.time()
-            sp.print_status(prefix + format_meter(n, total, cur_t-start_t, do_rgb, do_ascii))
+            sp.print_status(prefix + format_meter(n, total, cur_t-start_t, do_rgb, do_ascii, extra=extra))
         file.write('\n')
 
 
