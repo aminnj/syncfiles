@@ -406,6 +406,8 @@ if has("autocmd")
         " au BufEnter,BufNew *.{gp,p} map <buffer> <F6> <ESC> :w <kEnter> :!gnuplot % <kEnter>
         au FileType crontab set nobackup nowritebackup
 
+        au BufEnter,BufNew *.txt set commentstring=\#\ %s
+
         autocmd FileType python nnoremap <F6> :w <bar> exec '!python '.shellescape('%')<CR>
         autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!python '.shellescape('%')<CR>
         " autocmd FileType python nnoremap <leader><leader> :w <bar> exec '!/usr/bin/python '.shellescape('%')<CR>
