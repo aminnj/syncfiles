@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to debug
 
 
@@ -52,6 +54,7 @@ endif
 " fixes error syntax for $( ) in .sh files
 let g:is_posix = 1
 
+set encoding=utf-8
 set t_Co=256
 set backupdir=~/.backup,.         " Backupdir (doesn't exist)
 set directory=~/.backup,.
