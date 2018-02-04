@@ -20,7 +20,12 @@ let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to de
 "    https://github.com/aminnj/vim-lazytools
 execute pathogen#infect()
 
+" need one scriptencoding before pathogen, and these two after it for uaf (idk why)
+scriptencoding utf-8
+set encoding=utf-8
+
 syntax on
+
 
 " zR to open all folds
 " zM to close them again
@@ -54,7 +59,6 @@ endif
 " fixes error syntax for $( ) in .sh files
 let g:is_posix = 1
 
-set encoding=utf-8
 set t_Co=256
 set backupdir=~/.backup,.         " Backupdir (doesn't exist)
 set directory=~/.backup,.
