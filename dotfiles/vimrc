@@ -25,7 +25,7 @@ syntax on
 
 " ====== One and only theme {{{
 color wombat256mod
-set background=light
+set background=dark
 " Tweak to have more vivid error/warning/todo colors
 " especially for Ale
 hi SpellBad  ctermfg=253  ctermbg=160  cterm=none
@@ -137,10 +137,10 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-l> <C-w>l
 nnoremap <C-k> <C-w>k
-" tnoremap <C-h> <C-w>h
-" tnoremap <C-j> <C-w>j
-" tnoremap <C-l> <C-w>l
-" tnoremap <C-k> <C-w>k
+tnoremap <C-h> <C-w>h
+tnoremap <C-j> <C-w>j
+tnoremap <C-l> <C-w>l
+tnoremap <C-k> <C-w>k
 
 nnoremap <space> %
 
@@ -152,7 +152,7 @@ vnoremap <leader>j J
 " calculate quantity in Word
 nnoremap <leader>cc ciW<C-r>=<C-r>"<CR><Esc>
 nnoremap <leader><space> :noh<cr>
-nnoremap <leader>rr :w <bar> exec '!. all.sh'<CR>
+nnoremap <leader>rr :w <bar> call Termrun()<CR>
 nnoremap <leader>pt :set paste!<CR>
 nnoremap <leader>fv <C-w>F<C-w>L
 
@@ -184,6 +184,17 @@ map <leader>nt :NERDTreeToggle<CR>
 " tagbar
 map <leader>tt :TagbarToggle<cr>
 
+" spawn terminal in vertical split
+map <leader>te :vertical term<cr>
+
+" go back into normal mode when in :term (:h terminal-mode)
+" to go back to term mode, go into insert mode via i/I or a/A
+tnoremap <leader>tn <C-w>N
+tnoremap kj <C-w>N
+
+" useful for re-executing .vimrc
+map <leader>so :source %<cr>
+
 " remap arrow keys for long lines
 noremap <Down> gj
 noremap <Up> gk
@@ -208,7 +219,6 @@ abbr coutline std::cout << __LINE__ << std::endl;
 " ====== Misc plugin settings {{{
 
 
-  
 " ====== Lightline {{{
 
 " Note that fugitive is slow on sshfs
@@ -299,6 +309,13 @@ endif
 
 " ====== Misc functions {{{
 
+function! Termrun()
+    " find first buffer that is from :term
+    let l:bufnum = bufnr("!/bin/bash")
+    let l:cmd = "python " . expand("%:p") . "\<CR>"
+    call term_sendkeys(l:bufnum,l:cmd)
+endfunction
+
 " }}}
 
 " ====== CMSSW {{{
@@ -321,6 +338,7 @@ endif
 " ====== MacVim {{{
 if has('gui_running')
     let g:lightline.colorscheme = 'one'
+    let g:one_allow_italics = 1
     colorscheme  one
     set background=dark
     call one#highlight('VertSplit', '2c323c', '2c323c', 'none')
@@ -333,3 +351,4 @@ if has('gui_running')
     set guioptions-=L  " remove left-hand scroll bar
 endif
 " }}}
+
