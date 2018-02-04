@@ -48,6 +48,8 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--nostatbox", help="don't show statbox", action="store_true")
     parser.add_argument("-l", "--log", help="logscale", action="store_true")
     parser.add_argument("-ll", "--loglog", help="loglogscale", action="store_true")
+    parser.add_argument("-x", "--profx", help="x profile of 2d hist", action="store_true")
+    parser.add_argument("-y", "--profy", help="y profile of 2d hist", action="store_true")
     args = parser.parse_args()
 
     name = args.name or "hist"
@@ -96,8 +98,15 @@ if __name__ == "__main__":
         if args.loglog:
             c1.SetLogx()
             c1.SetLogy()
-
-        h2.Draw(drawopt)
+        
+        if args.profx:
+            prof = h2.ProfileX()
+            prof.Draw(drawopt)
+        elif args.profx:
+            prof = h2.ProfileY()
+            prof.Draw(drawopt)
+        else:
+            h2.Draw(drawopt)
         c1.SaveAs(outname)
 
     else:
