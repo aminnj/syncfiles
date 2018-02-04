@@ -18,7 +18,7 @@ if [ "$TERM" != "dumb" ]; then
         # if [[ $(uname -a) == Darwin* ]]; then 
             # alias ls='gls --color=auto --ignore=*.{o,d,aux,pcm,cxx,d,nav,snm,pyc,toc} --ignore=AutoDict*'
         # else
-            alias ls='ls --color=auto --ignore=*.{o,d,aux,pcm,d,nav,snm,pyc,toc} --ignore=AutoDict*'
+            alias ls='ls --color=auto --ignore=*.{d,aux,pcm,d,nav,snm,pyc,toc} --ignore=AutoDict*'
         # fi
 
     else
@@ -48,6 +48,7 @@ yellow=$(tput setaf 3)
 blue=$(tput setaf 4)
 bold=$(tput bold)
 reset=$(tput sgr0)
+
 PS="\[$bold$blue\][\t]\[$reset\] \[$blue\][\u@\h]\[$reset\]"
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
@@ -95,17 +96,17 @@ fi
 export PATH=${PATH}:~/syncfiles/miscfiles/
 
 function iterm2_set_tab_rgb() {
-    echo -e "\033]6;1;bg;red;brightness;$1\a"
-    echo -e "\033]6;1;bg;green;brightness;$2\a"
-    echo -e "\033]6;1;bg;blue;brightness;$3\a"
+    echo -ne "\033]6;1;bg;red;brightness;$1\a"
+    echo -ne "\033]6;1;bg;green;brightness;$2\a"
+    echo -ne "\033]6;1;bg;blue;brightness;$3\a"
 }
 export -f iterm2_set_tab_rgb
 function iterm2_set_tab_default() {
-    echo -e "\033]6;1;bg;*;default\a"
+    echo -ne "\033]6;1;bg;*;default\a"
 }
 export -f iterm2_set_tab_default
 function iterm2_set_tab_label() {
-    echo -e "\033]0;$@\a"
+    echo -ne "\033]0;$@\a"
 }
 if [[ "${HOST}" == *squark* ]]; then iterm2_set_tab_label squark ; iterm2_set_tab_rgb 145 191 255; # blue
 elif [[ "${HOST}" == *uaf-10.t2* ]]; then iterm2_set_tab_label uaf-10 ; iterm2_set_tab_rgb 69 221 102; # green
@@ -201,6 +202,7 @@ if [[ $HOST == *uaf-* ]]; then
     # alias ftp="cd ~/2017/fouran/tex/notes/TOP-17-009/trunk;"
     alias ftp="cd ~/2017/fouran/tex/papers/TOP-17-009/trunk;"
     alias ft="cd ~/2017/fourtop; . setup.sh"
+    alias ft8="cd ~/2018/fourtop/FTAnalysis/; . setup.sh"
     alias lim="cd ~/2016/ss/master/SSAnalysis/cards; cd CMSSW_7_1_6; cmsenv; cd .."
     alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
     alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
@@ -293,11 +295,13 @@ alias plottex='source ~/syncfiles/miscfiles/plottex.sh'
 alias das='python ~/syncfiles/miscfiles/das/das.py'
 
 #Make history more useful - stolen from alex
-export PROMPT_COMMAND="history -a"
+
+# export PROMPT_COMMAND="history -a"
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000
-export HISTTIMEFORMAT='%F %T '
+# export HISTTIMEFORMAT='%F %T '
 export HISTCONTROL=ignoreboth
+
 shopt -s cmdhist #(combine multiline commands)
 shopt -s histappend #(multiple terminals all save to history)
 
@@ -319,7 +323,7 @@ pathadd(){
 }
 
 pkldump() {
-   python -c "with open('"$1"','r') as fhin: __import__('pprint').pprint(__import__('pickle').load(fhin))"
+   python -c "with open('"$1"','r') as fhin: __import__('pprint').pprint(__import__('pickle').load(fhin)$2)"
 }
 
 npdump() {
@@ -395,9 +399,16 @@ function hdur() {
     echo $@ | sed 's#/hadoop##g' | xargs hadoop fs -du
 }
 
+function hcorrupt() {
+    for thing in `echo $@ | sed 's#/hadoop##g'`; do
+        hdfs fsck $thing | grep "CORRUPT blockpool" | grep "/cms/store" | cut -d ':' -f 1
+    done
+}
+
 function mjobs() {
     # cond -w | grep ProjectMetis | col 10 | cut -d '/' -f8 | pyline.py 'x.split("_Tune")[0].split("-PromptReco")[0]' | stats
-    cond -w | grep ProjectMetis | col 10 | pyline.py 'x.split("Metis/")[1].split("_Tune")[0].split("_13TeV")[0].split("-PromptReco")[0]' | stats
+    # cond -w | grep ProjectMetis | col 10 | pyline.py 'x.split("Metis/")[1].split("_Tune")[0].split("_13TeV")[0].split("/MINIAOD")[0]' | stats
+    cond -w -const 'taskname =!= UNDEFINED' | grep hadoop | col 10 | pyline.py 'x.split("_Tune")[0].split("_13TeV")[0].split("_MINIAOD")[0].rstrip("/").rsplit("/")[-1]' | stats
 }
 
 function dtprogress1() {
