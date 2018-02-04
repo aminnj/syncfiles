@@ -46,7 +46,8 @@ echo -ne "\033]0;${USER}@${HOST}\007"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
-blue=$(tput setaf 4)
+# blue=$(tput setaf 4)
+blue="\033[38;5;117m"
 bold=$(tput bold)
 reset=$(tput sgr0)
 
