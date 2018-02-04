@@ -60,4 +60,5 @@ else
     ssh $USER@uaf-10.t2.ucsd.edu "mkdir -p ~/public_html/dump/$outdir; rm ~/public_html/dump/$outdir/*.png"
     scp -rp $dir/* $USER@uaf-10.t2.ucsd.edu:~/public_html/dump/$outdir/
 fi
-echo "${HOSTNAME}/~$USER/dump/$outdir/"
+# echo "${HOSTNAME}/~$USER/dump/$outdir/"
+echo "uaf-10.t2.ucsd.edu/~$USER/dump/$outdir/"

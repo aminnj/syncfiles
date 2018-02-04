@@ -1,4 +1,5 @@
 scriptencoding utf-8
+set encoding=utf-8
 
 let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to debug
 
@@ -20,7 +21,7 @@ let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to de
 "    https://github.com/aminnj/vim-lazytools
 execute pathogen#infect()
 
-" need one scriptencoding before pathogen, and these two after it for uaf (idk why)
+" need one pair before pathogen, and this pair after it for uaf (idk why)
 scriptencoding utf-8
 set encoding=utf-8
 
@@ -287,6 +288,7 @@ if has("autocmd")
         " restore cursor position when opening a file
         au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+        autocmd BufEnter,BufNew *.txt set commentstring=\#\ %s
         " close vim if only nerdtree is left
         autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
         autocmd InsertLeave * set nopaste
