@@ -11,6 +11,11 @@ YELLOW = '\033[93m'
 RED = '\033[91m'
 ENDC = '\033[0m'
 
+PY2 = True
+if sys.version_info[0] >= 3:
+    PY2 = False
+    unichr = chr
+
 def hsv_to_rgb(h, s, v):
     if s == 0.0: v*=255; return [v, v, v]
     i = int(h*6.) # XXX assume int() truncates!
@@ -32,7 +37,7 @@ def format_interval(t):
         return '%02d:%02d' % (m, s)
 
 
-def format_meter(n, total, elapsed, do_rgb=True, do_ascii=False, size=75, extra=""):
+def format_meter(n, total, elapsed, do_rgb=True, do_ascii=False, size=35, extra=""):
     # n - number of finished iterations
     # total - total number of iterations, or None
     # elapsed - number of seconds passed since start
@@ -114,7 +119,10 @@ class StatusPrinter(object):
         self.last_printed_len = 0
     
     def print_status(self, s):
-        self.file.write('\r'+s.encode('utf-8')+' '*max(self.last_printed_len-len(s), 0))
+        if PY2:
+            self.file.write('\r'+s.encode('utf-8')+' '*max(self.last_printed_len-len(s), 0))
+        else:
+            self.file.write('\r'+s+' '*max(self.last_printed_len-len(s), 0))
         # os.system('echo "\\033]1337;SetKeyLabel=F1=%s\\a"' % s.encode('utf-8').split("%")[-1])
         self.file.flush()
         self.last_printed_len = len(s)
