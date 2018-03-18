@@ -59,8 +59,8 @@ class MyTH1F(r.TH1F):
         """
         Return error objects for all bins (including under/overflow)
         """
-        values = [self.GetBinContent(ibin) for ibin in range(self.GetNbinsX()+1)]
-        errors = [self.GetBinError(ibin)   for ibin in range(self.GetNbinsX()+1)]
+        values = [self.GetBinContent(ibin) for ibin in range(self.GetNbinsX()+2)]
+        errors = [self.GetBinError(ibin)   for ibin in range(self.GetNbinsX()+2)]
         return map(lambda x: E(*x),zip(values, errors))
 
     def FillFromList(self, xvals, weights=None):
