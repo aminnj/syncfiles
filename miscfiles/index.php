@@ -60,6 +60,11 @@ padding: 5px; /* space between image and border */
 border-radius: 5px;
 }
 
+.plot {
+  color: #070;
+  text-decoration: none;
+  border-bottom: 2px solid #bdb;
+}
 /* /1* can remove if you don't want hover zoom *1/ */
 /* .box:hover */
 /* /1* if only hovering on the inner image is what matters, do .innerimg:hover *1/ */
@@ -250,6 +255,37 @@ function register_hover() {
     });
 }
 
+function register_description_hover() {
+
+    console.log("registering hover");
+    console.log($("[class^=plot]"));
+    $("[class^=plot]").hover(
+        function() {
+            console.log("fading in hover");
+            var plotname = $(this).text();
+            var plotselector = "#" + plotname;
+            console.log(plotname);
+            console.log($(plotselector));
+            $(plotselector).effect('highlight',{"color":"9d9"},1500);
+            $(plotselector).finish();
+        },function() {
+        } 
+    );
+
+}
+
+function add_links_to_description(objects) {
+    console.log(objects);
+    var desc_src = $("#description").html();
+    console.log(desc_src);
+    for (var i = 0; i < objects.length; i++) {
+        var plotname = objects[i]["name_noext"];
+        desc_src = desc_src.replace(plotname, "<a href=\"#"+plotname+"\" class=\"plot\">"+plotname+"</a>");
+    }
+    console.log(desc_src);
+    $("#description").html(desc_src);
+}
+
 // ultimately this will be a master filelist with all files recursively in this directory
 // then we will filter for files we want to show
 var obj = <?php echo json_encode($data); ?>;
@@ -361,6 +397,9 @@ $(function() {
     }
 
     register_hover();
+    add_links_to_description(file_objects);
+    // register hover for links in description AFTER adding them
+    register_description_hover();
 
 
 });
@@ -402,6 +441,16 @@ function getQueryURL() {
 <a href="javascript:;" onClick="getQueryURL();">copy as URL</a> &nbsp; &nbsp; 
 <div id="slider"><div id="custom-handle" class="ui-slider-handle"></div></div>
 <span id="message"></span>
+
+<div id="description">
+<?php
+$description = file_get_contents("description.txt");
+if( $description ) {
+    echo "<br><b>Description:</b><br>";
+    echo $description;
+}
+?>
+</div>
 <div id="images"></div>
 <div id="bintablecontainer"  style="text-align: center;">
     <div id="bintable" style="display: inline-block; text-align: left; display: none">
