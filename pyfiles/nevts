@@ -27,6 +27,7 @@ if __name__ == "__main__":
 
     tree_name = args.tree
     fpatt = args.fpatt
+    if os.path.isdir(fpatt): fpatt += "/*.root"
     if not tree_name:
         if fpatt.startswith("/store/"):
             tree_name = "Events"
