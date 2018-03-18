@@ -80,7 +80,16 @@ class E:
             sep = "+-"
         else:
             sep = u"\u00B1".encode("utf-8")
-        return "%s %s %s" % (str(self.val), sep, str(self.err))
+        if type(self.val).__name__ == "ndarray":
+            import numpy as np
+            # trick:
+            # want to use numpy's smart formatting (truncating,...) of arrays
+            # so we convert value,error into a complex number and format
+            # that 1D array :)
+            formatter = {"complex_kind": lambda x:"%5.2f {} %4.2f".format(sep) % (np.real(x),np.imag(x))}
+            return np.array2string(self.val+self.err*1j,formatter=formatter, suppress_small=True, separator="   ")
+        else:
+            return "%s %s %s" % (str(self.val), sep, str(self.err))
 
     __str__ = rep
 
@@ -124,3 +133,4 @@ if __name__ == "__main__":
     print v3/v4
     val, err = v4/v3
     print 
+
