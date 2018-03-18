@@ -46,6 +46,8 @@ class Table():
                 ret = '\033[00;32m' + ret + '\033[0m'
             if color == "blue":
                 ret = '\033[00;34m' + ret + '\033[0m'
+            if color == "lightblue":
+                ret = '\033[38;5;117m' + ret + '\033[0m'
         return ret
 
     def set_theme_fancy(self):
@@ -187,7 +189,7 @@ class Table():
             oc = False if not show_alternating else (irow%2==1 )
             bold = False if not bold_title else (irow==0)
             color = self.rowcolors.get(irow,None)
-            if irow == 0: color = "blue"
+            if irow == 0: color = "lightblue"
             for icol,col in enumerate(row):
                 j = "l" if icol == 0 else "c"
                 if ljustall: j = "l"
