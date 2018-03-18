@@ -102,7 +102,7 @@ if __name__ == "__main__":
         if args.profx:
             prof = h2.ProfileX()
             prof.Draw(drawopt)
-        elif args.profx:
+        elif args.profy:
             prof = h2.ProfileY()
             prof.Draw(drawopt)
         else:
