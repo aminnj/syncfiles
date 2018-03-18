@@ -19,6 +19,7 @@ let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to de
 "    https://github.com/majutsushi/tagbar
 "    https://github.com/machakann/vim-swap # gs, g< or g> on args to switch them
 "    https://github.com/aminnj/vim-lazytools
+"    https://github.com/romainl/vim-qlist
 execute pathogen#infect()
 
 " need one pair before pathogen, and this pair after it for uaf (idk why)
@@ -192,7 +193,7 @@ map <leader>nt :NERDTreeToggle<CR>
 map <leader>tt :TagbarToggle<cr>
 
 " spawn terminal in vertical split
-map <leader>te :vertical term<cr>
+map <leader>te :vertical term ++close<cr>
 
 " go back into normal mode when in :term (:h terminal-mode)
 " to go back to term mode, go into insert mode via i/I or a/A
@@ -264,6 +265,10 @@ let g:ale_sign_warning = '•'
 " 124 - closing bracket does not match outer indent level
 " 402 - module level import not at top of file
 let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202,E124,E402 "
+
+let g:ale_linters = {
+\   'python': ['flake8'],
+\}
 
 " Disable Ale completely on sshfs mount
 let g:ale_pattern_options = {
@@ -359,6 +364,8 @@ if has('gui_running')
     set guioptions-=r  " remove right-hand scroll bar
     set guioptions-=l  " remove left-hand scroll bar
     set guioptions-=L  " remove left-hand scroll bar
+    set macthinstrokes
+    " set transparency=5
 endif
 " }}}
 
