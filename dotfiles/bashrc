@@ -290,6 +290,7 @@ alias pi='ssh pi@192.168.0.21'
 alias officepi='ssh pi@128.111.19.91'
 #alias eos='ssh namin@eos.tamu.edu'
 alias ela='ssh namin@ela.cscs.ch'
+alias daint='ssh daint'
 
 
 alias stats='~/syncfiles/pyfiles/stats.py'
