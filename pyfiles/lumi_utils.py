@@ -228,8 +228,10 @@ def getRunLumis(fnames, treename="Events"):
         tree.SetBranchStatus("*",0)
         tree.SetBranchStatus("*run*",1)
         tree.SetBranchStatus("*lumi*",1)
+        tree.SetBranchStatus("*fired_trigger*",1)
         tree.SetEstimate(N);
-        tree.Draw("run:lumi","","goff")
+        # tree.Draw("run:lumi","","goff")
+        tree.Draw("run:lumi","fired_trigger","goff")
 
     runs = tree.GetV1()
     lumis = tree.GetV2()

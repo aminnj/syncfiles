@@ -54,9 +54,9 @@ endif
 if exists('$TMUX')
     set term=screen-256color
 endif
-if exists('$UCSD')
-    set term=screen-256color
-endif
+" if exists('$UCSD')
+"     set term=screen-256color
+" endif
 
 " fixes error syntax for $( ) in .sh files
 let g:is_posix = 1
@@ -248,6 +248,9 @@ let g:lightline = {
 " ====== Ale {{{
 let g:ale_sign_error = '❯❯'
 let g:ale_sign_warning = '•'
+" following line nullifies the above signs/gutter text since when the gutter
+" is open, weird things happen in terminal
+let g:ale_set_signs = 0
 
 " 501 - line >80 chars
 " 303 - too many blank lines

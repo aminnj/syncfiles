@@ -13,6 +13,7 @@ if [ $# -gt 1 ]; then
     outdir=$2;
 fi
 
+echo "$(date) $(pwd) $dir $outdir" >> /home/users/namin/syncfiles/miscfiles/niceplots_history.txt
 
 function pdftopng {
     #sharpen not really necessary
@@ -34,10 +35,14 @@ function pdftopng {
 }
 export -f pdftopng
 
-# ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 75;"
-# ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 75;"
-ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 150;"
-ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 150;"
+if [ -z $NOCONVERT ]; then
+    # ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 75;"
+    # ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 75;"
+    ls -1 ${dir}/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 150;"
+    ls -1 ${dir}/*/*.pdf | xargs -I%  -n 1 -P 20 sh -c "pdftopng % 150;"
+else
+    echo "Not converting anything"
+fi
 
 # for i in $(ls -1 $dir/*.pdf); do
 #     pdftopng $i &

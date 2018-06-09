@@ -108,6 +108,10 @@ class Runner(object):
             self.t0 = time.time()
 
         sp = StatusPrinter(sys.stderr)
+
+        dots = self.get_dots(self.indices_status,which=self.dot_type)
+        sp.print_status(format_meter(self.ndone, self.ntotal, self.elapsed, size=13,extra=dots))
+
         for idx,ret in self.pool.imap_unordered(self.func,self.get_args()):
             self.indices_status[idx] = True
             self.outputs.append((idx,ret))
