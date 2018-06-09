@@ -46,12 +46,13 @@ echo -ne "\033]0;${USER}@${HOST}\007"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
+purple=$(tput setaf 6)
 # blue=$(tput setaf 4)
 blue="\033[38;5;117m"
 bold=$(tput bold)
 reset=$(tput sgr0)
 
-PS="\[$yellow\][\D{%r}]\[$reset$blue\] [\u@\h]\[$reset\]"
+PS="\[$purple\][\D{%r}]\[$reset$blue\] [\u@\h]\[$reset\]"
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
