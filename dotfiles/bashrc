@@ -51,7 +51,7 @@ blue="\033[38;5;117m"
 bold=$(tput bold)
 reset=$(tput sgr0)
 
-PS="\[$bold\]\[$blue\][\t]\[$reset\] \[$blue\][\u@\h]\[$reset\]"
+PS="\[$yellow\][\D{%r}]\[$reset$blue\] [\u@\h]\[$reset\]"
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
@@ -83,6 +83,7 @@ if [[ ${HOST} == *uaf-* ]]; then
     # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
 if [[ "$OSNAME" == "Darwin" ]]; then
+	export PATH=${PATH}:/usr/local/Cellar/python3/3.6.2/bin/
     if [[ ${HOST} == *squark* ]]; then 
         source ~/root/bin/thisroot.sh
     else
@@ -140,6 +141,7 @@ alias gridtick='grid-proxy-init -debug -verify'
 alias voms='voms-proxy-init -hours 168 -voms cms -rfc'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias chromecast='cd ~/sandbox/cc/videojs-chromecast/demo/'
+alias brc='vim ~/.bashrc'
 alias vrc='vim ~/.vimrc'
 alias em='emacs'
 alias gam='git commit -a -m'
@@ -304,6 +306,9 @@ alias histo='~/syncfiles/pyfiles/histo.py'
 alias tabletex='~/syncfiles/pyfiles/tabletex.py'
 alias plottex='source ~/syncfiles/miscfiles/plottex.sh'
 alias das='python ~/syncfiles/miscfiles/das/das.py'
+alias killssh='ps aux | grep ssh | grep localhost | col 2 | xargs kill -9'
+alias tunnel90='ssh -N -f -L localhost:8890:localhost:8890 uaf-1.t2.ucsd.edu'
+alias tunnel92='ssh -N -f -L localhost:8892:localhost:8892 uaf-1.t2.ucsd.edu'
 
 #Make history more useful - stolen from alex
 
