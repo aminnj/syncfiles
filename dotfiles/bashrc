@@ -84,6 +84,9 @@ fi
 if [[ "$OSNAME" == "Darwin" ]]; then
     if [[ ${HOST} == *squark* ]]; then 
         source ~/root/bin/thisroot.sh
+        export PATH=${PATH}:/usr/local/Cellar/python3/3.6.2/bin/
+        # source /Applications/root_v6.10.08/bin/thisroot.sh
+
     else
         source /Applications/root_v6.12.04/bin/thisroot.sh
     fi

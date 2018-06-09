@@ -132,6 +132,9 @@ nnoremap <leader>h# :center 40<cr>hhv0r#A<space><esc>20A#<esc>d40<bar>YppVr#kk.
 " paste from system clipboard, but only locally
 nnoremap <leader>pp "+p
 
+" clear hl, fix syntax hl
+nnoremap <leader>l :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+
 " mash to escape
 inoremap kj <Esc>
 inoremap kJ <Esc>
