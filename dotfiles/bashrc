@@ -752,29 +752,42 @@ function copy_from_there_to_here {
 function web {
 if [ $# -gt 0 ]; then
     chmod -R a+r $@
+    extra=""
+    if [[ ! -z "$WEBDIR" ]]; then
+        extra="${WEBDIR}/"
+    fi
     if [[ $(hostname) == *uaf-* ]]; then 
         cp -rp $@ ~/public_html/dump/
         for file in "$@"; do
-            echo "${HOSTNAME}/~${USER}/dump/$(basename $file)"
+            echo "${HOSTNAME}/~${USER}/dump/$extra$(basename $file)"
         done
     else
-        scp -rp $@ ${USER}@uaf-10.t2.ucsd.edu:~/public_html/dump/
+        scp -rp $@ ${USER}@uaf-10.t2.ucsd.edu:~/public_html/dump/$extra/
         for file in "$@"; do
-            echo "uaf-10.t2.ucsd.edu/~${USER}/dump/$(basename $file)"
+            echo "uaf-10.t2.ucsd.edu/~${USER}/dump/$extra$(basename $file)"
         done
     fi
-    # if [[ -f $1 ]]; then
-    #     ic $1
-    # fi
 else
     echo "Usage: web <input files>"
 fi
 }
 export -f web
 
+function web_plots { WEBDIR=plots web $@ ; }
+export -f web_plots
+
+function web_slides { WEBDIR=slides web $@ ; }
+export -f web_slides
+
+function web_misc { WEBDIR=misc web $@ ; }
+export -f web_misc
+
+function web_doc { WEBDIR=documents web $@ ; }
+export -f web_doc
+
 function uls {
     # upload latest slides
-    web $(ls -1rth ~/Desktop/Slides/*pdf | tail -1)
+    web_slides $(ls -1rth ~/Desktop/Slides/*pdf | tail -1)
 }
 
 # function rweb {
