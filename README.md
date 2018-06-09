@@ -25,6 +25,8 @@ git clone https://github.com/majutsushi/tagbar
 git clone https://github.com/machakann/vim-swap # gs, g< or g> on args to switch them
 git clone https://github.com/aminnj/vim-lazytools
 git clone https://github.com/romainl/vim-qlist # persist [I quickfix 
+git clone https://github.com/AndrewRadev/splitjoin.vim # gS gJ
+git clone https://github.com/airblade/vim-gitgutter [c ]c jump between hunks
 mkdir -p ~/.vim/plugin
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
 cp toggle.vim ~/.vim/plugin && rm toggle.vim
