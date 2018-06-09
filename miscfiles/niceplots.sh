@@ -62,7 +62,7 @@ mkdir -p ~/public_html/dump/plots/$outdir/
 if [[ $(hostname) == *uaf-* ]] || [[ "$NOINTERNET" == "true" ]]; then
     cp -rp $dir/* ~/public_html/dump/plots/$outdir/
 else
-    ssh $USER@uaf-10.t2.ucsd.edu "mkdir -p ~/public_html/dump/$outdir; rm ~/public_html/dump/$outdir/*.png"
+    ssh $USER@uaf-10.t2.ucsd.edu "mkdir -p ~/public_html/dump/plots/$outdir; rm ~/public_html/dump/plots/$outdir/*.png"
     scp -rp $dir/* $USER@uaf-10.t2.ucsd.edu:~/public_html/dump/plots/$outdir/
 fi
 # echo "${HOSTNAME}/~$USER/dump/$outdir/"
