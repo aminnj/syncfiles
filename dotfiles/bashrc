@@ -51,7 +51,7 @@ blue="\033[38;5;117m"
 bold=$(tput bold)
 reset=$(tput sgr0)
 
-PS="\[$bold\]\[$blue\][\t]\[$reset\] \[$blue\][\u@\h]\[$reset\]"
+PS="\[$yellow\][\D{%r}]\[$reset$blue\] [\u@\h]\[$reset\]"
 if [ -n "$WINDOW" ]; then
     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
 fi
@@ -60,7 +60,7 @@ PS1=$PS
 
 export EDITOR=vim
 export NICK="nick"
-#export PYTHONSTARTUP=~/.pythonrc.py
+export PYTHONSTARTUP=~/.pythonrc.py
 
 alias tmux='tmux -2' # fixes colors in vim
 
@@ -73,15 +73,17 @@ stty stop ""
 # cmsenv compatibility for ucsd uaf
 export PATH=${HOME}/syncfiles/pyfiles/:${PATH}
 if [[ ${HOST} == *uaf-* ]]; then 
-    source /code/osgcode/cmssoft/cms/cmsset_default.sh
+    # source /code/osgcode/cmssoft/cms/cmsset_default.sh
+    source /cvmfs/cms.cern.ch/cmsset_default.sh
     unset SSH_ASKPASS
-    # export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
+    export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
     export PATH=/home/users/namin/.local/bin:$PATH # for vim 8
     export PATH=/home/users/namin/.iterm2/:$PATH
     export UCSD="true"
     # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
 if [[ "$OSNAME" == "Darwin" ]]; then
+	export PATH=${PATH}:/usr/local/Cellar/python3/3.6.2/bin/
     if [[ ${HOST} == *squark* ]]; then 
         source ~/root/bin/thisroot.sh
         export PATH=${PATH}:/usr/local/Cellar/python3/3.6.2/bin/
@@ -142,6 +144,7 @@ alias gridtick='grid-proxy-init -debug -verify'
 alias voms='voms-proxy-init -hours 168 -voms cms -rfc'
 alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias chromecast='cd ~/sandbox/cc/videojs-chromecast/demo/'
+alias brc='vim ~/.bashrc'
 alias vrc='vim ~/.vimrc'
 alias em='emacs'
 alias gam='git commit -a -m'
@@ -154,6 +157,7 @@ alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 # alias usa='source ~/syncfiles/miscfiles/usa.sh'
 alias usa='source ~/syncfiles/miscfiles/nicer_usa.sh'
 alias cond='condor_q $USER'
+alias conf='condor_q $USER -nobatch'
 alias conda='condor_q'
 # alias condt='condor_q $USER -total'
 alias cstat='condor_q $USER | col 6 | drop 4 | head -n -2 | stats'
@@ -202,12 +206,15 @@ if [[ $HOST == *uaf-* ]]; then
     alias ssan="cd ~/2016/ssan/tex/notes/AN-16-386/trunk;"
     alias ssp="cd ~/2016/ssan/tex/notes/SUS-16-035/trunk;"
     alias sspp="cd ~/2016/ssan/tex/papers/SUS-16-035/trunk;"
-    alias ftan="cd ~/2017/fouran/tex/notes/AN-17-115/trunk;"
+    alias ftan16="cd ~/2017/fouran/tex/notes/AN-17-115/trunk;"
+    alias ftan="cd ~/2018/fourtop/tex/notes/AN-18-062/trunk;"
     # alias ftp="cd ~/2017/fouran/tex/notes/TOP-17-009/trunk;"
     alias ftp="cd ~/2017/fouran/tex/papers/TOP-17-009/trunk;"
     alias ft="cd ~/2017/fourtop; . setup.sh"
     alias ft8="cd ~/2018/fourtop/FTAnalysis/; . setup.sh"
     alias ft80="cd ~/2018/fourtop/80x/FTAnalysis/; . setup.sh"
+    alias ft94="cd ~/2018/fourtop/94x/FTAnalysis/; . setup.sh; cd analysis; lk"
+    alias ft2018="cd ~/2018/fourtop/run2/FTAnalysis/; . setup.sh; "
     alias lim="cd ~/2016/ss/master/SSAnalysis/cards; cd CMSSW_7_1_6; cmsenv; cd .."
     alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
     alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
@@ -234,6 +241,7 @@ if [[ $HOST == *uaf-* ]]; then
     alias mks="cd ~/public_html/makers; ls -lrth"
     alias tdis="cd ~/public_html/makers/test_disMaker; ls -lrth"
     alias dis="cd ~/public_html/makers/disMaker; ls -lrth"
+    alias ds="dis_client.py -t snt"
     alias 76x="cd /home/users/namin/2015/76x/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias new76x="cd /home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
     alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
@@ -301,6 +309,9 @@ alias histo='~/syncfiles/pyfiles/histo.py'
 alias tabletex='~/syncfiles/pyfiles/tabletex.py'
 alias plottex='source ~/syncfiles/miscfiles/plottex.sh'
 alias das='python ~/syncfiles/miscfiles/das/das.py'
+alias killssh='ps aux | grep ssh | grep localhost | col 2 | xargs kill -9'
+alias tunnel90='ssh -N -f -L localhost:8890:localhost:8890 uaf-1.t2.ucsd.edu'
+alias tunnel92='ssh -N -f -L localhost:8892:localhost:8892 uaf-1.t2.ucsd.edu'
 
 #Make history more useful - stolen from alex
 
@@ -417,10 +428,18 @@ function hcorrupt() {
 #     condor_q namin -constraint 'JobStatus != 3' -autoformat:t ClusterId JobStatus CMD ARGS
 # }
 
+function myram() {
+    user=$USER
+    # stolen from https://superuser.com/questions/102005/how-can-i-display-the-memory-usage-of-each-process-if-i-do-a-ps-ef
+    echo "------------------------------------" && mem=0 && while read -r rss comm ; do mbs=$((rss/1024)); mem=$((mbs + mem)); echo $mbs"MB - $comm"; done <<< "$(ps -u ${user} -wo rss=,comm= --sort -rss)" && echo "------------------------------------" && echo $mem"MB: Memory used by user '${user}'"
+}
+
 function mjobs() {
-    # cond -w | grep ProjectMetis | col 10 | cut -d '/' -f8 | pyline.py 'x.split("_Tune")[0].split("-PromptReco")[0]' | stats
-    # cond -w | grep ProjectMetis | col 10 | pyline.py 'x.split("Metis/")[1].split("_Tune")[0].split("_13TeV")[0].split("/MINIAOD")[0]' | stats
-    cond -w -const 'taskname =!= UNDEFINED' | grep hadoop | col 10 | pyline.py 'x.split("_Tune")[0].split("_13TeV")[0].split("_MINIAOD")[0].rstrip("/").rsplit("/")[-1]' | stats
+    conf -w -const 'taskname =!= UNDEFINED' | grep hadoop | col 10 | pyline.py 'x.split("_Tune")[0].split("_13TeV")[0].split("_MINIAOD")[0].rstrip("/").rsplit("/")[-1]' | stats
+}
+
+function mjobsr() {
+    conf -w -const 'taskname =!= UNDEFINED' | grep hadoop | grep " R " | col 10 | pyline.py 'x.split("_Tune")[0].split("_13TeV")[0].split("_MINIAOD")[0].rstrip("/").rsplit("/")[-1]' | stats
 }
 
 function dtprogress1() {
@@ -795,6 +814,9 @@ function niceplots {
 . ~/syncfiles/miscfiles/niceplots.sh $@
 }
 export -f niceplots
+# can also call as 
+# $ NOCONVERT=true niceplots blah blah
+# to not convert pdf->png
 
 function package {
 if [ $# -gt 0 ]; then

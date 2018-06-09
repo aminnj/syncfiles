@@ -64,6 +64,7 @@ def dump(fname_in, treename="Events", max_nevents=1, cut=""):
 
     d_bname_to_info = {}
 
+
     # cuts = ["pfcandsisGlobalMuon"] # FIXME
     # cuts = ["filtcscBeamHalo2015","evtevent","evtlumiBlock","evtbsp4","hltprescales","hltbits","hlttrigNames","musp4","evtpfmet","muschi2"] # FIXME
     for branch in branches:

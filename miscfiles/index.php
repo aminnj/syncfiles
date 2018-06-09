@@ -171,7 +171,7 @@ function draw_objects(file_objects) {
                 "    <fieldset style='border:2px solid "+color+"'>"+
                 "        <legend>"+name_noext+txt_str+extra_str+json_str+popout_str+"</legend>"+
                 "        <a href='"+pdf+"'>"+
-                "            <img class='innerimg' src='"+path+"/"+name+"' height='300px' />"+
+                "            <img class='innerimg' name='"+name_noext+"' src='"+path+"/"+name+"' height='300px' />"+
                 "        </a>"+
                 "    </fieldset>"+
                 "</div>"
@@ -218,10 +218,71 @@ function make_objects(filelist) {
             "color": color,
         });
     }
+    // sort by name
+    file_objects.sort(function(a,b) { return a["name"] > b["name"]; });
     return file_objects;
 }
 
 function register_hover() {
+    $("img").mousemove(function(event) {
+        if (!binInfo) return;
+        /* console.log(event.offsetX + " " + event.offsetY + " " + event.currentTarget.height + " " + event.currentTarget.name); */
+        var name = event.currentTarget.name;
+        /* var width = event.currentTarget.width; */
+        /* var height = event.currentTarget.height; */
+        var xfrac = event.offsetX / event.currentTarget.width;
+        var yfrac = 1.0 - event.offsetY / event.currentTarget.height;
+        /* $("#message").html(event.offsetX + " " + event.offsetY + " " + event.currentTarget.height + " " + event.currentTarget.width + " " + event.currentTarget.name); */
+        /* $("#message").html(xfrac + " " + yfrac + " " + event.currentTarget.name); */
+        var index = -1;
+        if (name in binInfo) {
+            index = binInfo[name]["xedges"].findIndex(function(x) { return x[0] < xfrac && x[1] > xfrac });
+            if (index >= 0) {
+                var ypair = (binInfo[name]["yedges"][index]);
+                /* console.log(ypair); */
+                if (ypair[0]-0.01 > yfrac || ypair[1]+0.01 < yfrac) index = -1;
+            }
+        }
+        /* $("#message").html(xfrac + " " + yfrac + " " + event.currentTarget.name + " " + index); */
+        /* $("#message").html(event.currentTarget.name + ": Bin " + index + " | yfrac: " + yfrac); */
+        /* console.log(index); */
+        if (index < 0) {
+            $("#bintable").hide();
+            $("#hovercanvas").hide();
+            return;
+        }
+        var table = binInfo[name]["table"]["header"] + "<br>" + binInfo[name]["table"]["bins"][index] + "<br>" + binInfo[name]["table"]["total"];
+        table = table.replace(/\n/g,"<br>\n");
+        table = table.replace(/ /g,"&nbsp;");
+        /* console.log(table); */
+        /* $("#messagebottom").html("<span style='color:red'>"+table+"</span>"); */
+        $("#bintable").show();
+        $("#hovercanvas").show();
+        $("#bintable").html(table);
+
+        var xpair = (binInfo[name]["xedges"][index]);
+        var ypair = (binInfo[name]["yedges"][index]);
+        var img = $('[name="' + name + '"]')[0];
+        var c = document.getElementById("hovercanvas");
+        var x = xpair[0] * event.currentTarget.width;
+        var y = (1.0 - ypair[1]) * event.currentTarget.height;
+        var w = (xpair[1] - xpair[0]) * event.currentTarget.width;
+        var h = (ypair[1] - ypair[0]) * event.currentTarget.height;
+        var bc = img.getBoundingClientRect();
+        c.style.position = "absolute";
+        c.style.left = bc.left + x + window.scrollX;
+        c.style.top = bc.top + y + window.scrollY;
+        c.width = w;
+        c.height = h;
+        var ctx = c.getContext("2d");
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.strokeStyle="rgba(0,0,0,0.3)";
+        ctx.lineWidth=1;
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0,0,w,h);
+        ctx.rect(1,1,w-2,h-2);
+        ctx.stroke();
+    });
     console.log("registering hover");
     $("[id^=text_],[id^=extra_]").hover(
         function() {
@@ -266,7 +327,7 @@ function register_description_hover() {
             var plotselector = "#" + plotname;
             console.log(plotname);
             console.log($(plotselector));
-            $(plotselector).effect('highlight',{"color":"9d9"},1500);
+            $(plotselector).effect('highlight',{"color":"9d9"},500);
             $(plotselector).finish();
         },function() {
         } 
@@ -280,7 +341,7 @@ function add_links_to_description(objects) {
     console.log(desc_src);
     for (var i = 0; i < objects.length; i++) {
         var plotname = objects[i]["name_noext"];
-        desc_src = desc_src.replace(plotname, "<a href=\"#"+plotname+"\" class=\"plot\">"+plotname+"</a>");
+        desc_src = desc_src.split(plotname).join("<a href=\"#"+plotname+"\" class=\"plot\">"+plotname+"</a>");
     }
     console.log(desc_src);
     $("#description").html(desc_src);
@@ -292,8 +353,13 @@ var obj = <?php echo json_encode($data); ?>;
 var filelist = <?php echo json_encode($paths); ?>;
 
 
+var binInfo;
 $(function() {
 
+    $.getJSON("binInfo.json", function(json) {
+        binInfo = json;
+        console.log(json); // this will show the info it in firebug console
+    });
     if (<?php echo $num_directories?> > 0) {
         $('#jstree_demo_div')
             .on('changed.jstree', function(e,data) {
@@ -407,10 +473,22 @@ $(function() {
 // vimlike incsearch: press / to focus on search box
 $(document).keydown(function(e) {
     if(e.keyCode == 191) {
-        console.log(e.keyCode); 
+        // / focus search box
         e.preventDefault();
         $("#filter").focus().select();
     }
+    /* if(e.keyCode == 71) { */
+    /*     // G scrolls to bottom, g to top */
+    /*     if (e.shiftKey) { */
+    /*         window.scrollTo(0,document.body.scrollHeight); */
+    /*     } else { */
+    /*         window.scrollTo(0,0); */
+    /*     } */
+    /* } */
+    /* if(e.keyCode == 89) { */
+    /*     // y to copyToClipboard */
+    /*     getQueryURL(); */
+    /* } */
 });
 
 function copyToClipboard(text) {
@@ -419,6 +497,7 @@ function copyToClipboard(text) {
     $temp.val(text).select();
     document.execCommand("copy");
     $temp.remove();
+    $("#message").html("Copied to clipboard!");
 }
 
 function getQueryURL() {
@@ -457,6 +536,8 @@ if( $description ) {
     <!-- <div id="bintable" style="display: inline-block; text-align: left;"> -->
     </div>
 </div>
+
+<canvas id='hovercanvas' width="50" height="300"></canvas>
 
 
 </body>

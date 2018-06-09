@@ -86,6 +86,25 @@ class Table():
         self.d_style["OUTER_TOP_LEFT"] = '+'
         self.d_style["OUTER_TOP_RIGHT"] = '+'
 
+    def set_theme_csv(self):
+        self.use_color = False
+
+        self.d_style["INNER_HORIZONTAL"] = ''
+        self.d_style["INNER_INTERSECT"] = ','
+        self.d_style["INNER_VERTICAL"] = ','
+        self.d_style["OUTER_LEFT_INTERSECT"] = ''
+        self.d_style["OUTER_LEFT_VERTICAL"] = ''
+        self.d_style["OUTER_RIGHT_INTERSECT"] = ''
+        self.d_style["OUTER_RIGHT_VERTICAL"] = ''
+        self.d_style["OUTER_BOTTOM_HORIZONTAL"] = ''
+        self.d_style["OUTER_BOTTOM_INTERSECT"] = ''
+        self.d_style["OUTER_BOTTOM_LEFT"] = ''
+        self.d_style["OUTER_BOTTOM_RIGHT"] = ''
+        self.d_style["OUTER_TOP_HORIZONTAL"] = ''
+        self.d_style["OUTER_TOP_INTERSECT"] = ''
+        self.d_style["OUTER_TOP_LEFT"] = ''
+        self.d_style["OUTER_TOP_RIGHT"] = ''
+
     def set_theme_latex(self):
         self.d_style["INNER_HORIZONTAL"] = ''
         self.d_style["INNER_INTERSECT"] = ''
