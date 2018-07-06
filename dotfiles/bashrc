@@ -153,6 +153,7 @@ alias gd='git diff --color | ~/sandbox/diff-so-fancy/diff-so-fancy'
 alias gp='git push'
 # alias gs='git status'
 alias gsu='git status --untracked-files=no'
+alias glog="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias rootenv='source ~/root/bin/thisroot.sh'
 alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
 # alias usa='source ~/syncfiles/miscfiles/usa.sh'
@@ -311,8 +312,10 @@ alias tabletex='~/syncfiles/pyfiles/tabletex.py'
 alias plottex='source ~/syncfiles/miscfiles/plottex.sh'
 alias das='python ~/syncfiles/miscfiles/das/das.py'
 alias killssh='ps aux | grep ssh | grep localhost | col 2 | xargs kill -9'
+alias tunnel80='ssh -N -f -L localhost:8880:localhost:8880 uaf-1.t2.ucsd.edu'
 alias tunnel90='ssh -N -f -L localhost:8890:localhost:8890 uaf-1.t2.ucsd.edu'
 alias tunnel92='ssh -N -f -L localhost:8892:localhost:8892 uaf-1.t2.ucsd.edu'
+alias tunnel93='ssh -N -f -L localhost:8893:localhost:8893 uaf-1.t2.ucsd.edu'
 
 #Make history more useful - stolen from alex
 
