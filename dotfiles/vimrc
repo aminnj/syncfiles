@@ -2,8 +2,6 @@ scriptencoding utf-8
 set encoding=utf-8
 
 let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to debug
-
-
 " load plugins before screwing with settings
 "    https://github.com/tpope/vim-commentary
 "    https://github.com/tpope/vim-surround
@@ -11,7 +9,7 @@ let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to de
 "    https://github.com/scrooloose/nerdtree
 "    https://github.com/haya14busa/incsearch.vim
 "    https://github.com/haya14busa/incsearch-fuzzy.vim # z/ to fuzzy search
-"    https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor 
+"    https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor
 "    https://github.com/godlygeek/tabular
 "    https://github.com/itchyny/lightline.vim
 "    https://github.com/ervandew/supertab
@@ -30,22 +28,36 @@ set encoding=utf-8
 
 syntax on
 
-
 " zR to open all folds
 " zM to close them again
 
-" ====== One and only theme {{{
-color wombat256mod
-" color onedark
+" ====== Theme {{{
 set background=dark
+" at some point, fix all the hex colors to look pretty/similar to cterm
+" colors, then enable the next line for 24 bit colors
+" set termguicolors
+colorscheme wombat256mod
 " Tweak to have more vivid error/warning/todo colors
 " especially for Ale
-hi SpellBad  ctermfg=253  ctermbg=160  cterm=none
-hi Error  ctermfg=253  ctermbg=160  cterm=none
-hi SpellCap  ctermfg=253  ctermbg=220  cterm=none
-hi Todo  ctermfg=235  ctermbg=220  cterm=none
-" https://apple.stackexchange.com/questions/266333/how-to-show-italic-in-vim-in-iterm2
-hi Comment cterm=italic
+" testing some modifications over wombat
+hi Error term=reverse ctermfg=160 ctermbg=none
+hi SpellBad term=reverse cterm=underline ctermfg=160 ctermbg=none gui=underline guifg=#E06C75
+hi SpellCap term=reverse ctermfg=173 ctermbg=220 guifg=#D19A66
+hi Todo  ctermfg=214  ctermbg=none  cterm=none
+hi LineNr ctermbg=none guifg=#e3e0d7
+hi SignColumn term=standout ctermfg=14 ctermbg=none
+hi Search		ctermfg=236		ctermbg=155		cterm=underline		guifg=#d787ff	guibg=#636066	gui=none
+hi String		ctermfg=71		cterm=none		guifg=#95e454	gui=italic
+hi Number		ctermfg=173		cterm=none		guifg=#e5786d	gui=none
+hi Function		ctermfg=192		cterm=none		guifg=#cae982	gui=none
+hi Statement	ctermfg=117		cterm=none		guifg=#88b8f6	gui=none
+hi PreProc		ctermfg=173		cterm=none		guifg=#e5786d	gui=none
+hi VertSplit	ctermfg=238		ctermbg=238		cterm=none		gui=none
+hi Comment		ctermfg=247		cterm=italic		guifg=#9c998e	gui=italic
+hi link SpellBad Error
+hi link ALEWarning SpellCap
+hi link ALEError SpellBad
+hi link ALEErrorSign Error
 " }}}
 
 " ====== Settings {{{
@@ -85,6 +97,7 @@ set scrolloff=3                   " Keep at least 3 lines visible on either side
 set noerrorbells visualbell t_vb= " No alerts/bells
 set ttyfast                       " Smoother drawing
 set lazyredraw                    " Lazy redrawing for slow connections
+set mps+=<:>                      " Add match pairs for jumping with space
 set cursorline                    " Highlight current line
 set laststatus=2                  " Show the status line always
 set noshowmode                    " Because of lightline don't show mode at bottom
@@ -99,20 +112,22 @@ set smarttab                      " Correct the wicked by converting tabs to spa
 set expandtab
 set title                         " Set window title to current file
 set showmatch                     " When bracket inserted, briefly flash matching one
-set matchtime=3                   " Timing for above
+set matchtime=2                   " Timing for above
 set incsearch                     " Search as characters are entered
 set hlsearch                      " Highlight search
 set ignorecase                    " Case-sensitive only if search contains an uppercase character
 set smartcase
 set noswapfile
 set diffopt+=vertical             " Vertical split for diff
-set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/.viminfo
+set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/viminfo
+set updatetime=200 
+set tags=tags;
 " set foldmethod=marker
 
 " cursor changing escape sequences in iTerm
-let &t_SI = "\<Esc>]1337;CursorShape=1\x7"
-let &t_SR = "\<Esc>]1337;CursorShape=2\x7"
-let &t_EI = "\<Esc>]1337;CursorShape=0\x7"
+let &t_SI = "\<Esc>]1337;CursorShape=1\x7\<Esc>]1337;SetKeyLabel=status=✍️\x7"
+let &t_SR = "\<Esc>]1337;CursorShape=2\x7\<Esc>]1337;SetKeyLabel=status=🔥\x7"
+let &t_EI = "\<Esc>]1337;CursorShape=0\x7\<Esc>]1337;SetKeyLabel=status=🛑 \x7"
 
 " }}}
 
@@ -167,7 +182,6 @@ nnoremap <space> %
 
 " maintain line joining even though J remapped
 nnoremap <leader>j J
-vnoremap <leader>j J
 
 
 " calculate quantity in Word
@@ -182,6 +196,7 @@ vmap zz V<Esc>gvygvgc`>p
 
 nnoremap <leader>an :ALENextWrap<CR>
 nnoremap <leader>ap :ALEPreviousWrap<CR>
+nnoremap <leader>at :ALEToggle<CR>
 
 " dot maps over visual line selection
 xnoremap . :norm .<CR>
@@ -191,8 +206,6 @@ vnoremap . :norm .<CR>
 nnoremap <leader>ws :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " https://github.com/haya14busa/incsearch.vim
-" map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 map z/ <Plug>(incsearch-fuzzy-/)
 map z? <Plug>(incsearch-fuzzy-?)
@@ -213,7 +226,7 @@ tnoremap <leader>tn <C-w>N
 tnoremap kj <C-w>N
 
 " useful for re-executing .vimrc
-map <leader>so :source %<cr>
+map <leader>so :w <bar> source %<cr>
 
 " remap arrow keys for long lines
 noremap <Down> gj
@@ -254,34 +267,31 @@ let g:lightline = {
             \   'cmsswver': 'LightlineCMSSWver',
             \   'spotify': 'GetSong',
             \ },
+            \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+            \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
             \ }
 
+" }}}
+
+" ====== Completion {{{
+" }}}
+
+" ====== Tags {{{
+" make tags with `ctags -R`
+map <leader>gf :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 " }}}
 
 " ====== Ale {{{
 let g:ale_sign_error = '❯❯'
 let g:ale_sign_warning = '•'
-" following line nullifies the above signs/gutter text since when the gutter
-" is open, weird things happen in terminal
-let g:ale_set_signs = 0
+let g:ale_lint_delay = 200
+let g:ale_lint_on_save = 0 " when I ,, lower chance of screwing up from linting -- trial run since i'm not sure this is correct
+let g:ale_sign_column_always = 1
+" let g:ale_set_signs = 0
 
-" 501 - line >80 chars
-" 303 - too many blank lines
-" 226 - missing whitespace around arithmetic operator
-" 231 - missing whitespace after ,
-" 225 - missing whitespace after operator
-" 302 - 2 blank lines before class
-" 305 - 2 blank lines after class
-" 701 - multiple statements on one line
-" 126 - continuation line over-indented for hanging indent 
-" 123 - closing bracket does not match indentation of opening bracket
-" 251 - unespected spaces around keyword/parameter equals
-" 201 - whitespace after (
-" 202 - whitespace before )
-" 124 - closing bracket does not match outer indent level
-" 402 - module level import not at top of file
-let g:ale_python_flake8_args=" --ignore=E501,E303,E226,E231,E225,E302,E305,E701,E126,E123,E251,E201,E202,E124,E402,E131,W391 "
-
+" below line ignores style issues (only displays errors!)
+" or can just switch to pyflakes which is faster and does just that
+let g:ale_python_flake8_options = '--select F'
 let g:ale_linters = {
 \   'python': ['flake8'],
 \}
@@ -312,8 +322,9 @@ if has("autocmd")
         autocmd BufEnter,BufNew *.txt set commentstring=\#\ %s
         " close vim if only nerdtree is left
         autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+        " autocmd InsertEnter * silent !~/.iterm2/it2setkeylabel set status Insert
+        " autocmd InsertLeave * silent !~/.iterm2/it2setkeylabel set status Normal
         autocmd InsertLeave * set nopaste
-        autocmd FileType crontab set nobackup nowritebackup
         autocmd FileType crontab set nobackup nowritebackup
         " hack? when hitting ,, ALE will try to 'run' again and this screws up colors, so disable and then re-enable
         " autocmd FileType python nnoremap <buffer> <leader><leader> :ALEDisable <bar> w <bar> exec '!python '.shellescape('%') <bar>ALEEnable<CR>
@@ -321,11 +332,14 @@ if has("autocmd")
         autocmd FileType python nnoremap <leader>rr :w <bar> call Termrun("python ")<CR>
         " why <buffer> ? with a .py file open, opening another file type will cause ,, to use the python ,, mapping to be overriden
         " autocmd FileType cpp nnoremap <buffer> <leader><leader> :w <bar> exec '!root -b -q -l -n '.shellescape('%')<CR>
+        " bash : noop so that when we stick the filename afterwards, it gets ignored
+        autocmd FileType cpp nnoremap <buffer> <leader>rr :w <bar> call Termrun("rot doAll.C ; : ")<CR>
         autocmd FileType cpp nnoremap <buffer> <leader><leader> :w <bar> exec '!g++ '.shellescape('%').' -std=c++11 && ./a.out'<CR>
         autocmd FileType sh nnoremap <leader><leader> :w <bar> exec '!./'.shellescape('%')<CR>
         autocmd FileType sh nnoremap <leader>rr :w <bar> call Termrun("sh ")<CR>
         autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
         autocmd FileType c,cpp nnoremap <leader>cp :call lazytools#CoutTokens()<CR>
+
 
         " vim-commentary 
         autocmd FileType c set commentstring=\/\/\ %s
@@ -391,16 +405,10 @@ function! GetSong()
 endfunction
 " }}}
 
+
 " ====== MacVim {{{
 if has('gui_running')
-    let g:lightline.colorscheme = 'one'
-    let g:one_allow_italics = 1
-    colorscheme  one
     set background=dark
-    call one#highlight('VertSplit', '2c323c', '2c323c', 'none')
-    let g:lightline.separator = { 'left': "\ue0b0", 'right': "\ue0b2" }
-    let g:lightline.subseparator = { 'left': "\ue0b1", 'right': "\ue0b3" }
-    " set guifont=Monaco:h15
     set guifont=Source\ Code\ Pro:h15
     set guioptions-=r  " remove right-hand scroll bar
     set guioptions-=l  " remove left-hand scroll bar

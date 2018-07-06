@@ -29,7 +29,7 @@ HOST = "localhost"
 PORT = 8888
 NBYTES_HEADER = 8
 
-def query(q, typ="basic", detail=False):
+def query(q, typ="basic", detail=False, force_uaf=None):
     query_dict = {"query": q, "type": typ, "short": "" if detail else "short"}
     url_pattern = '%s?%s' % (BASE_URL_PATTERN, urllib.urlencode(query_dict))
 
@@ -59,11 +59,15 @@ def query(q, typ="basic", detail=False):
     except:
 
         # try all uafs in order of decreasing reliability (subjective)
-        # for num in map(str,[10,8,6,3,4,5]):
-        for num in map(str,[8,10,6,3,4,5]):
+        # for num in map(str,[10,3,1,8,4,5]):
+        to_try = [1,7,8,10,3,4,5]
+        if force_uaf:
+            to_try = [force_uaf]
+        for num in map(str,to_try):
+        # for num in map(str,[8,10,6,3,4,5]):
             try:
                 url = url_pattern.replace("{NUM}",num)
-                content =  urllib2.urlopen(url).read() 
+                content =  urllib2.urlopen(url).read()
                 data = json.loads(content)
                 break
             except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
@@ -96,7 +100,7 @@ def listofdicts_to_table(lod):
         for row in lod:
             tab.add_row([row.get(colname) for colname in colnames])
         tab.sort(column=colnames[0], descending=False)
-                
+
         return "".join(tab.get_table_string())
 
     except:
@@ -112,13 +116,13 @@ def listofdicts_to_table(lod):
                 tmp = tmp % str(thing.get(colname,""))
                 line += tmp
             buff += line + "\n"
-                
+
         return buff
 
-        
-def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False):
+
+def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False, force_uaf=None):
     buff = ""
-    data = query(q, typ, detail)
+    data = query(q, typ, detail, force_uaf)
 
     if not data:
         return "URL fetch/decode failure"
@@ -127,7 +131,7 @@ def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_tabl
         return "DIS failure: %s" % data["response"]["fail_reason"]
 
     data = data["response"]["payload"]
-    
+
     if show_json:
         return json.dumps(data, indent=4)
 
@@ -174,7 +178,7 @@ def test(one=False):
         print get_output_string(**q_params)
 
 if __name__ == '__main__':
-    
+
     # test(one=True)
 
     parser = argparse.ArgumentParser()
@@ -184,14 +188,15 @@ if __name__ == '__main__':
     parser.add_argument("-j", "--json", help="show output as full json", action="store_true")
     parser.add_argument("-p", "--table", help="show output as pretty table", action="store_true")
     parser.add_argument("-v", "--dev", help="use developer instance", action="store_true")
+    parser.add_argument("-u", "--uaf", help="use particular uaf", default=None,type=int)
     args = parser.parse_args()
 
-    
-    if args.dev: 
+
+    if args.dev:
         print ">>> Using dev instance"
         BASE_URL_PATTERN = BASE_URL_PATTERN.replace("disMaker","test_disMaker")
 
     if not args.type: args.type = "basic"
 
-    print get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json, pretty_table=args.table)
+    print get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json, pretty_table=args.table, force_uaf=args.uaf)
 

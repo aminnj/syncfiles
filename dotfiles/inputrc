@@ -24,6 +24,7 @@
 set completion-ignore-case on
 set completion-prefix-display-length 2
 
+
 # reload this file with <C-x><C-r>
 "\C-x\C-r": re-read-init-file
 

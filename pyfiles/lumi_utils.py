@@ -210,6 +210,7 @@ def getRunLumis(fnames, treename="Events"):
         tree = f1.Get(treename)
 
     isLeptonTree = ("Lepton" in tree.GetTitle()) or ("Lepton" in f1.GetListOfKeys()[0].GetTitle())
+    isStopTree = ("Stop" in f1.GetListOfKeys()[0].GetTitle())
     isCMS3style = (treename == "Events")  or isLeptonTree
     N = tree.GetEntries()
 
@@ -225,13 +226,23 @@ def getRunLumis(fnames, treename="Events"):
         tree.SetEstimate(N);
         tree.Draw("evt_run:evt_lumiBlock","","goff")
     else:
-        tree.SetBranchStatus("*",0)
-        tree.SetBranchStatus("*run*",1)
-        tree.SetBranchStatus("*lumi*",1)
-        tree.SetBranchStatus("*fired_trigger*",1)
-        tree.SetEstimate(N);
-        # tree.Draw("run:lumi","","goff")
-        tree.Draw("run:lumi","fired_trigger","goff")
+
+        if isStopTree:
+            tree.SetBranchStatus("*",0)
+            tree.SetBranchStatus("run",1)
+            tree.SetBranchStatus("ls",1)
+            tree.SetEstimate(N);
+            tree.Draw("run:ls","","goff")
+        else:
+            # SS
+            tree.SetBranchStatus("*",0)
+            tree.SetBranchStatus("*run*",1)
+            tree.SetBranchStatus("*lumi*",1)
+            tree.SetBranchStatus("*fired_trigger*",1)
+            tree.SetEstimate(N);
+            # tree.Draw("run:lumi","","goff")
+            tree.Draw("run:lumi","fired_trigger","goff")
+
 
     runs = tree.GetV1()
     lumis = tree.GetV2()
@@ -294,9 +305,9 @@ if __name__ == '__main__':
     # fname_patt = "/nfs-7/userdata/dataTuple/nick/json_lists/Run2016B_MET_MINIAOD_PromptReco-v2/*.txt"
     # fname_patt = "/home/users/namin/2016/ss/master/SSAnalysis/goodRunList/*.txt"
     if isRootFile:
-        pool = ThreadPool(7)
+        pool = ThreadPool(10)
         vals = []
-        chunks = getChunks(fnames, 20)
+        chunks = getChunks(fnames, 6)
         if redirect:
             for result in pool.imap_unordered(getRunLumis, chunks):
                 vals.append(result)

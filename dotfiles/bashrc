@@ -111,6 +111,10 @@ export -f iterm2_set_tab_default
 function iterm2_set_tab_label() {
     echo -ne "\033]0;$@\a"
 }
+function iterm2_set_label() {
+    ~/.iterm2/it2setkeylabel set status "$@"
+}
+export -f iterm2_set_label
 if [[ "${HOST}" == *squark* ]]; then iterm2_set_tab_label squark ; iterm2_set_tab_rgb 145 191 255; # blue
 elif [[ "${HOST}" == *uaf-10.t2* ]]; then iterm2_set_tab_label uaf-10 ; iterm2_set_tab_rgb 69 221 102; # green
 elif [[ "${HOST}" == *uaf-1.t2* ]]; then iterm2_set_tab_label uaf-1 ; iterm2_set_tab_rgb 255 170 32; # orange
@@ -147,6 +151,8 @@ alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
 alias chromecast='cd ~/sandbox/cc/videojs-chromecast/demo/'
 alias brc='vim ~/.bashrc'
 alias vrc='vim ~/.vimrc'
+# alias nvim1='/home/users/namin/sandbox/neovim/nvim-linux64/bin/nvim' # uaf 1
+alias nvim='/home/users/namin/sandbox/neovim/neovim/build/bin/nvim'
 alias em='emacs'
 alias gam='git commit -a -m'
 alias gd='git diff --color | ~/sandbox/diff-so-fancy/diff-so-fancy'
@@ -167,10 +173,12 @@ alias dfh='df -h | grep hadoop'
 alias pt='ev; ptpython'
 alias xb='xargs -n 1 -I {} sh -c'
 alias xbf='xargs -n 1 -P 20 -I {} sh -c'
+alias tags='ctags -R --exclude=.git' # make tags recursively, then Ctrl] in vim
 alias mountuaf='sshfs namin@uaf-10.t2.ucsd.edu:/home/users/namin /Users/namin/sandbox/uaf  -o Compression=no,follow_symlinks,auto_cache,reconnect,defer_permissions,noappledouble'
 alias aria='aria2c -j 6 -s 6 -x 6'
 alias v='vim'
 
+alias icl='natsort.py | tail -n 1 | xargs ic'
 
 alias rrnd='rnd "root -l" .root'
 alias rndic='rnd ic'
@@ -195,10 +203,13 @@ if [[ $HOST == *uaf-* ]]; then
     alias em="/home/users/namin/sandbox/emacs-25.1/src/emacs -nw"
     alias vdr="rm /nfs-7/userdata/dataTuple/nick/running.pid"
     alias lumi="ev; crabenv; dt; python findMissingLumis.py | tee lumiSummary.txt"
-    alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/CMSSW_8_0_20/; cmsenv; cd -"
+    # alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/CMSSW_8_0_20/; cmsenv; cd -"
+    alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_9_2_8; cmsenv; cd -"
     alias ev9="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_9_2_8; cmsenv; cd -"
+    alias ev10="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_10_2_0_pre5; cmsenv; cd -"
     alias ev74="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/; cmsenv; cd -"
     alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
+    alias nano="cd ~/sandbox/noroot/nano/ ; ev9"
     # alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss74="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
     alias ss76="cd ~/2016/ss/76x/SSAnalysis/; . setup.sh;"
@@ -349,6 +360,9 @@ pkldump() {
 npdump() {
    python -c "data = __import__('numpy').load('"$1"'); print data.shape; print data"
 }
+npzdump() {
+   python -c "data = __import__('numpy').load('"$1"'); print '\n'.join(['-- {}, shape {}\n\t{}'.format(k,data[k].shape,data[k]) for k in data])"
+}
 
 pddump() {
    python -c "print __import__('pandas').DataFrame(__import__('numpy').load('"$1"')).head()"
@@ -358,6 +372,13 @@ wifi() {
 if [[ "$OSNAME" == "Darwin" ]]; then
     /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
 fi
+}
+
+first() {
+    dirnames=$(dis_client.py -t snt $1 | grep location | cut -d ':' -f2)
+    for dirname in "$dirnames"; do
+        ls -lrth $dirname/* | grep -v total | head -n 1
+    done
 }
 
 rnd() {
@@ -431,6 +452,7 @@ function hcorrupt() {
 
 function myram() {
     user=$USER
+    if [ ! -z "$1" ]; then user="$1"; fi
     # stolen from https://superuser.com/questions/102005/how-can-i-display-the-memory-usage-of-each-process-if-i-do-a-ps-ef
     echo "------------------------------------" && mem=0 && while read -r rss comm ; do mbs=$((rss/1024)); mem=$((mbs + mem)); echo $mbs"MB - $comm"; done <<< "$(ps -u ${user} -wo rss=,comm= --sort -rss)" && echo "------------------------------------" && echo $mem"MB: Memory used by user '${user}'"
 }
@@ -677,6 +699,17 @@ git push
 # }
 # # export so this can be used in other scripts
 # export -f nevts
+
+function rch {
+if [ $# -gt 1 ]; then
+    stuff='("'$1'","'$2'")'
+else
+    stuff='("'$1'")'
+fi
+    
+eval "root -l '~/syncfiles/miscfiles/rch.C${stuff}'"
+}
+export -f rch
 
 function branches {
 # dumps branches of root file

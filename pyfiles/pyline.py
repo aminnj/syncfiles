@@ -13,9 +13,9 @@ if __name__ == "__main__":
     pattern = None
     if(len(sys.argv) > 1): pattern = sys.argv[-1]
     for item in sys.stdin:
-        try:
+        # try:
             x = item.strip()
             if pattern: print eval(pattern)
             else: print x
-        except: pass
+        # except: pass
 

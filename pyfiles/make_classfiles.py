@@ -26,6 +26,7 @@ if __name__ == "__main__":
     namespace = args.namespace
     make_looper = args.looper
     filter_branches = args.branches.split(",")
+    print filter_branches
 
     ##
     ## create a unique list of branches
@@ -75,13 +76,11 @@ if __name__ == "__main__":
 
     if make_looper:
         print ">>> Making looper"
-        print ">>> Checking out cmstas/Software"
-        os.system("[[ -d Software/ ]] || git clone https://github.com/cmstas/Software")
+        # print ">>> Checking out cmstas/Software"
+        # os.system("[[ -d Software/ ]] || git clone https://github.com/cmstas/Software")
 
         buff = ""
         buff += "{\n"
-        buff += "    gSystem->Exec(\"mkdir -p plots\");\n\n"
-        buff += "    gROOT->ProcessLine(\".L Software/dataMCplotMaker/dataMCplotMaker.cc+\");\n"
         buff += "    gROOT->ProcessLine(\".L %s.cc+\");\n" % classname
         buff += "    gROOT->ProcessLine(\".L ScanChain.C+\");\n\n"
         buff += "    TChain *ch = new TChain(\"%s\");\n" % treename
@@ -92,7 +91,6 @@ if __name__ == "__main__":
 
         buff = ""
         buff += "#pragma GCC diagnostic ignored \"-Wsign-compare\"\n"
-        buff += "#include \"Software/dataMCplotMaker/dataMCplotMaker.h\"\n\n"
         buff += "#include \"TFile.h\"\n"
         buff += "#include \"TTree.h\"\n"
         buff += "#include \"TCut.h\"\n"
@@ -124,10 +122,10 @@ if __name__ == "__main__":
         buff += "        }//event loop\n\n"
         buff += "        delete file;\n"
         buff += "    }//file loop\n\n"
-        buff += "    TString comt = \" --outOfFrame --lumi 1.0 --type Simulation --darkColorLines --legendCounts --legendRight -0.05  --outputName plots/\";\n"
-        buff += "    std::string com = comt.Data();\n"
-        buff += "    TH1F * empty = new TH1F(\"\",\"\",1,0,1);\n\n"
-        buff += "    dataMCplotMaker(empty,{h_met} ,{\"t#bar{t}\"},\"MET\",\"\",com+\"h_met.pdf --isLinear\");\n\n"
+        buff += "    TFile* f1 = new TFile(\"output.root\", \"RECREATE\");\n"
+        buff += "    h_met->Write();\n"
+        buff += "    f1->Write();\n"
+        buff += "    f1->Close();\n"
         buff += "    return 0;\n\n"
         buff += "}\n\n"
         with open("ScanChain.C", "w") as fhout: fhout.write(buff)
@@ -156,6 +154,9 @@ if __name__ == "__main__":
             elif btitle.endswith("/I"): cname = "int"
             elif btitle.endswith("/O"): cname = "bool"
             elif btitle.endswith("/D"): cname = "double"
+
+        if not cname:
+            cname = branch.GetLeaf(bname).GetTypeName()
 
         typ = cname[:]
 
@@ -187,9 +188,9 @@ if __name__ == "__main__":
             if branchname not in d_bname_to_info: continue
             d_bname_to_info[branchname]["alias"] = alias.replace(".","")
 
-    if len(filter_branches)>1:
+    if len(filter_branches)>0:
         for bname in d_bname_to_info.keys():
-            if d_bname_to_info[bname]["alias"] not in filter_branches:
+            if d_bname_to_info[bname]["alias"] not in filter_branches and bname not in filter_branches:
                 del d_bname_to_info[bname]
 
     buff = ""
