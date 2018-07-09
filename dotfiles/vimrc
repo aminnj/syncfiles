@@ -13,8 +13,8 @@ Plug 'ervandew/supertab'
 Plug 'w0rp/ale', { 'for': 'python' }
 Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 Plug 'machakann/vim-swap'
-Plug 'romainl/vim-qlist'
-Plug 'AndrewRadev/splitjoin.vim'
+Plug 'romainl/vim-qlist' " [I
+Plug 'AndrewRadev/splitjoin.vim' " gJ, gS
 Plug 'airblade/vim-gitgutter'
 Plug 'aminnj/vim-lazytools', { 'for': 'cpp' }
 
@@ -86,6 +86,7 @@ endif
 if exists('$TMUX')
     set term=screen-256color
 endif
+
 " if exists('$UCSD')
 "     set term=screen-256color
 " endif
