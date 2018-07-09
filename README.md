@@ -1,46 +1,17 @@
-## miscfiles
-Contains:
-* things
-* more things
-* many more things
-
 ## INSTALL
 ``` bash
 xrdb -merge ~/.Xresources
-mkdir -p ~/.vim/autoload ~/.vim/bundle
-curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-cd ~/.vim/bundle
-git clone https://github.com/tpope/vim-commentary
-git clone https://github.com/tpope/vim-surround
-git clone https://github.com/tpope/vim-fugitive
-git clone https://github.com/scrooloose/nerdtree
-git clone https://github.com/haya14busa/incsearch.vim
-git clone https://github.com/haya14busa/incsearch-fuzzy.vim # z/ to fuzzy search
-git clone https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor 
-git clone https://github.com/godlygeek/tabular
-git clone https://github.com/itchyny/lightline.vim
-git clone https://github.com/ervandew/supertab
-git clone https://github.com/w0rp/ale
-git clone https://github.com/majutsushi/tagbar
-git clone https://github.com/machakann/vim-swap # gs, g< or g> on args to switch them
-git clone https://github.com/aminnj/vim-lazytools
-git clone https://github.com/romainl/vim-qlist # persist [I quickfix 
-git clone https://github.com/AndrewRadev/splitjoin.vim # gS gJ
-git clone https://github.com/airblade/vim-gitgutter [c ]c jump between hunks
-mkdir -p ~/.vim/plugin
-wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O toggle.vim
-cp toggle.vim ~/.vim/plugin && rm toggle.vim
+mkdir -p ~/.vim/autoload ~/.vim/bundle ~/.vim/plugin ~/.vim/colors
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O ~/.vim/plugin/toggle.vim
 
-mkdir -p ~/.vim/colors
 cd ~/.vim/colors
 wget -O wombat256mod.vim http://www.vim.org/scripts/download_script.php?src_id=13400
-curl -O "https://raw.githubusercontent.com/rakr/vim-one/master/colors/one.vim"
 
 rm -f ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
 rm -f ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
 rm -f ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
-rm -f ~/.Xresources && ln -s ~/syncfiles/dotfiles/Xresources ~/.Xresources
-rm -f ~/.tmux.conf && ln -s ~/syncfiles/dotfiles/tmuxrc ~/.tmux.conf
+rm -f ~/.inputrc && ln -s ~/syncfiles/dotfiles/inputrc ~/.inputrc
 ```
 
 ## PYFILES
