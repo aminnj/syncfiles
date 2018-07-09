@@ -1,7 +1,6 @@
 ## INSTALL
 ``` bash
-xrdb -merge ~/.Xresources
-mkdir -p ~/.vim/autoload ~/.vim/bundle ~/.vim/plugin ~/.vim/colors
+mkdir -p ~/.vim/{autoload,bundle,plugin,colors,undoinfo}
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 wget http://www.vim.org/scripts/download_script.php?src_id=13834 -O ~/.vim/plugin/toggle.vim
 
