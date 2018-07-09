@@ -1,32 +1,31 @@
 scriptencoding utf-8
 set encoding=utf-8
 
-let g:pathogen_disabled = [] " disable certain pathogen plugins ... useful to debug
-" load plugins before screwing with settings
-"    https://github.com/tpope/vim-commentary
-"    https://github.com/tpope/vim-surround
-"    https://github.com/tpope/vim-fugitive
-"    https://github.com/scrooloose/nerdtree
-"    https://github.com/haya14busa/incsearch.vim
-"    https://github.com/haya14busa/incsearch-fuzzy.vim # z/ to fuzzy search
-"    https://github.com/tpope/vim-jdaddy # gqaj to pretty-print json under cursor
-"    https://github.com/godlygeek/tabular
-"    https://github.com/itchyny/lightline.vim
-"    https://github.com/ervandew/supertab
-"    https://github.com/w0rp/ale
-"    https://github.com/majutsushi/tagbar
-"    https://github.com/machakann/vim-swap # gs, g< or g> on args to switch them
-"    https://github.com/aminnj/vim-lazytools
-"    https://github.com/romainl/vim-qlist
-"    https://github.com/AndrewRadev/splitjoin.vim
-"    https://github.com/airblade/vim-gitgutter
-execute pathogen#infect()
+call plug#begin('~/.vim/bundle')
+
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-jdaddy'
+Plug 'godlygeek/tabular', { 'on' : 'Tab' }
+Plug 'itchyny/lightline.vim'
+Plug 'ervandew/supertab'
+Plug 'w0rp/ale', { 'for': 'python' }
+Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+Plug 'machakann/vim-swap'
+Plug 'romainl/vim-qlist'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'aminnj/vim-lazytools', { 'for': 'cpp' }
+
+call plug#end()
 
 " need one pair before pathogen, and this pair after it for uaf (idk why)
 scriptencoding utf-8
 set encoding=utf-8
 
 syntax on
+
 
 " zR to open all folds
 " zM to close them again
@@ -37,35 +36,51 @@ set background=dark
 " colors, then enable the next line for 24 bit colors
 " set termguicolors
 colorscheme wombat256mod
+
 " Tweak to have more vivid error/warning/todo colors
 " especially for Ale
 " testing some modifications over wombat
 hi Error term=reverse ctermfg=160 ctermbg=none
 hi SpellBad term=reverse cterm=underline ctermfg=160 ctermbg=none gui=underline guifg=#E06C75
 hi SpellCap term=reverse ctermfg=173 ctermbg=220 guifg=#D19A66
-hi Todo  ctermfg=214  ctermbg=none  cterm=none
+hi Todo  ctermfg=214  ctermbg=none  cterm=bold
 hi LineNr ctermbg=none guifg=#e3e0d7
 hi SignColumn term=standout ctermfg=14 ctermbg=none
-hi Search		ctermfg=236		ctermbg=155		cterm=underline		guifg=#d787ff	guibg=#636066	gui=none
+hi Search		ctermfg=176		ctermbg=none		cterm=bold,underline		guifg=#d787ff	guibg=#636066	gui=none
+hi IncSearch		cterm=reverse,bold,underline
 hi String		ctermfg=71		cterm=none		guifg=#95e454	gui=italic
 hi Number		ctermfg=173		cterm=none		guifg=#e5786d	gui=none
 hi Function		ctermfg=192		cterm=none		guifg=#cae982	gui=none
 hi Statement	ctermfg=117		cterm=none		guifg=#88b8f6	gui=none
 hi PreProc		ctermfg=173		cterm=none		guifg=#e5786d	gui=none
-hi VertSplit	ctermfg=238		ctermbg=238		cterm=none		gui=none
+" hi VertSplit	ctermfg=238		ctermbg=238		cterm=none		gui=none
+hi VertSplit	ctermfg=248		ctermbg=none		cterm=bold		gui=none
 hi Comment		ctermfg=247		cterm=italic		guifg=#9c998e	gui=italic
 hi link SpellBad Error
 hi link ALEWarning SpellCap
 hi link ALEError SpellBad
 hi link ALEErrorSign Error
-" }}}
+hi GitGutterAdd ctermbg=none ctermfg=2
+hi GitGutterDelete ctermbg=none ctermfg=202
+hi GitGutterChange ctermbg=none
+hi GitGutterChangeDelete ctermbg=none
 
+" }}}
 " ====== Settings {{{
 
+" cursor changing escape sequences in iTerm
+let &t_SI = "\<Esc>]1337;CursorShape=1\x7\<Esc>]1337;SetKeyLabel=status=✍️\x7"
+let &t_SR = "\<Esc>]1337;CursorShape=2\x7\<Esc>]1337;SetKeyLabel=status=🔥\x7"
+let &t_EI = "\<Esc>]1337;CursorShape=0\x7\<Esc>]1337;SetKeyLabel=status=🛑 \x7"
 
 " fix backspace in tmux->ssh->vim
-if &term == "screen"
+" if &term == "screen"
+if exists('$STY')
+    set term=screen-256color
     set t_kb=
+    let &t_SI = ""
+    let &t_SR = ""
+    let &t_EI = ""
 endif
 
 if exists('$TMUX')
@@ -89,7 +104,7 @@ set nowrap
 set wildmenu                      " Turn on wild menu for tab command completion
 set wildmode=list:longest,full
 set wildignorecase
-set wildignore=*.pyc,*.so,*.o,*.pkl,*.png,*.pdf
+set wildignore=*.pyc,*.so,*.o,*.pkl,*.png,*.pdf,*.root
 set ruler                         " Turn ruler on to show position
 set splitbelow                    " Open new split panes to the bottom
 set splitright                    " ...and right, which is more natural
@@ -120,14 +135,15 @@ set smartcase
 set noswapfile
 set diffopt+=vertical             " Vertical split for diff
 set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/viminfo
-set updatetime=200 
+set updatetime=100
 set tags=tags;
+set undodir=~/.vim/undoinfo/ " where to save undo histories
+set undofile                " Save undos after file closes
+set undolevels=100         " How many undos
+set undoreload=10000        " number of lines to save for undo
+set fillchars+=vert:\│       " Smooth vertical bar
 " set foldmethod=marker
 
-" cursor changing escape sequences in iTerm
-let &t_SI = "\<Esc>]1337;CursorShape=1\x7\<Esc>]1337;SetKeyLabel=status=✍️\x7"
-let &t_SR = "\<Esc>]1337;CursorShape=2\x7\<Esc>]1337;SetKeyLabel=status=🔥\x7"
-let &t_EI = "\<Esc>]1337;CursorShape=0\x7\<Esc>]1337;SetKeyLabel=status=🛑 \x7"
 
 " }}}
 
@@ -284,6 +300,8 @@ map <leader>gf :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 " ====== Ale {{{
 let g:ale_sign_error = '❯❯'
 let g:ale_sign_warning = '•'
+" let g:ale_sign_error = '✖'
+" let g:ale_sign_warning = '▲'
 let g:ale_lint_delay = 200
 let g:ale_lint_on_save = 0 " when I ,, lower chance of screwing up from linting -- trial run since i'm not sure this is correct
 let g:ale_sign_column_always = 1
@@ -292,8 +310,11 @@ let g:ale_sign_column_always = 1
 " below line ignores style issues (only displays errors!)
 " or can just switch to pyflakes which is faster and does just that
 let g:ale_python_flake8_options = '--select F'
+" let g:ale_linters = {
+" \   'python': ['flake8'],
+" \}
 let g:ale_linters = {
-\   'python': ['flake8'],
+\   'python': ['pyflakes'],
 \}
 
 " Disable Ale completely on sshfs mount
@@ -312,9 +333,15 @@ let g:ale_pattern_options = {
 
 if has("autocmd")
 
+    " augroup reload_vimrc
+    "     autocmd!
+    "     autocmd BufWritePost $MYVIMRC source $MYVIMRC
+    " augroup END
+
     augroup Group1
         autocmd!
         filetype plugin indent on
+
 
         " restore cursor position when opening a file
         au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -340,15 +367,14 @@ if has("autocmd")
         autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
         autocmd FileType c,cpp nnoremap <leader>cp :call lazytools#CoutTokens()<CR>
 
-
-        " vim-commentary 
+        " vim-commentary
         autocmd FileType c set commentstring=\/\/\ %s
         autocmd FileType cpp set commentstring=\/\/\ %s
         autocmd FileType text set commentstring=\#\ %s
         autocmd FileType crontab set commentstring=\#\ %s
 
-
     augroup END
+
 endif
 
 " }}}
@@ -359,6 +385,9 @@ function! Termrun(prefix)
     " find first buffer that is from :term
     let l:bufnum = bufnr("!/bin/bash")
     let l:cmd = a:prefix . expand("%:p") . "\<CR>"
+    if l:bufnum < 0
+        let l:bufnum = term_start("/bin/bash", {"term_finish": "close","vertical":1})
+    endif
     call term_sendkeys(l:bufnum,l:cmd)
 endfunction
 
@@ -405,7 +434,6 @@ function! GetSong()
 endfunction
 " }}}
 
-
 " ====== MacVim {{{
 if has('gui_running')
     set background=dark
@@ -417,4 +445,3 @@ if has('gui_running')
     " set transparency=5
 endif
 " }}}
-
