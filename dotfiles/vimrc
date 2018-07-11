@@ -194,6 +194,9 @@ tnoremap <C-h> <C-w>h
 tnoremap <C-j> <C-w>j
 tnoremap <C-l> <C-w>l
 tnoremap <C-k> <C-w>k
+" to paste, but then this interferes with <C-p> of course
+" tnoremap <C-p> <C-w>"0
+
 
 nnoremap <space> %
 
@@ -303,7 +306,7 @@ let g:ale_sign_error = '❯❯'
 let g:ale_sign_warning = '•'
 " let g:ale_sign_error = '✖'
 " let g:ale_sign_warning = '▲'
-let g:ale_lint_delay = 200
+" let g:ale_lint_delay = 200
 let g:ale_lint_on_save = 0 " when I ,, lower chance of screwing up from linting -- trial run since i'm not sure this is correct
 let g:ale_sign_column_always = 1
 " let g:ale_set_signs = 0
@@ -338,6 +341,12 @@ if has("autocmd")
     "     autocmd!
     "     autocmd BufWritePost $MYVIMRC source $MYVIMRC
     " augroup END
+    "
+    " TODO FIXME XXX DONE NOTE
+
+        syn match myTodo '\(TODO\|FIXME\|XXX\|DONE\|NOTE\)'
+        syn cluster vimCommentGroup add=myTodo
+        hi def link myTodo Todo
 
     augroup Group1
         autocmd!
