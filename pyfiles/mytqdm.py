@@ -195,7 +195,7 @@ def trange(*args, **kwargs):
 def test():
     import time
     for i in tqdm(range(1000)):
-        time.sleep(0.10)
+        time.sleep(0.03)
 
 
 if __name__ == "__main__":

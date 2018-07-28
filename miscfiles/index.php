@@ -11,13 +11,24 @@ echo $folder;
 </title>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script defer src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js"></script>
+<link defer rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.min.css">
+<link defer rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 <link rel="icon" type="image/png" href="../trashcan.png" />
 
 <style>
+
+mark {
+  padding: 0px;
+  color: #f00;
+  /* color: #733; */
+ /* background: linear-gradient(to right, #f0ad4e 50%, #0ff 50%);*/
+/*  background: linear-gradient(to right, rgb(50,180,180,0.5), #9198e5);*/
+  background: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.29);
+}
 
 #bintablecontainer {
     position: fixed;
@@ -35,6 +46,11 @@ echo $folder;
 
 body {
     font-family: sans-serif;
+}
+
+
+fieldset {
+border-radius: 8px;
 }
 
 #custom-handle {
@@ -57,7 +73,6 @@ top: 5px;
 .box {
 float:left;
 padding: 5px; /* space between image and border */
-border-radius: 5px;
 }
 
 .plot {
@@ -65,28 +80,6 @@ border-radius: 5px;
   text-decoration: none;
   border-bottom: 2px solid #bdb;
 }
-/* /1* can remove if you don't want hover zoom *1/ */
-/* .box:hover */
-/* /1* if only hovering on the inner image is what matters, do .innerimg:hover *1/ */
-/* { */
-/*     box-shadow: 0px 0px 25px #555; */
-/*     z-index: 2; */
-/*     background-color: #fff; */
-/*     -moz-transition:-moz-transform 0.5s ease-out; */ 
-/*     -webkit-transition:-webkit-transform 0.5s ease-out; */ 
-/*     -o-transition:-o-transform 0.5s ease-out; */
-/*     transition:transform 0.5s ease-out; */
-/*     -webkit-transition-delay: 1.0s; */
-/*     -moz-transition-delay: 1.0s; */
-/*     -o-transition-delay: 1.0s; */
-/*     transition-delay: 1.0s; */
-/*     transform: scale(2.3); */
-/*     /1* transform: scale(1.0); *1/ */
-/*     -moz-transform-origin: 0 0; */
-/*     -webkit-transform-origin: 0 0; */
-/*     -o-transform-origin: 0 0; */
-/*     transform-origin: 0 0; */
-/* } */
 
 #images {
 position:relative;
@@ -164,12 +157,10 @@ function draw_objects(file_objects) {
         var txt_str = (fo["txt"].length > 0) ? " <a href='"+fo["txt"]+"' id='"+"text_"+fo["name_noext"]+"'>[text]</a>" : "";
         var extra_str = (fo["extra"].length > 0) ? " <a href='"+fo["extra"]+"' id='"+"extra_"+fo["name_noext"]+"'>[extra]</a>" : "";
         var json_str = (fo["json"].length > 0) ? " <a href='"+jsrootbase+fo["json"]+"' id='"+"json_"+fo["name_noext"]+"'>[js]</a>" : "";
-        // var popout_str = " <a href='#/' id='popout_"+fo["name_noext"]+"'>[popout]</a>";
-        var popout_str = "";
         $("#images").append(
             "<div class='box' id='"+name_noext+"'>"+
                 "    <fieldset style='border:2px solid "+color+"'>"+
-                "        <legend>"+name_noext+txt_str+extra_str+json_str+popout_str+"</legend>"+
+                "        <legend>"+name_noext+txt_str+extra_str+json_str+"</legend>"+
                 "        <a href='"+pdf+"'>"+
                 "            <img class='innerimg' name='"+name_noext+"' src='"+path+"/"+name+"' height='300px' />"+
                 "        </a>"+
@@ -195,9 +186,6 @@ function make_objects(filelist) {
         var ext = f.split('.').pop();
         if (ext != "png") continue;
         var color = "";
-        if (f.indexOf("HH") != -1) color = "#B03A2E";
-        else if (f.indexOf("HL") != -1) color = "#2874A6";
-        else if (f.indexOf("LL") != -1) color = "#32CD32";
         var name = f.split('/').reverse()[0];
         var path = f.replace(name, "");
         var name_noext = name.replace("."+ext,"");
@@ -305,15 +293,6 @@ function register_hover() {
         } 
     );
 
-    $("[id^=popout_]").click( function(){
-        console.log("here");
-        $('#modal').dialog({
-        closeOnEscape: true,
-            width: 'auto',
-            height: 'auto',
-        });
-        $("#modal").html("<img height=700px src='"+ $(this).parent().parent().children("a").children("img").attr("src") + "' />");
-    });
 }
 
 function register_description_hover() {
@@ -380,6 +359,36 @@ $(function() {
             }); 
     }
 
+    var markre = function(pattern) {
+        
+        context=$("legend");
+        context.parent().parent().show();
+        $("#message").html("");
+        context.unmark();
+
+        var modifier = "";
+        if (pattern.toLowerCase() == pattern) modifier = "i"; // like :set smartcase in vim (case-sensitive if there's an uppercase char)
+
+        var regex = new RegExp(pattern,modifier);
+        context.markRegExp(regex,{
+            done: function(counter) {
+                context.not(":has(mark)").parent().parent().hide();
+                console.log(counter);
+                if (counter > 0) {
+                    register_hover();
+                } else {
+                    context.parent().parent().show();
+                    $("#message").html("No matching images!");
+                }
+            },
+        });
+    };
+
+    $( "input[id='filter']" ).on('keyup', function() {
+        var pattern = $(this).val();
+        markre(pattern);
+    });
+
     var handle = $( "#custom-handle" );
     $( "#slider" ).slider({
     value: 100,
@@ -397,62 +406,8 @@ $(function() {
     });
 
 
-        // filelist = filelist.filter(function(value) {
-            // return value.indexOf("./plots/qcdEstimateData_2016_ICHEP_SNT/f_jets_mc/HT450to575_j2toInf_b0toInf") != -1;
-        // });
         var file_objects = make_objects(filelist);
         draw_objects(file_objects);
-
-
-    // drag images and hover over others to overlay
-
-    /* $( ".box" ).draggable({ */
-    /*     opacity: 0.50, */
-    /*     helper: "clone", */
-    /*     snap: true, */
-    /*     revert: true, */
-    /* }); */
-
-    // make map from title of each plot to the html of the title
-    var titleMap = {};
-    var elems = $(".box").filter(function() {
-        var legendTitle = $(this).find("fieldset > legend");
-        titleMap[legendTitle.text()] = legendTitle.html();
-    });
-
-    $( "input[id='filter']" ).on('keyup', function() {
-        $("#message").html("");
-        var pattern = $(this).val();
-        var modifier = "";
-        if(pattern.toLowerCase() == pattern) modifier = "i"; // like :set smartcase in vim (case-sensitive if there's an uppercase char)
-        var elems = $(".box").filter(function() {
-            try {
-            var regex = new RegExp(pattern,modifier);
-            } catch(e) {
-                return [];
-            }
-            var matches = this.id.match(regex);  
-            if(matches) {
-                var legendTitle = $(this).find("fieldset > legend");
-                var to_replace =  titleMap[legendTitle.text()];
-                to_replace = to_replace.replace(matches[0],"<font style='color:#F00'>"+matches[0]+"</font>") ;
-                // console.log(to_replace);
-                legendTitle.html(to_replace);
-            }
-            return matches;
-        });
-        if(pattern.length < 1) {
-            $('.box').show();
-            return;
-        }
-        $('.box').hide();
-        if(elems.length == 0) {
-            $("#message").html("No matching images!");
-        } else {
-            elems.show();
-            register_hover();
-        }
-    });
 
     // if page was loaded with a parameter for search, then simulate a search
     // ex: http://uaf-6.t2.ucsd.edu/~namin/dump/plots_isfr_Aug26/?HH$
@@ -467,28 +422,38 @@ $(function() {
     // register hover for links in description AFTER adding them
     register_description_hover();
 
-
 });
 
 // vimlike incsearch: press / to focus on search box
 $(document).keydown(function(e) {
+    console.log($(event.target));
+    console.log(e.keyCode);
     if(e.keyCode == 191) {
         // / focus search box
         e.preventDefault();
         $("#filter").focus().select();
     }
-    /* if(e.keyCode == 71) { */
-    /*     // G scrolls to bottom, g to top */
-    /*     if (e.shiftKey) { */
-    /*         window.scrollTo(0,document.body.scrollHeight); */
-    /*     } else { */
-    /*         window.scrollTo(0,0); */
-    /*     } */
-    /* } */
-    /* if(e.keyCode == 89) { */
-    /*     // y to copyToClipboard */
-    /*     getQueryURL(); */
-    /* } */
+    if (!$(event.target).is(":input")) {
+        if(e.keyCode== 89) {
+            getQueryURL();
+        }
+        if(e.keyCode == 71) {
+            // G scrolls to bottom, g to top
+            if (e.shiftKey) {
+                window.scrollTo(0,document.body.scrollHeight);
+            } else {
+                window.scrollTo(0,0);
+            }
+        }
+        if(e.keyCode == 83) {
+            // s and shift S to sort a-z or z-a
+            if (e.shiftKey) {
+                $("#images").html($(".box").sort(function (a,b) { return $(a).attr("id") < $(b).attr("id"); }));
+            } else {
+                $("#images").html($(".box").sort(function (a,b) { return $(a).attr("id") > $(b).attr("id"); }));
+            }
+        }
+    }
 });
 
 function copyToClipboard(text) {
@@ -523,7 +488,7 @@ function getQueryURL() {
 
 <div id="description">
 <?php
-$description = file_get_contents("description.txt");
+$description = @file_get_contents("description.txt");
 if( $description ) {
     echo "<br><b>Description:</b><br>";
     echo $description;

@@ -91,6 +91,7 @@ if [[ "$OSNAME" == "Darwin" ]]; then
         # source /Applications/root_v6.10.08/bin/thisroot.sh
 
     else
+        :
         source /Applications/root_v6.12.04/bin/thisroot.sh
     fi
     alias webd='web $(ls -1rtd ~/Downloads/* | tail -n 1)'
@@ -177,6 +178,7 @@ alias xb='xargs -n 1 -I {} sh -c'
 alias xbf='xargs -n 1 -P 20 -I {} sh -c'
 alias tags='ctags -R --exclude=.git' # make tags recursively, then Ctrl] in vim
 alias mountuaf='sshfs namin@uaf-10.t2.ucsd.edu:/home/users/namin /Users/namin/sandbox/uaf  -o Compression=no,follow_symlinks,auto_cache,reconnect,defer_permissions,noappledouble'
+alias unmountuaf='sudo umount -f /Users/namin/sandbox/uaf'
 alias aria='aria2c -j 6 -s 6 -x 6'
 alias v='vim'
 

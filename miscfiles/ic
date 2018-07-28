@@ -26,10 +26,10 @@ function print_st() {
 #   base64contents: Base64-encoded contents
 function print_image() {
     # return if called from within vim
-    if [[ ! -z "$VIMRUNTIME" ]]; then
-        echo "Can't use imgcat in vim :("
-        return
-    fi
+    # if [[ ! -z "$VIMRUNTIME" ]]; then
+    #     echo "Can't use imgcat in vim :("
+    #     return
+    # fi
     print_osc
     printf '1337;File='
     if [[ -n "$1" ]]; then
