@@ -14,21 +14,14 @@ OSNAME=$(uname)
 
 if [ "$TERM" != "dumb" ]; then
     dircolors -b 1>/dev/null 2>/dev/null
-    # eval $(gdircolors ~/.dir_colors) 2>/dev/null
     if (( $? == 0 )); then
-        # if [[ $(uname -a) == Darwin* ]]; then 
-            # alias ls='gls --color=auto --ignore=*.{o,d,aux,pcm,cxx,d,nav,snm,pyc,toc} --ignore=AutoDict*'
-        # else
-            alias ls='ls --color=auto --ignore=*.{d,aux,pcm,d,nav,snm,pyc,toc} --ignore=AutoDict*'
-        # fi
-
+        alias ls='ls --color=auto --ignore=*.{d,aux,pcm,d,nav,snm,pyc,toc} --ignore=AutoDict*'
     else
         alias ls='ls -G'
     fi
 fi
 
 export TERM=xterm-256color
-
 
 # set window title to user@host
 echo -ne "\033]0;${USER}@${HOST}\007"
@@ -47,7 +40,6 @@ red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 purple=$(tput setaf 6)
-# blue=$(tput setaf 4)
 blue="\033[38;5;117m"
 bold=$(tput bold)
 reset=$(tput sgr0)
@@ -68,28 +60,22 @@ alias tmux='tmux -2' # fixes colors in vim
 # this is so we can use <C-s> to forward history search without nuking the terminal
 stty stop ""
 
-
-
 # special host-dependent stuff
 # cmsenv compatibility for ucsd uaf
 export PATH=${HOME}/syncfiles/pyfiles/:${PATH}
 if [[ ${HOST} == *uaf-* ]]; then 
-    # source /code/osgcode/cmssoft/cms/cmsset_default.sh
     source /cvmfs/cms.cern.ch/cmsset_default.sh
     unset SSH_ASKPASS
-    export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
+    # export PATH=/nfs-7/texlive/2015/bin/x86_64-linux:$PATH
     export PATH=/home/users/namin/.local/bin:$PATH # for vim 8
     export PATH=/home/users/namin/.iterm2/:$PATH
     export UCSD="true"
-    # export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 fi
 if [[ "$OSNAME" == "Darwin" ]]; then
 	export PATH=${PATH}:/usr/local/Cellar/python3/3.6.2/bin/
     if [[ ${HOST} == *squark* ]]; then 
         source ~/root/bin/thisroot.sh
         export PATH=${PATH}:/usr/local/Cellar/python3/3.6.2/bin/
-        # source /Applications/root_v6.10.08/bin/thisroot.sh
-
     else
         source /Applications/root_v6.12.04/bin/thisroot.sh
     fi
@@ -125,7 +111,6 @@ elif [[ "${HOST}" == *lxplus* ]]; then iterm2_set_tab_label lxplus ; iterm2_set_
 elif [[ "${HOST}" == *local* || "${HOST}" == *laptop* ]]; then iterm2_set_tab_label local ; iterm2_set_tab_default;
 else iterm2_set_tab_label "???" ; iterm2_set_tab_default ; fi
 
-
 alias l='ls -lG'
 alias ll='ls -lG'
 alias lsa='/bin/ls --color=auto'
@@ -136,157 +121,79 @@ alias afswork='cd /afs/cern.ch/work/n/namin/public/'
 alias hdp='cd /hadoop/cms/store/user/namin/ && ls -l'
 alias grep='grep --color=auto'
 alias ..='cd ..'
-alias gridui='source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh'
 alias ,,='echo "$PWD -> $OLDPWD" && cd $OLDPWD'
 alias cd..='cd ..'
 alias cdl='cd $(ls -1rtd */ | tail -1); lk'
 alias bc='bc -l'
-alias msquark='mosh --server=/usr/local/bin/mosh-server squark.physics.ucsb.edu --bind-server=any'
 alias iroot='command root'
 alias root='root -b -l'
 alias rot='root -b -l -q -n'
-alias gridtick='grid-proxy-init -debug -verify'
 alias voms='voms-proxy-init -hours 168 -voms cms -rfc'
-alias crabscript='source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.sh'
-alias chromecast='cd ~/sandbox/cc/videojs-chromecast/demo/'
 alias brc='vim ~/.bashrc'
 alias vrc='vim ~/.vimrc'
 alias newvim='~/sandbox/vimslc7/vim/bin/vim'
-# alias nvim1='/home/users/namin/sandbox/neovim/nvim-linux64/bin/nvim' # uaf 1
 alias nvim='/home/users/namin/sandbox/neovim/neovim/build/bin/nvim'
 alias em='emacs'
 alias gam='git commit -a -m'
 alias gd='git diff --color | ~/sandbox/diff-so-fancy/diff-so-fancy'
 alias gp='git push'
-# alias gs='git status'
 alias gsu='git status --untracked-files=no'
 alias glog="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-alias rootenv='source ~/root/bin/thisroot.sh'
-alias crabenv='source /cvmfs/cms.cern.ch/crab3/crab.sh'
-# alias usa='source ~/syncfiles/miscfiles/usa.sh'
 alias usa='source ~/syncfiles/miscfiles/nicer_usa.sh'
 alias cond='condor_q $USER'
 alias conf='condor_q $USER -nobatch'
 alias conda='condor_q'
-# alias condt='condor_q $USER -total'
 alias cstat='condor_q $USER | col 6 | drop 4 | head -n -2 | stats'
 alias cstata='condor_q | col 6 | drop 4 | head -n -2 | stats'
 alias dfh='df -h | grep hadoop'
-alias pt='ev; ptpython'
 alias xb='xargs -n 1 -I {} sh -c'
 alias xbf='xargs -n 1 -P 20 -I {} sh -c'
 alias tags='ctags -R --exclude=.git' # make tags recursively, then Ctrl] in vim
 alias mountuaf='sshfs namin@uaf-10.t2.ucsd.edu:/home/users/namin /Users/namin/sandbox/uaf  -o Compression=no,follow_symlinks,auto_cache,reconnect,defer_permissions,noappledouble'
 alias aria='aria2c -j 6 -s 6 -x 6'
 alias v='vim'
-
 alias icl='natsort.py | tail -n 1 | xargs ic'
-
 alias rrnd='rnd "root -l" .root'
 alias rndic='rnd ic'
 alias crnd='rnd cd'
+alias vsp='vim -O'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
-    alias fullfast="cd ~/sandbox/fullfastjets/"
-    # alias lumi="cd ~/dataTuple/2016D/NtupleTools/dataTuple/  ; cd cms3withCondor/CMSSW*/ ; cmsenv; crabenv; cd -; python findMissingLumis.py | tee lumiSummary.txt"
-    alias dt="cd ~/dataTuple/reminiaod/NtupleTools/dataTuple/"
-    # alias redt="cd ~/dataTuple/rereco/NtupleTools/dataTuple/"
-    alias mc="cd ~/2016/forSicheng/9Mar17"
-    alias higgs="cd ~/2016/higgs/CMSSW_7_1_12/prod/GenLHEfiles/Run2Mechanism; cmsenv; . setupGenEnv.sh"
-    alias ftgen="cd ~/2017/madgraph/newermg/CMSSW_7_1_12/prod/GenLHEfiles/Run2Mechanism; cmsenv; . setupGenEnv.sh"
-    alias gen="cd /home/users/namin/2016/higgs/take2/gensim/CMSSW_7_1_20_patch3/crab ; cmsenv; crabenv;"
-    alias jsroot="cd ~/public_html/dump/jsroot"
-    alias remerge="cd ~/dataTuple/2016D/NtupleTools/dataTuple/remerge/"
-    alias vdl="vim /nfs-7/userdata/dataTuple/nick/dataTuple.log"
-    alias vdlm="vim /nfs-7/userdata/dataTuple/mark/dataTuple.log"
-    alias vdt="tail -f /nfs-7/userdata/dataTuple/nick/dataTuple.log"
-    # alias revdl="vim /nfs-7/userdata/dataTuple/nick_reproc/dataTuple.log"
     alias em="/home/users/namin/sandbox/emacs-25.1/src/emacs -nw"
-    alias vdr="rm /nfs-7/userdata/dataTuple/nick/running.pid"
-    alias lumi="ev; crabenv; dt; python findMissingLumis.py | tee lumiSummary.txt"
-    # alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/CMSSW_8_0_20/; cmsenv; cd -"
     alias ev="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_9_2_8; cmsenv; cd -"
     alias ev9="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_9_2_8; cmsenv; cd -"
     alias ev10="cd /cvmfs/cms.cern.ch/slc7_amd64_gcc630/cms/cmssw/CMSSW_10_2_0_pre6/ ; cmsenv ; cd -"
-    alias ev74="cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14/; cmsenv; cd -"
-    alias met="cd ~/2015/met/CMSSW_7_4_4_patch1/src/DataSleuth/DataSleuth/test/plotMET/; cmsenv "
     alias nano="cd ~/sandbox/noroot/nano/NanoTools/python ; ev9"
-    # alias ss="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
-    alias ss74="cd ~/2016/ss/SSAnalysis/; . setup.sh;"
-    alias ss76="cd ~/2016/ss/76x/SSAnalysis/; . setup.sh;"
-    alias ss80="cd ~/2016/ss/80x/SSAnalysis/; . setup.sh;"
     alias ssm="cd ~/2016/ss/master/SSAnalysis/; . setup.sh"
     alias ssan="cd ~/2016/ssan/tex/notes/AN-16-386/trunk;"
     alias ssp="cd ~/2016/ssan/tex/notes/SUS-16-035/trunk;"
     alias sspp="cd ~/2016/ssan/tex/papers/SUS-16-035/trunk;"
     alias ftan16="cd ~/2017/fouran/tex/notes/AN-17-115/trunk;"
     alias ftan="cd ~/2018/fourtop/tex/notes/AN-18-062/trunk;"
-    # alias ftp="cd ~/2017/fouran/tex/notes/TOP-17-009/trunk;"
     alias ftp="cd ~/2017/fouran/tex/papers/TOP-17-009/trunk;"
     alias ft="cd ~/2017/fourtop; . setup.sh"
     alias ft8="cd ~/2018/fourtop/FTAnalysis/; . setup.sh"
     alias ft80="cd ~/2018/fourtop/80x/FTAnalysis/; . setup.sh"
     alias ft94="cd ~/2018/fourtop/94x/FTAnalysis/; . setup.sh; cd analysis; lk"
     alias ft2018="cd ~/2018/fourtop/run2/FTAnalysis/; . setup.sh; "
-    alias lim="cd ~/2016/ss/master/SSAnalysis/cards; cd CMSSW_7_1_6; cmsenv; cd .."
-    alias jec2015="cd ~/2015/jec/an2013_131/CMSSW_7_4_1_patch1/src/JetMETAnalysis/JetAnalyzers/test; cmsenv"
-    alias jec="cd ~/2016/jec/CMSSW_8_0_5_patch1/src/JetMETAnalysis/JetAnalyzers/test/; cmsenv"
-    alias hcal="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
-    # alias hlt="cd /home/users/namin/2017/hlt/CMSSW_9_0_0_pre6/src/HLTrigger/Configuration/test; cmsenv"
-    # alias hlt="cd /home/users/namin/2017/hlt/cms3/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
-    alias hlt="cd ~/2017/hlt/CMSSW_8_0_24/src/HLTAnalysis/TriggerAnalyzer/python ;  cmsenv"
-    alias four="ssm; cd ~/2016/ss/master/SSAnalysis/yieldsAndSRs/numericYields/tttt/baby;"
-    alias halo="cd ~/sandbox/halofake/CMSSW_7_4_7_scanningNick/src/; cmsenv"
-    alias jets="cd ~/2017/jets/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv "
-    alias slim="cd /home/users/namin/2017/slimming/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
-    alias slimr="cd /home/users/namin/2017/slimming/retry/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
-    alias slimold="cd /home/users/namin/2017/slimming/old/CMSSW_8_0_26_patch1/src/CMS3/NtupleMaker/test; cmsenv"
-    alias aging="cd ~/2017/csc/aging/CMSSW_8_1_0/src/DPGAnalysis/MuonSysAging/test; cmsenv"
-    alias cscval="cd ~/2017/csc/cscval/CMSSW_9_1_1/src/CSCValidationRunning/AutoValidation; cmsenv"
+    alias ftall="cd ~/2018/fourtop/all/FTAnalysis/; . setup.sh; "
     alias me42="cd ~/2018/me42/plotting; ev9"
-    alias cscvalzmm="cd ~/2017/csc/cscval/CMSSW_9_1_1_patch1/src/CSCValidationRunning/RecoLocalMuon/CSCValidation/src; cmsenv"
-    alias sm="cd ~/Software/slideMaker/; ls -lrth"
-    alias sms="cd ~/2015/sms/CMSSW_7_4_1_patch4; cmsenv; cd ../crab/; source /cvmfs/cms.cern.ch/crab3/crab.sh; ls -lrth"
-    alias tnp="cd ~/2015/tnp/CMSSW_7_4_2/src/TagAndProbe/Analysis; cmsenv "
     alias gan="cd ~/2017/gan/DY-GAN/gan/ ; ev9"
-    alias fr="ev9; cd ~/2017/ProjectMetis/LeptonBabyMaker/SSAnalysis/FakeRate/measurement_region/plotting"
-    alias cell="cd ~/sandbox/cellfilter/CMSSW_7_4_6/src; cmsenv; ls -lrth"
-    alias mks="cd ~/public_html/makers; ls -lrth"
-    alias tdis="cd ~/public_html/makers/test_disMaker; ls -lrth"
     alias dis="cd ~/public_html/makers/disMaker; ls -lrth"
     alias ds="dis_client.py -t snt"
-    alias 76x="cd /home/users/namin/2015/76x/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
-    alias new76x="cd /home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
-    alias 74x="cd /home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
-    alias 80x="cd ~/2016/80x_Apr8/CMSSW_8_0_3_patch1/src/CMS3/NtupleMaker/test; cmsenv; ls -lrth"
-    alias duck="cd ~/duck_80x/NtupleTools/AutoTwopler"
-    alias moriond="cd ~/2016/moriond/NtupleTools/AutoTwopler/"
-    alias ichep="cd /home/users/namin/2016/ichep/NtupleTools/AutoTwopler/"
-    alias cms4="cd /home/users/namin/2017/cms4/NtupleTools/AutoTwopler"
-
-    alias eleold="cd ~/2017/elemva/scanner/ ; ev9"
-    alias ele="metis; cd ~/2017/ProjectMetis/elemva/CMSSW_8_0_28/src/electronML/Analysis/postprocessing/; source setup.sh"
-
+    alias ele="metis; cd ~/2017/ProjectMetis/elemva/CMSSW_8_0_28/src/electronML/Analysis/postprocessing/; source setup.sh; cd ../new/"
     alias metis="cd ~/2017/ProjectMetis; source setup.sh"
-    alias metisweb="cd ~/public_html/dump/metis_test/"
     alias mrun="cond -w | grep Metis | col 10 | cut -d'/' -f8 | stats"
-    alias lepton="cd ~/2016/ss/master/LeptonBabyMaker/CMSSW_8_0_5_patch1; cmsenv ; cd ../"
-
     alias lu='lumi_utils.py'
     alias sb='cmsenv; cd $CMSSW_BASE ; scram b -j10; cd -'
-    alias sbf='cmsenv; cd $CMSSW_BASE ; scram b -f -j10 ; cd -'
-
     alias mp="./make | tee temp.txt ; cat temp.txt | grep 'PDF Output file:' | cut -d: -f2 | xargs -n 1 -I {} sh -c 'web {}'";
-
 fi
 
 if [[ "$OSNAME" == "Darwin" ]]; then
-    alias osu="mono ~/sandbox/lazer/osu/osu.Desktop/bin/Release/osu\!.exe"
     alias mks="cd ~/sandbox/makers; ls -lrth"
     alias metis="cd ~/sandbox/ProjectMetis; source setup.sh"
     alias dump="cd ~/public_html/dump/"
-
     bwf() {
         cd  ~/sandbox/bwf/ 
         python main.py & 
@@ -295,46 +202,25 @@ if [[ "$OSNAME" == "Darwin" ]]; then
         fg
         cd -
     }
-
 fi
 
-
 # ssh
-alias fnal='kinit -A -f namin@FNAL.GOV; ssh -2 namin@cmslpc-sl5.fnal.gov'
-alias lxplus5='ssh namin@lxplus5.cern.ch'
 alias lxplus='ssh namin@lxplus.cern.ch'
-alias brazos='ssh amin.nj@login.brazos.tamu.edu'
-alias hurr='ssh amin.nj@hurr.tamu.edu'
-alias oldschool='ssh amin.nj@oldschool.tamu.edu'
-alias ucsb='ssh namin@squark.physics.ucsb.edu'
 alias fino='ssh namin@uafino.physics.ucsb.edu'
 alias squark='ssh namin@squark.physics.ucsb.edu'
-alias io='ssh amin.nj@io.physics.tamu.edu'
-alias grad='ssh namin@gshell.physics.ucsb.edu'
 alias pi='ssh pi@192.168.0.21'
-alias officepi='ssh pi@128.111.19.91'
-#alias eos='ssh namin@eos.tamu.edu'
 alias ela='ssh namin@ela.cscs.ch'
 alias daint='ssh daint'
-
-
 alias stats='~/syncfiles/pyfiles/stats.py'
 alias histo='~/syncfiles/pyfiles/histo.py'
-alias tabletex='~/syncfiles/pyfiles/tabletex.py'
-alias plottex='source ~/syncfiles/miscfiles/plottex.sh'
-alias das='python ~/syncfiles/miscfiles/das/das.py'
 alias killssh='ps aux | grep ssh | grep localhost | col 2 | xargs kill -9'
 alias tunnel80='ssh -N -f -L localhost:8880:localhost:8880 uaf-1.t2.ucsd.edu'
 alias tunnel90='ssh -N -f -L localhost:8890:localhost:8890 uaf-1.t2.ucsd.edu'
 alias tunnel92='ssh -N -f -L localhost:8892:localhost:8892 uaf-1.t2.ucsd.edu'
 alias tunnel93='ssh -N -f -L localhost:8893:localhost:8893 uaf-1.t2.ucsd.edu'
 
-#Make history more useful - stolen from alex
-
-# export PROMPT_COMMAND="history -a"
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000
-# export HISTTIMEFORMAT='%F %T '
 export HISTCONTROL=ignoreboth
 
 shopt -s cmdhist #(combine multiline commands)
@@ -344,13 +230,9 @@ export PYTHONPATH="$HOME/syncfiles/pyfiles:${PYTHONPATH}"
 export PYTHONPATH="$HOME/syncfiles:${PYTHONPATH}"
 # Fix spelling errors for cd
 shopt -s cdspell
-# git config --global alias.co checkout
-# git config --global alias.ci 'commit -a -m'
-# Disable annoying mail messages
 unset MAILCHECK
 alias d='cd ~/desktop/'
 
-#Add path - stolen from Alex
 pathadd(){
     if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then PATH="${PATH:+"$PATH:"}$1"; fi
     if [ -d "$1" ] && [[ ":$PYTHONPATH:" != *":$1:"* ]]; then PYTHONPATH="${PYTHONPATH:+"$PYTHONPATH:"}$1"; fi
@@ -450,10 +332,6 @@ function hcorrupt() {
     done
 }
 
-# function cond() {
-#     condor_q namin -constraint 'JobStatus != 3' -autoformat:t ClusterId JobStatus CMD ARGS
-# }
-
 function myram() {
     user=$USER
     if [ ! -z "$1" ]; then user="$1"; fi
@@ -469,20 +347,6 @@ function mjobsr() {
     conf -w -const 'taskname =!= UNDEFINED' | grep hadoop | grep " R " | col 10 | pyline.py 'x.split("_Tune")[0].split("_13TeV")[0].split("_MINIAOD")[0].rstrip("/").rsplit("/")[-1]' | stats
 }
 
-function dtprogress1() {
-    base="/home/users/namin/dataTuple/reminiaod/NtupleTools/dataTuple"
-    # if we're sweeprooting files on notDoneList
-    echo "$(grep -n $(tail /nfs-7/userdata/dataTuple/nick/dataTuple.log -n 50 | tac | grep '/store/data/' | head -n 1 | sed -n 's#.*\(/store/data/[A-Za-z0-9\/\_\.-]\+\).*#\1#p') ${base}/notDoneList.txt | cut -d: -f1)" $(wc -l ${base}/notDoneList.txt | cut -d' ' -f1)
-    
-}
-
-function dtprogress2() {
-    base="/home/users/namin/dataTuple/reminiaod/NtupleTools/dataTuple"
-    # if we're submitting files
-    echo "$(tail /nfs-7/userdata/dataTuple/nick/dataTuple.log -n 50 | tac | grep "^submitting" | awk '{print $5}' | head -n 1)" $(wc -l ${base}/filesToSubmit.txt | cut -d' ' -f1)
-}
-
-# function say() { mplayer -really-quiet "http://translate.google.com/translate_tts?tl=en&q=$*"; }
 function mailme() {
 if [ $? -eq 0 ]
 then str="[UAFNotify] Command ended SUCCESSFULLY on $(date) with status code $?"
@@ -500,49 +364,50 @@ function utc {
     fi
 }
 
-function quad {
-    python -c "from errors import E; print (E(0.0,$1)+E(0.0,$2)).err"
-}
-
-function xwin {
-# if ps | grep XWin | grep -v "grep" >& /dev/null; then
-# echo "xwin already running."
-startxwin >& /dev/null &
-# else
-# startxwin >& /dev/null &
-# fi
-}
-
-# for those times when you forget you're not in vim
-# and want to open things in vertical split
-function vsp {
-vim -O $1 $2
-}
-
 function show_and_add_to_clipboard {
-if [ -n "$WINDOW" ]; then
-    echo -e "\033P\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHISNOW\033\033]1337;EndCopy\a\033\\" # for screen
-    # echo -e "\033Ptmux;\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHIS\033\033]1337;EndCopy\a\033\\" # for tmux
-else
-    echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a" # for normal term
-fi
-}
-function pg {
-PWD1=`pwd`
-PWD2=$1
-cmd="readlink"
-if [[ "$OSNAME" == "Darwin" ]]; then
-    cmd="greadlink"
-fi
-if [ -e $PWD1/$PWD2 ] ; then
-    PWD3=$PWD1/$PWD2
-    show_and_add_to_clipboard `$cmd -f $PWD3`
-else
-    if [ -e $PWD2 ]; then 
-        show_and_add_to_clipboard `$cmd -f $PWD2`
+    if [ -n "$WINDOW" ]; then
+        echo -e "\033P\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHISNOW\033\033]1337;EndCopy\a\033\\" # for screen
+        # echo -e "\033Ptmux;\033\033]1337;CopyToClipboard=;\aIWANTTOCOPYTHIS\033\033]1337;EndCopy\a\033\\" # for tmux
+    else
+        echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a" # for normal term
     fi
-fi
 }
+
+function pg {
+    PWD1=`pwd`
+    PWD2=$1
+    cmd="readlink"
+    if [[ "$OSNAME" == "Darwin" ]]; then
+        cmd="greadlink"
+    fi
+    if [ -e $PWD1/$PWD2 ] ; then
+        PWD3=$PWD1/$PWD2
+        if [ -z $NOCLIP ]; then
+            show_and_add_to_clipboard `$cmd -f $PWD3`
+        else
+            echo `$cmd -f $PWD3`
+        fi
+    else
+        if [ -e $PWD2 ]; then 
+            if [ -z $NOCLIP ]; then
+                show_and_add_to_clipboard `$cmd -f $PWD2`
+            else
+                echo `$cmd -f $PWD3`
+            fi
+        fi
+    fi
+}
+export -f pg
+
+function pic {
+    tmp=$(NOCLIP=1 pg $1)
+    one="MY"
+    two="IMGCAT"
+    echo -n "${one}_${two} ${tmp}"
+    sleep 0.01s;
+    echo -e "\rx"
+}
+export -f pic
 
 function sc {
 inpName=$1
@@ -620,33 +485,6 @@ function condh {
     condor_q -l $1 | grep -i "hold"
 }
 
-
-function pdftoppt {
-if [[ $* == *-h* ]]; then
-    echo "Usage: pdftoppt [optional text file]"
-    echo "   Optionally, a text file can be used to format the layout of the "
-    echo "   slides. Each line specifies a slide, and there are 3 possible formats:"
-    echo "      - 'a.pdf b.pdf' (places plots side-by-side on slide) "
-    echo "      - 'a.pdf b.pdf' (places plots side-by-side on slide) "
-    echo "      - 'a.pdf' (places one plot on entire slide)"
-    echo "      - 'text a.pdf' (text keyword says that a textbox will "
-    echo "                      take its place. Only works on left side)" 
-else
-    python ~/syncfiles/miscfiles/pdfppt/slides.py $*
-fi
-}
-
-function alarm {
-if [ $# -lt 2 ]; then
-    echo "usage: alarm <seconds> <msg>"
-    return 1
-fi
-local wait=$1
-shift
-(sleep $wait 2>/dev/null && echo -e "\n!!\n$*\n!!\n" && echo -e "\a" &)
-
-}
-
 function drop {
 # drops the first n lines
 if [ $# -lt 1 ]; then
@@ -676,6 +514,7 @@ dest="."
 if [ $# -gt 1 ]; then
     dest=$2
 fi
+echo xrdcp root://xrootd.unl.edu/$1 $dest
 xrdcp root://xrootd.unl.edu/$1 $dest
 }
 # export so this can be used in other scripts
@@ -686,34 +525,6 @@ msg=$@
 git commit -a -m $msg
 git push
 }
-
-# function nevts {
-# fpatt=$1
-# [[ $fpatt == /store/* ]] && fpatt="root://cmsxrootd.fnal.gov//$fpatt"
-# if [ $# -gt 1 ]; then
-#     if [ $# -gt 2 ]; then
-#         stuff='("'$fpatt'","'$2'","'$3'")'
-#     else
-#         stuff='("'$fpatt'","'$2'")'
-#     fi
-# else
-#     stuff='("'$fpatt'")'
-# fi
-# eval "root -b -q -l '~/syncfiles/miscfiles/counts.C${stuff}' 2>&1 | grep Events | cut -d ' ' -f2"
-# }
-# # export so this can be used in other scripts
-# export -f nevts
-
-function rch {
-if [ $# -gt 1 ]; then
-    stuff='("'$1'","'$2'")'
-else
-    stuff='("'$1'")'
-fi
-    
-eval "root -l '~/syncfiles/miscfiles/rch.C${stuff}'"
-}
-export -f rch
 
 function branches {
 # dumps branches of root file
@@ -743,12 +554,8 @@ hadoop fs -du -s /cms/store/user/${USER}/*
 
 function ucsd {
 if [ $# -lt 1 ]; then
-    # xwin
-    # ssh -X namin@uaf-10.t2.ucsd.edu
-    # ssh -X namin@uaf-10.t2.ucsd.edu
     ssh namin@uaf-10.t2.ucsd.edu
 else
-    # ssh -X namin@uaf-${1}.t2.ucsd.edu
     ssh namin@uaf-${1}.t2.ucsd.edu
 fi
 }
@@ -827,22 +634,6 @@ function uls {
     web_slides $(ls -1rth ~/Desktop/Slides/*pdf | tail -1)
 }
 
-# function rweb {
-# if [ $# -gt 0 ]; then
-#     chmod -R a+r $@
-#     if [[ $(hostname) == *uaf-* ]]; then 
-#         cp -rp $@ ~/public_html/dump/jsroot/files/
-#     else
-#         scp -rp $@ ${USER}@uaf-8.t2.ucsd.edu:~/public_html/dump/jsroot/files/
-#     fi
-#     for file in "$@"; do
-#         echo "http://uaf-8.t2.ucsd.edu/~${USER}/dump/jsroot/index.htm?file=files/$(basename $file)"
-#     done
-# else
-#     echo "Usage: rweb <input root files>"
-# fi
-# }
-# export -f rweb
 function rweb {
 if [ $# -gt 0 ]; then
     chmod -R a+r $1
@@ -868,40 +659,6 @@ export -f niceplots
 # can also call as 
 # $ NOCONVERT=true niceplots blah blah
 # to not convert pdf->png
-
-function package {
-if [ $# -gt 0 ]; then
-    . ~/syncfiles/miscfiles/package.sh $1
-else
-    echo "Usage: package <folder name>"
-    echo "   Optionally, a details.txt file inside the folder"
-    echo "   can be used to place labels on the plots."
-    echo "   For plots that you want details on, a line like"
-    echo "      h1D_pt.pdf: pt of all jets"
-    echo "   must be present. ':' is delimiter, and pdf name must match"
-fi
-}
-
-function addnumbers {
-# useful links:
-# http://stackoverflow.com/a/9033109
-# http://www.markkurossi.com/genscript/FAQ.html
-# note that numbers.pdf is in a 4:3 aspect ratio!
-if [ $# -gt 0 ]; then
-    input="$1"
-    output="${input}.pages"
-    if [[ $* == *--wide* ]]; then
-        numbersFile=numbersWide.pdf
-    else
-        numbersFile=numbers.pdf
-    fi
-    numbers="${HOME}/syncfiles/miscfiles/pdfnumbers/${numbersFile}"
-    pdftk "$input" multistamp "$numbers" output "$output"
-    mv $output $input
-else
-    echo "Usage: addnumbers <pdf file> [--wide]"
-fi
-}
 
 function myip {
     curl "http://icanhazip.com/"
@@ -951,7 +708,6 @@ function simulation_to_sp() {
         rm -f $pdffile.tmp-e
     done
 }
-
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 if [ -d ~/.bash_completion.d ]; then

@@ -7,16 +7,25 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-jdaddy'
+Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-apathy'
+Plug 'tpope/vim-repeat'
 Plug 'godlygeek/tabular', { 'on' : 'Tab' }
 Plug 'itchyny/lightline.vim'
-Plug 'ervandew/supertab'
+Plug 'Yggdroot/indentLine'
+Plug 'itchyny/vim-cursorword'
 Plug 'w0rp/ale', { 'for': 'python' }
 Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 Plug 'machakann/vim-swap'
 Plug 'romainl/vim-qlist' " [I
 Plug 'AndrewRadev/splitjoin.vim' " gJ, gS
 Plug 'airblade/vim-gitgutter'
+Plug 'adelarsq/vim-matchit'
 Plug 'aminnj/vim-lazytools', { 'for': 'cpp' }
+Plug 'chrisbra/vim-diff-enhanced'
+Plug 'ervandew/supertab'
+Plug 'google/yapf', { 'rtp': 'plugins/vim', 'for': 'python' }
+
 
 call plug#end()
 
@@ -26,9 +35,6 @@ set encoding=utf-8
 
 syntax on
 
-
-" zR to open all folds
-" zM to close them again
 
 " ====== Theme {{{
 set background=dark
@@ -60,15 +66,19 @@ hi link SpellBad Error
 hi link ALEWarning SpellCap
 hi link ALEError SpellBad
 hi link ALEErrorSign Error
+
 hi GitGutterAdd ctermbg=none ctermfg=2
 hi GitGutterDelete ctermbg=none ctermfg=202
 hi GitGutterChange ctermbg=none
 hi GitGutterChangeDelete ctermbg=none
 
+" invisible
+hi Empty ctermfg=234 ctermbg=none
+
 " }}}
 " ====== Settings {{{
 
-" cursor changing escape sequences in iTerm
+" fun cursor changing escape sequences in iTerm
 let &t_SI = "\<Esc>]1337;CursorShape=1\x7\<Esc>]1337;SetKeyLabel=status=✍️\x7"
 let &t_SR = "\<Esc>]1337;CursorShape=2\x7\<Esc>]1337;SetKeyLabel=status=🔥\x7"
 let &t_EI = "\<Esc>]1337;CursorShape=0\x7\<Esc>]1337;SetKeyLabel=status=🛑 \x7"
@@ -105,7 +115,7 @@ set nowrap
 set wildmenu                      " Turn on wild menu for tab command completion
 set wildmode=list:longest,full
 set wildignorecase
-set wildignore=*.pyc,*.so,*.o,*.pkl,*.png,*.pdf,*.root
+set wildignore=*.pyc,*.so,*.o,*.pkl
 set ruler                         " Turn ruler on to show position
 set splitbelow                    " Open new split panes to the bottom
 set splitright                    " ...and right, which is more natural
@@ -143,7 +153,11 @@ set undofile                " Save undos after file closes
 set undolevels=100         " How many undos
 set undoreload=10000        " number of lines to save for undo
 set fillchars+=vert:\│       " Smooth vertical bar
+set shortmess+=c " Hide match 1 of 2, back at original, etc.
 " set foldmethod=marker
+
+" zR to open all folds
+" zM to close them again
 
 
 " }}}
@@ -181,6 +195,7 @@ inoremap kj <Esc>
 inoremap kJ <Esc>
 inoremap KJ <Esc>
 inoremap Kj <Esc>
+cnoremap kj <C-c>
 
 " mash to move
 noremap K 5<up>
@@ -198,7 +213,8 @@ tnoremap <C-k> <C-w>k
 " tnoremap <C-p> <C-w>"0
 
 
-nnoremap <space> %
+" no 'nore' because I want to use matchit
+nmap <space> %
 
 " maintain line joining even though J remapped
 nnoremap <leader>j J
@@ -264,13 +280,20 @@ map 0 ^
 
 iab xdate <c-r>=strftime("%I:%M%p\ \%a\ %b\ %d,\ %Y")<cr>
 abbr ifnm if __name__ == "__main__":
-abbr allimps import os<CR>import sys<CR>import math<CR>
+abbr impall import os<CR>import sys<CR>import numpy as np<CR>
 abbr coutline std::cout << __LINE__ << std::endl;
+inoreabbrev <expr> #!! "#!/usr/bin/env" . (empty(&filetype) ? '' : ' '.&filetype)
 
 " }}}
 
-" ====== Misc plugin settings {{{
+" ====== Diff mode {{{
+" started In Diff-Mode set diffexpr (plugin not loaded yet)
+if &diff
+    let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
+endif
+" }}}
 
+" ====== Misc plugin settings {{{
 
 " ====== Lightline {{{
 
@@ -290,6 +313,16 @@ let g:lightline = {
             \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
             \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
             \ }
+
+" }}}
+
+" ====== Gitgutter {{{
+
+let g:gitgutter_sign_added = '┃'
+let g:gitgutter_sign_modified = '┃'
+let g:gitgutter_sign_removed = '┃'
+let g:gitgutter_sign_removed_first_line = '┃'
+let g:gitgutter_sign_modified_removed = '┃'
 
 " }}}
 
@@ -328,39 +361,35 @@ let g:ale_pattern_options = {
 
 " }}}
 
+" ====== Indentguides {{{
+
+let g:indentLine_char = '│'
+
 " }}}
+
+" }}}
+
 
 " ====== Autocommands {{{
 
-" this is why I made a group for autocommands:
-" http://stackoverflow.com/questions/15353988/progressively-slower-reloading-time-of-vimrc
-
 if has("autocmd")
 
-    " augroup reload_vimrc
-    "     autocmd!
-    "     autocmd BufWritePost $MYVIMRC source $MYVIMRC
-    " augroup END
-    "
-    " TODO FIXME XXX DONE NOTE
-
-        syn match myTodo '\(TODO\|FIXME\|XXX\|DONE\|NOTE\)'
-        syn cluster vimCommentGroup add=myTodo
-        hi def link myTodo Todo
+    augroup vimrc_todo
+        au!
+        au Syntax * syn keyword MyTodo TODO OPTIMIZE DONE NOTE
+                    \ containedin=.*Comment,vimCommentTitle contained
+    augroup END
+    hi def link MyTodo Todo
 
     augroup Group1
         autocmd!
         filetype plugin indent on
-
-
         " restore cursor position when opening a file
         au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
+        autocmd BufNewFile,BufRead *.icc set filetype=cpp
         autocmd BufEnter,BufNew *.txt set commentstring=\#\ %s
         " close vim if only nerdtree is left
         autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-        " autocmd InsertEnter * silent !~/.iterm2/it2setkeylabel set status Insert
-        " autocmd InsertLeave * silent !~/.iterm2/it2setkeylabel set status Normal
         autocmd InsertLeave * set nopaste
         autocmd FileType crontab set nobackup nowritebackup
         " hack? when hitting ,, ALE will try to 'run' again and this screws up colors, so disable and then re-enable
@@ -376,7 +405,6 @@ if has("autocmd")
         autocmd FileType sh nnoremap <leader>rr :w <bar> call Termrun("sh ")<CR>
         autocmd FileType vim nnoremap <leader><leader> :w <bar> source %<CR>
         autocmd FileType c,cpp nnoremap <leader>cp :call lazytools#CoutTokens()<CR>
-
         " vim-commentary
         autocmd FileType c set commentstring=\/\/\ %s
         autocmd FileType cpp set commentstring=\/\/\ %s
@@ -428,16 +456,30 @@ function! SpotifyUpdate()
     let g:spotify_song = '♪ ' . artist . ' - ' . name . ' ♪'
 endfunction
 function! SpotifyToggle()
-    :call system("osascript -e 'tell application \"Spotify\" to playpause'")
-    :call SpotifyUpdate()
+    if !exists('$UCSD')
+        :call system("osascript -e 'tell application \"Spotify\" to playpause'")
+        :call SpotifyUpdate()
+    else
+        " make a trigger for 'run command' in iterm with the concatenated
+        " below text and the osascript command to run
+        :echohl Empty | echo "SPOTIFY_"."TOGGLE" | echohl Normal
+    endif
 endfunction
 function! SpotifyNext()
-    :call system("osascript -e 'tell application \"Spotify\" to next track'")
-    :call SpotifyUpdate()
+    if !exists('$UCSD')
+        :call system("osascript -e 'tell application \"Spotify\" to next track'")
+        :call SpotifyUpdate()
+    else
+        :echohl Empty | echo "SPOTIFY_"."NEXT" | echohl Normal
+    endif
 endfunction
 function! SpotifyPrevious()
-    :call system("osascript -e 'tell application \"Spotify\" to previous track'")
-    :call SpotifyUpdate()
+    if !exists('$UCSD')
+        :call system("osascript -e 'tell application \"Spotify\" to previous track'")
+        :call SpotifyUpdate()
+    else
+        :echohl Empty | echo "SPOTIFY_"."PREVIOUS" | echohl Normal
+    endif
 endfunction
 function! GetSong()
     return g:spotify_song
