@@ -184,7 +184,7 @@ function make_objects(filelist) {
     for (var i = 0; i < filelist.length; i++) {
         var f = filelist[i];
         var ext = f.split('.').pop();
-        if (ext != "png") continue;
+        if ((ext != "png") && (ext != "svg") && (ext != "gif")) continue;
         var color = "";
         var name = f.split('/').reverse()[0];
         var path = f.replace(name, "");
@@ -339,7 +339,7 @@ $(function() {
         binInfo = json;
         console.log(json); // this will show the info it in firebug console
     });
-    if (<?php echo $num_directories?> > 0) {
+    if (<?php echo $num_directories ?> > 0) {
         $('#jstree_demo_div')
             .on('changed.jstree', function(e,data) {
                 draw_filtered(data.selected);
@@ -352,9 +352,6 @@ $(function() {
                     },
                     "data": 
                         obj
-                    // test_data
-                    // test_data2
-                    
                 }
             }); 
     }
