@@ -11,6 +11,9 @@ rm -f ~/.bashrc && ln -s ~/syncfiles/dotfiles/bashrc ~/.bashrc
 rm -f ~/.screenrc && ln -s ~/syncfiles/dotfiles/screenrc ~/.screenrc
 rm -f ~/.vimrc && ln -s ~/syncfiles/dotfiles/vimrc ~/.vimrc
 rm -f ~/.inputrc && ln -s ~/syncfiles/dotfiles/inputrc ~/.inputrc
+# now get italics via https://alexpearce.me/2014/05/italics-in-iterm2-vim-tmux/
+# and install plugins in vim via :PlugInstall
+# and get monaco patched font for Iterm from https://github.com/mattamizer/patched-monaco/blob/master/Monaco%20for%20Powerline.otf
 ```
 
 ## PYFILES

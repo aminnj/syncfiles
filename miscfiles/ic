@@ -20,10 +20,12 @@ function print_st() {
     fi
 }
 
-# print_image filename inline base64contents
+# print_image filename inline base64contents print_filename
 #   filename: Filename to convey to client
 #   inline: 0 or 1
 #   base64contents: Base64-encoded contents
+#   print_filename: If non-empty, print the filename 
+#                   before outputting the image
 function print_image() {
     # return if called from within vim
     # if [[ ! -z "$VIMRUNTIME" ]]; then
@@ -33,20 +35,28 @@ function print_image() {
     print_osc
     printf '1337;File='
     if [[ -n "$1" ]]; then
-      printf 'name='`echo -n "$1" | base64`";"
+      printf 'name='`printf "%s" "$1" | base64`";"
     fi
-    if $(base64 --version 2>&1 | egrep 'fourmilab|GNU' > /dev/null)
-    then
+
+    VERSION=$(base64 --version 2>&1)
+    if [[ "$VERSION" =~ fourmilab ]]; then
       BASE64ARG=-d
+    elif [[ "$VERSION" =~ GNU ]]; then
+      BASE64ARG=-di
     else
       BASE64ARG=-D
     fi
-    echo -n "$3" | base64 $BASE64ARG | wc -c | awk '{printf "size=%d",$1}'
+
+    printf "%s" "$3" | base64 $BASE64ARG | wc -c | awk '{printf "size=%d",$1}'
     printf ";inline=$2"
+    # printf ";height=25" # https://www.iterm2.com/documentation-images.html
     printf ":"
-    echo -n "$3"
+    printf "%s" "$3"
     print_st
     printf '\n'
+    if [[ -n "$4" ]]; then
+      echo $1
+    fi
 }
 
 function error() {
@@ -54,7 +64,7 @@ function error() {
 }
 
 function show_help() {
-    echo "Usage: imgcat filename ..." 1>& 2
+    echo "Usage: imgcat [-p] filename ..." 1>& 2
     echo "   or: cat filename | imgcat" 1>& 2
 }
 
@@ -79,6 +89,9 @@ while [ $# -gt 0 ]; do
         show_help
         exit
         ;;
+    -p|--p|--print)
+        print_filename=1
+        ;;
     -*)
         error "Unknown option flag: $1"
         show_help
@@ -86,7 +99,8 @@ while [ $# -gt 0 ]; do
       ;;
     *)
         if [ -r "$1" ] ; then
-            print_image "$1" 1 "$(base64 < "$1")"
+            has_stdin=f
+            print_image "$1" 1 "$(base64 < "$1")" "$print_filename"
         else
             error "imgcat: $1: No such file or directory"
             exit 2
@@ -98,7 +112,7 @@ done
 
 # Read and print stdin
 if [ $has_stdin = t ]; then
-    print_image "" 1 "$(cat | base64)"
+    print_image "" 1 "$(cat | base64)" ""
 fi
 
 exit 0
