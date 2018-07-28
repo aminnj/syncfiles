@@ -50,8 +50,7 @@ fi
 # done
 # wait
 
-WD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-INDEXDIR=$WD/index.php
+index=$HOME/syncfiles/miscfiles/index.php
 
 ln -s $index $dir/index.php
 
