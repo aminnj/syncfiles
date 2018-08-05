@@ -44,9 +44,18 @@ blue="\033[38;5;117m"
 bold=$(tput bold)
 reset=$(tput sgr0)
 
-PS="\[$purple\][\D{%r}]\[$reset$blue\] [\u@\h]\[$reset\]"
+fancysep="│"
+
+# PS="\[$purple\][\D{%r}]\[$reset$blue\] [\u@\h]\[$reset\]"
+# if [ -n "$WINDOW" ]; then
+#     PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
+# fi
+# PS+=" \w > "
+# PS1=$PS
+
+PS="\[$purple\]\D{%r} \[$reset\]${fancysep}\[$blue\] \u@\h \[$reset\]${fancysep}"
 if [ -n "$WINDOW" ]; then
-    PS+=" \[\033[01;33m\][${STY##*.}]\[\e[0m\]"
+    PS+=" \[\033[01;33m\]${STY##*.} \[\e[0m\]${fancysep}"
 fi
 PS+=" \w > "
 PS1=$PS
@@ -140,6 +149,7 @@ alias gd='git diff --color | ~/sandbox/diff-so-fancy/diff-so-fancy'
 alias gp='git push'
 alias gsu='git status --untracked-files=no'
 alias glog="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gc="git commit"
 alias usa='source ~/syncfiles/miscfiles/nicer_usa.sh'
 alias cond='condor_q $USER'
 alias conf='condor_q $USER -nobatch'
@@ -159,6 +169,7 @@ alias rrnd='rnd "root -l" .root'
 alias rndic='rnd ic'
 alias crnd='rnd cd'
 alias vsp='vim -O'
+alias xtermcolors='for i in {0..255} ; do printf "\x1b[48;5;%sm%3d\e[0m " "$i" "$i"; if (( i == 15 )) || (( i > 15 )) && (( (i-15) % 6 == 0 )); then printf "\n"; fi; done'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
@@ -196,6 +207,8 @@ if [[ "$OSNAME" == "Darwin" ]]; then
     alias mks="cd ~/sandbox/makers; ls -lrth"
     alias metis="cd ~/sandbox/ProjectMetis; source setup.sh"
     alias dump="cd ~/public_html/dump/"
+    # alias reloadsound='sudo kextload /System/Library/Extensions/AppleHDA.kext'
+    alias reloadsound='sudo launchctl unload /System/Library/LaunchDaemons/com.apple.audio.coreaudiod.plist && sudo launchctl load /System/Library/LaunchDaemons/com.apple.audio.coreaudiod.plist'
     bwf() {
         cd  ~/sandbox/bwf/ 
         python main.py & 
@@ -373,6 +386,10 @@ function show_and_add_to_clipboard {
     else
         echo -e "\033]1337;CopyToClipboard=;\a$@\033]1337;EndCopy\a" # for normal term
     fi
+}
+
+function shorten_url {
+    curl -s "https://git.io/create" --data "url=$1" | sed "s#^#https://git.io/#" | while read data; do show_and_add_to_clipboard $data; done
 }
 
 function pg {
