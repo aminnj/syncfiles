@@ -143,7 +143,7 @@ alias glog="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%
 alias usa='source ~/syncfiles/miscfiles/nicer_usa.sh'
 alias cond='condor_q $USER'
 alias conf='condor_q $USER -nobatch'
-alias conda='condor_q'
+alias conda='condor_q -all'
 alias cstat='condor_q $USER | col 6 | drop 4 | head -n -2 | stats'
 alias cstata='condor_q | col 6 | drop 4 | head -n -2 | stats'
 alias dfh='df -h | grep hadoop'
@@ -159,6 +159,7 @@ alias rrnd='rnd "root -l" .root'
 alias rndic='rnd ic'
 alias crnd='rnd cd'
 alias vsp='vim -O'
+alias json_to_csv='python -c "import json; import csv; import sys; data = json.load(sys.stdin); output = csv.writer(sys.stdout); output.writerow(data[0].keys()); [output.writerow(row.values()) for row in data]"'
 
 # dirs
 if [[ $HOST == *uaf-* ]]; then 
@@ -182,7 +183,7 @@ if [[ $HOST == *uaf-* ]]; then
     alias ftall="cd ~/2018/fourtop/all/FTAnalysis/; . setup.sh; "
     alias me42="cd ~/2018/me42/plotting; ev9"
     alias gan="cd ~/2017/gan/DY-GAN/gan/ ; ev9"
-    alias dis="cd ~/public_html/makers/disMaker; ls -lrth"
+    alias dis="cd ~/public_html/dis; ls -lrth"
     alias ds="dis_client.py -t snt"
     alias ele="metis; cd ~/2017/ProjectMetis/elemva/CMSSW_8_0_28/src/electronML/Analysis/postprocessing/; source setup.sh; cd ../new/"
     alias metis="cd ~/2017/ProjectMetis; source setup.sh"
@@ -190,6 +191,8 @@ if [[ $HOST == *uaf-* ]]; then
     alias lu='lumi_utils.py'
     alias sb='cmsenv; cd $CMSSW_BASE ; scram b -j10; cd -'
     alias mp="./make | tee temp.txt ; cat temp.txt | grep 'PDF Output file:' | cut -d: -f2 | xargs -n 1 -I {} sh -c 'web {}'";
+    alias md="grip README.md --export - > ~/public_html/dump/test_README.html && echo 'http://`hostname`/~namin/dump/test_README.html'"
+    alias sntcsv='ds "*" --json --detail | json_to_csv'
 fi
 
 if [[ "$OSNAME" == "Darwin" ]]; then
@@ -460,7 +463,7 @@ function clog {
     # use it as the number of entries to show, otherwise use it
     # as condor_id
     if [ $# -gt 0 ]; then 
-        num=$(echo $1 | sed 's/\.0//')
+        num=$(echo $1 | sed 's/\..*//')
     fi
     if  [[ $# -gt 0 && "$num" -gt 10000 ]]; then
         temp_file=$(mktemp)
