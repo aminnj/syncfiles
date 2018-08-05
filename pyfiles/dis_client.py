@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 
-import urllib, urllib2, json
+from __future__ import print_function
+
+import json
+try:
+    from urllib2 import urlopen
+    from urllib import urlencode
+except:
+    # python3 compatibility
+    from urllib.request import urlopen
+    from urllib.parse import urlencode
 import sys
 import argparse
 import socket
@@ -24,58 +33,28 @@ Or you can import dis_client and make a query using online syntax and get a json
        dis_client.query(q="..." [, typ="basic"] [, detail=False])
 """
 
-BASE_URL_PATTERN = "http://uaf-{NUM}.t2.ucsd.edu/~namin/makers/disMaker/handler.py"
-HOST = "localhost"
-PORT = 8888
-NBYTES_HEADER = 8
+BASE_URL_PATTERN = "http://uaf-{NUM}.t2.ucsd.edu/~namin/dis/handler.py"
 
-def query(q, typ="basic", detail=False, force_uaf=None):
+def query(q, typ="basic", detail=False):
     query_dict = {"query": q, "type": typ, "short": "" if detail else "short"}
-    url_pattern = '%s?%s' % (BASE_URL_PATTERN, urllib.urlencode(query_dict))
+    url_pattern = '%s?%s' % (BASE_URL_PATTERN, urlencode(query_dict))
 
     data = {}
 
-    # try to connect via socket, and if that fails just do regular web request
-    try:
-        if "uaf-10" not in socket.gethostname():
-            # FIXME later. only hosting socket server on uaf-10,
-            # so no chance on other computers at the moment
-            raise
-        # connect to socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((HOST,PORT))
-
-        # calculate message size and send it
-        msg = json.dumps(query_dict)
-        nbytes = str(len(msg)).zfill(NBYTES_HEADER)
-        s.sendall(nbytes+msg)
-
-        # get received payload size and fetch it
-        nbytes = int(s.recv(NBYTES_HEADER))
-        data = s.recv(nbytes)
-        data = json.loads(data)
-
-        s.close()
-    except:
-
-        # try all uafs in order of decreasing reliability (subjective)
-        # for num in map(str,[10,3,1,8,4,5]):
-        to_try = [1,7,8,10,3,4,5]
-        if force_uaf:
-            to_try = [force_uaf]
-        for num in map(str,to_try):
-        # for num in map(str,[8,10,6,3,4,5]):
-            try:
-                url = url_pattern.replace("{NUM}",num)
-                content =  urllib2.urlopen(url).read()
-                data = json.loads(content)
-                break
-            except: print "Failed to perform URL fetching and decoding (using uaf-%s)!" % num
-            if "test" in BASE_URL_PATTERN: break
+    # try all uafs in order of decreasing reliability (subjective)
+    for num in map(str,[1,7,10,8,3,5,4]):
+        try:
+            url = url_pattern.replace("{NUM}",num)
+            handle =  urlopen(url,timeout=2*60)
+            content =  handle.read() 
+            data = json.loads(content)
+            break
+        except: print("Failed to perform URL fetching and decoding (using uaf-%s)!" % num)
+        if "test" in BASE_URL_PATTERN: break
 
     return data
 
-def listofdicts_to_table(lod):
+def listofdicts_to_table(lod): # pragma: no cover
     colnames = list(set(sum([thing.keys() for thing in lod],[])))
 
     # key is col name and value is maximum length of any entry in that column
@@ -91,8 +70,6 @@ def listofdicts_to_table(lod):
 
     try:
         from pytable import Table
-        if not sys.stdout.isatty():
-            raise Exception
 
         tab = Table()
         tab.set_column_names(colnames)
@@ -100,7 +77,7 @@ def listofdicts_to_table(lod):
         for row in lod:
             tab.add_row([row.get(colname) for colname in colnames])
         tab.sort(column=colnames[0], descending=False)
-
+                
         return "".join(tab.get_table_string())
 
     except:
@@ -116,13 +93,13 @@ def listofdicts_to_table(lod):
                 tmp = tmp % str(thing.get(colname,""))
                 line += tmp
             buff += line + "\n"
-
+                
         return buff
 
-
-def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False, force_uaf=None):
+        
+def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_table=False): # pragma: no cover
     buff = ""
-    data = query(q, typ, detail, force_uaf)
+    data = query(q, typ, detail)
 
     if not data:
         return "URL fetch/decode failure"
@@ -131,7 +108,7 @@ def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_tabl
         return "DIS failure: %s" % data["response"]["fail_reason"]
 
     data = data["response"]["payload"]
-
+    
     if show_json:
         return json.dumps(data, indent=4)
 
@@ -162,7 +139,7 @@ def get_output_string(q, typ="basic", detail=False, show_json=False, pretty_tabl
     buff = buff.rstrip()
     return buff
 
-def test(one=False):
+def test(one=False): # pragma: no cover
 
     queries = [
     {"q":"/*/CMSSW_8_0_5*RelVal*/MINIAOD","typ":"basic","detail":False},
@@ -175,10 +152,10 @@ def test(one=False):
     ]
     if one: queries = queries[3:4]
     for q_params in queries:
-        print get_output_string(**q_params)
+        print(get_output_string(**q_params))
 
 if __name__ == '__main__':
-
+    
     # test(one=True)
 
     parser = argparse.ArgumentParser()
@@ -188,15 +165,14 @@ if __name__ == '__main__':
     parser.add_argument("-j", "--json", help="show output as full json", action="store_true")
     parser.add_argument("-p", "--table", help="show output as pretty table", action="store_true")
     parser.add_argument("-v", "--dev", help="use developer instance", action="store_true")
-    parser.add_argument("-u", "--uaf", help="use particular uaf", default=None,type=int)
     args = parser.parse_args()
 
-
-    if args.dev:
-        print ">>> Using dev instance"
+    
+    if args.dev: 
+        print(">>> Using dev instance")
         BASE_URL_PATTERN = BASE_URL_PATTERN.replace("disMaker","test_disMaker")
 
     if not args.type: args.type = "basic"
 
-    print get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json, pretty_table=args.table, force_uaf=args.uaf)
+    print(get_output_string(args.query, typ=args.type, detail=args.detail, show_json=args.json, pretty_table=args.table))
 
