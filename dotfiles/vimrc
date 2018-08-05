@@ -11,6 +11,7 @@ Plug 'tpope/vim-vinegar'
 " Plug 'tpope/vim-apathy' " slow startup...
 Plug 'tpope/vim-repeat'
 Plug 'godlygeek/tabular', { 'on' : 'Tab' }
+Plug 'tommcdo/vim-lion' " gLip, or glip,
 Plug 'itchyny/lightline.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'itchyny/vim-cursorword'
@@ -74,6 +75,13 @@ hi GitGutterAdd ctermbg=none ctermfg=2
 hi GitGutterDelete ctermbg=none ctermfg=202
 hi GitGutterChange ctermbg=none
 hi GitGutterChangeDelete ctermbg=none
+
+hi DiffAdd  ctermbg=22
+hi DiffDelete term=bold ctermfg=9 ctermbg=none
+hi DiffChange cterm=none ctermfg=none ctermbg=0
+hi DiffText cterm=none ctermbg=251 ctermbg=124
+
+
 
 " invisible
 hi Empty ctermfg=234 ctermbg=none
@@ -226,7 +234,7 @@ nnoremap <leader>j J
 
 " calculate quantity in Word
 nnoremap <leader>cc ciW<C-r>=<C-r>"<CR><Esc>
-nnoremap <leader><space> :noh<cr>
+nnoremap <leader><space> :noh<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
 nnoremap <leader>pt :set paste!<CR>
 nnoremap <leader>fv <C-w>F<C-w>L
 
@@ -328,6 +336,10 @@ let g:gitgutter_sign_removed = '┃'
 let g:gitgutter_sign_removed_first_line = '┃'
 let g:gitgutter_sign_modified_removed = '┃'
 
+" }}}
+
+" ====== Lion {{{
+let g:lion_squeeze_spaces = 1
 " }}}
 
 " ====== Completion {{{
