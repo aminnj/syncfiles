@@ -227,7 +227,7 @@ function make_objects(filelist) {
         var name = f.split('/').reverse()[0];
         var path = f.replace(name, "");
         var name_noext = name.replace("."+ext,"");
-        var pdf = (filelist.indexOf(path+name_noext + ".pdf") != -1) ? path+name_noext+".pdf" : "";
+        var pdf = (filelist.indexOf(path+name_noext + ".pdf") != -1) ? name_noext+".pdf" : "";
         var txt = (filelist.indexOf(path+name_noext + ".txt") != -1) ? name_noext+".txt" : "";
         var extra = (filelist.indexOf(path+name_noext + ".extra") != -1) ? name_noext+".extra" : "";
         var json = (filelist.indexOf(path+name_noext + ".json") != -1) ? name_noext+".json" : "";
